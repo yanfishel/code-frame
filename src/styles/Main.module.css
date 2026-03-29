@@ -1,0 +1,11 @@
+
+.myTextCenter {
+
+  color: #c00;
+
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+}

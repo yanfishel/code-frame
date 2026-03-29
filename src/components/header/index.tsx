@@ -2,11 +2,10 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { Burger, Container, Group, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import UserMenu from '@/components/user-menu';
+import UserMenu from '@/src/components/user-menu';
 import classes from './header.module.css';
 
-
-const ThemeToggler = dynamic(() => import('@/components/theme-toggler'), { ssr: false });
+const ThemeToggler = dynamic(() => import('@/src/components/theme-toggler'), { ssr: false });
 
 
 const Header = () => {

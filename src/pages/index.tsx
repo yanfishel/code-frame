@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Container } from '@mantine/core';
+import Header from '@/src/components/header';
+import { Welcome } from '@/src/components/Welcome/Welcome';
+import classes from '@/src/styles/Main.module.css';
 
-import { Welcome } from '../components/Welcome/Welcome';
-import classes from '../styles/Main.module.css';
-import Header from '@/components/header';
+
+
+
+
+
 
 
 export default function HomePage() {
@@ -30,7 +35,7 @@ export default function HomePage() {
   return (
     <>
       <Header />
-      <Container fluid>
+      <Container fluid className={classes['main-container']}>
         <Welcome />
         <p className={classes.myTextCenter}>{text}</p>
       </Container>
