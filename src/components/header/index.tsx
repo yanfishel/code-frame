@@ -5,6 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import UserMenu from '@/src/components/user-menu';
 import classes from './header.module.css';
 
+
 const ThemeToggler = dynamic(() => import('@/src/components/theme-toggler'), { ssr: false });
 
 
@@ -23,7 +24,7 @@ const Header = () => {
             fw="bold"
             gradient={{ from: 'pink', to: 'yellow' }}
           >
-            &lt;Dev/&gt;
+            &lt;Code.Frame/&gt;
           </Text>
 
           <Group>

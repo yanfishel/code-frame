@@ -1,0 +1,15 @@
+
+.codeArea {
+  flex: 1;
+}
+
+.scroller {
+  overflow-y: auto;
+  height: 100%;
+  max-height: 100%;
+  width: 100%;
+}
+
+.codeAreaEditor {
+  height: 100%;
+}

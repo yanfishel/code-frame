@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Container } from '@mantine/core';
+import Aside from "@/src/components/aside";
+import Footer from "@/src/components/footer";
 import Header from '@/src/components/header';
-import { Welcome } from '@/src/components/Welcome/Welcome';
-import classes from '@/src/styles/Main.module.css';
+import PreviewArea from "@/src/components/preview-area";
+import classes from '@/src/styles/main.module.css';
 
 
-
-
-
-
-
+const CodeArea = dynamic(() => import('@/src/components/code-area'), { ssr: false });
 
 export default function HomePage() {
 
@@ -35,10 +34,18 @@ export default function HomePage() {
   return (
     <>
       <Header />
-      <Container fluid className={classes['main-container']}>
-        <Welcome />
-        <p className={classes.myTextCenter}>{text}</p>
+      <Container fluid className={classes.mainContainer}>
+
+        <Aside />
+
+        <div className={classes.mainArea}>
+          <CodeArea />
+
+          <PreviewArea />
+        </div>
+
       </Container>
+      <Footer />
     </>
-  )
+  );
 }
