@@ -1,6 +1,8 @@
-import React, { useCallback, useRef } from 'react';
+import React from 'react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
+
+
 
 import 'prismjs/components/prism-basic';
 import 'prismjs/components/prism-clike';
@@ -50,116 +52,53 @@ import 'prismjs/components/prism-vim';
 import 'prismjs/components/prism-xml-doc';
 import 'prismjs/components/prism-yaml';
 
+
+
+import SelectFontFamily from '@/src/components/code-area/select-font-family';
+import SelectFontSize from '@/src/components/code-area/select-font-size';
+import { EXAMPLE_CODE } from '@/src/constants';
+import { useStore } from '@/src/store';
+import SelectLanguage from './select-language';
 import classes from './codearea.module.css';
 
 
 const CodeArea = () => {
 
-  const element = useRef<HTMLDivElement>(null);
-
-  const exampleCode = `using System.Windows.Forms;
-using System.Drawing;
-
-public static DialogResult InputBox(string title, string promptText, ref string value)
-{
-  Form form = new Form();
-  Label label = new Label();
-  TextBox textBox = new TextBox();
-  Button buttonOk = new Button();
-  Button buttonCancel = new Button();
-
-  form.Text = title;
-  label.Text = promptText;
-  textBox.Text = value;
-
-  buttonOk.Text = "OK";
-  buttonCancel.Text = "Cancel";
-  buttonOk.DialogResult = DialogResult.OK;
-  buttonCancel.DialogResult = DialogResult.Cancel;
-
-  label.SetBounds(9, 20, 372, 13);
-  textBox.SetBounds(12, 36, 372, 20);
-  buttonOk.SetBounds(228, 72, 75, 23);
-  buttonCancel.SetBounds(309, 72, 75, 23);
-
-  label.AutoSize = true;
-  textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
-  buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-  buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-  form.ClientSize = new Size(396, 107);
-  form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
-  form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
-  form.FormBorderStyle = FormBorderStyle.FixedDialog;
-  form.StartPosition = FormStartPosition.CenterScreen;
-  form.MinimizeBox = false;
-  form.MaximizeBox = false;
-  form.AcceptButton = buttonOk;
-  form.CancelButton = buttonCancel;
-
-  DialogResult dialogResult = form.ShowDialog();
-  value = textBox.Text;
-  return dialogResult;
-}`;
-
-  const [code, setCode] = React.useState(exampleCode);
-  const [lang, setLang] = React.useState('csharp');
-
-  const [highlightedCode, setHighlightedCode] = React.useState('');
-  const [key, setKey] = React.useState(0);
+  const lang = useStore((state) => state.lang)
+  const fontSize = useStore((state) => state.fontSize)
+  const fontFamily = useStore((state) => state.fontFamily)
+  const inputBackground = useStore((state) => state.inputBackground)
 
 
-  const highlightHandler = useCallback(async (code:string) => {
-    await import('prismjs/components/prism-csharp');
-  }, [])
-
-
-  /*useEffect(() => {
-    setHighlightedCode(exampleCode);
-  }, [])*/
-
-  // Re-highlight only after user stops typing
-  /*useEffect(() => {
-    const timer = setTimeout(async () => {
-      //const result = await highlight(code, 'javascript', 'nord');
-      setHighlightedCode(code);
-    }, 300); // 300ms delay
-
-    return () => clearTimeout(timer);
-  }, [code]);*/
+  const [code, setCode] = React.useState(EXAMPLE_CODE);
 
 
   return (
-    <div style={{ flexBasis: '50%' }}>
+    <div
+      className={classes.codeArea}
+      style={
+        {
+          '--theme-font': `var(--font-${fontFamily})`,
+          '--theme-background-color': inputBackground,
+          '--theme-font-size': `${fontSize}px`,
+        } as React.CSSProperties
+      }
+    >
+      <div className={classes.codeAreaHeader}>
+        <SelectLanguage />
+        <SelectFontFamily />
+        <SelectFontSize />
+      </div>
       <div className={classes.scroller}>
-        <div
-          id="code-input"
-          className="oneDark"
-          style={
-            {
-              '--theme-font': 'var(--font-ubuntu)',
-              '--theme-font-size': '13px',
-            } as React.CSSProperties
-          }
-        >
-          <Editor
-            highlight={(code) => highlight(code, languages.csharp)}
-            onValueChange={(val) => setCode(val)}
-            value={code}
-          />
+        <div id="code-input" className="oneDark">
+          {lang && (
+            <Editor
+              highlight={(code) => highlight(code, languages[lang])}
+              onValueChange={(val) => setCode(val)}
+              value={code}
+            />
+          )}
         </div>
-
-        {/*<CodeHighlightAdapterProvider adapter={shikiAdapter}>
-          <InlineCodeHighlight
-            ref={element}
-            code={highlightedCode}
-            contentEditable
-            language="tsx"
-            onBlur={onInputHandler}
-            radius="md"
-            suppressContentEditableWarning style={{ outline: 'none', display: 'block' }}
-          />
-        </CodeHighlightAdapterProvider>*/}
       </div>
     </div>
   );

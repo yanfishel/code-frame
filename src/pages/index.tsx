@@ -6,6 +6,7 @@ import Footer from "@/src/components/footer";
 import Header from '@/src/components/header';
 import PreviewArea from "@/src/components/preview-area";
 import classes from '@/src/styles/main.module.css';
+import Layout from '@/src/components/layout';
 
 
 const CodeArea = dynamic(() => import('@/src/components/code-area'), { ssr: false });
@@ -32,7 +33,7 @@ export default function HomePage() {
   }, []);
   
   return (
-    <>
+    <Layout>
       <Header />
       <Container fluid className={classes.mainContainer}>
 
@@ -46,6 +47,6 @@ export default function HomePage() {
 
       </Container>
       <Footer />
-    </>
+    </Layout>
   );
 }

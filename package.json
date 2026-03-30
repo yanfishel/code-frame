@@ -31,7 +31,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-simple-code-editor": "^0.14.1",
-    "shiki": "^4.0.2"
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
