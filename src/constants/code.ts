@@ -50,27 +50,248 @@ export const LANGUAGES = {
   swift: 'Swift'
 }
 
-export const THEMES = {
-  oneDark: 'One Dark',
-  monokai: 'Monokai',
-  dracula: 'Dracula',
-  nord: 'Nord',
-  tokyoNight: 'Tokyo Night',
-  githubDark: 'GitHub Dark',
-  githubLight: 'GitHub Light',
-  solarized: 'Solarized'
-}
-
-export const THEME_BACKGROUND_COLOR = {
-  oneDark: '#282c34',
-  monokai: '#272822',
-  dracula: '#282a36',
-  nord: '#2e3440',
-  tokyoNight: '#1a1b2e',
-  githubDark: '#0d1117',
-  githubLight: '#ffffff',
-  solarized: '#002b36',
-}
+export const THEMES = [
+  {
+    theme_name: 'One Dark',
+    class_name: 'oneDark',
+    bg: '#282c34',
+    fg: '#abb2bf',
+    keyword: '#c678dd',
+    string: '#98c379',
+    number: '#d19a66',
+    comment: '#5c6370',
+    function: '#61afef',
+    title: '#61afef',
+    built_in: '#e5c07b',
+    type: '#e5c07b',
+    class: '#e5c07b',
+    attr: '#d19a66',
+    tag: '#e06c75',
+    name: '#e06c75',
+    operator: '#c678dd',
+    literal: '#56b6c2',
+    variable: '#e06c75',
+    property: '#56b6c2',
+    punctuation: '#abb2bf',
+    params: '#d19a66',
+    meta: '#5c6370',
+    regexp: '#98c379',
+    selector: '#e06c75',
+    subst: '#abb2bf',
+    symbol: '#56b6c2',
+    link: '#98c379',
+  },
+  {
+    theme_name: 'Monokai',
+    class_name: 'monokai',
+    bg: '#272822',
+    fg: '#f8f8f2',
+    keyword: '#f92672',
+    string: '#e6db74',
+    number: '#ae81ff',
+    comment: '#75715e',
+    function: '#a6e22e',
+    title: '#a6e22e',
+    built_in: '#66d9ef',
+    type: '#66d9ef',
+    class: '#a6e22e',
+    attr: '#a6e22e',
+    tag: '#f92672',
+    name: '#f92672',
+    operator: '#f92672',
+    literal: '#ae81ff',
+    variable: '#f8f8f2',
+    property: '#a6e22e',
+    punctuation: '#f8f8f2',
+    params: '#fd971f',
+    meta: '#75715e',
+    regexp: '#e6db74',
+    selector: '#a6e22e',
+    subst: '#f8f8f2',
+    symbol: '#ae81ff',
+    link: '#e6db74',
+  },
+  {
+    theme_name: 'Dracula',
+    class_name: 'dracula',
+    bg: '#282a36',
+    fg: '#f8f8f2',
+    keyword: '#ff79c6',
+    string: '#f1fa8c',
+    number: '#bd93f9',
+    comment: '#6272a4',
+    function: '#50fa7b',
+    title: '#50fa7b',
+    built_in: '#8be9fd',
+    type: '#8be9fd',
+    class: '#ffb86c',
+    attr: '#50fa7b',
+    tag: '#ff79c6',
+    name: '#ff79c6',
+    operator: '#ff79c6',
+    literal: '#bd93f9',
+    variable: '#f8f8f2',
+    property: '#8be9fd',
+    punctuation: '#f8f8f2',
+    params: '#ffb86c',
+    meta: '#6272a4',
+    regexp: '#f1fa8c',
+    selector: '#ff79c6',
+    subst: '#f8f8f2',
+    symbol: '#bd93f9',
+    link: '#f1fa8c',
+  },
+  {
+    theme_name: 'Nord',
+    class_name: 'nord',
+    bg: '#2e3440',
+    fg: '#d8dee9',
+    keyword: '#81a1c1',
+    string: '#a3be8c',
+    number: '#b48ead',
+    comment: '#616e88',
+    function: '#88c0d0',
+    title: '#88c0d0',
+    built_in: '#81a1c1',
+    type: '#8fbcbb',
+    class: '#8fbcbb',
+    attr: '#8fbcbb',
+    tag: '#81a1c1',
+    name: '#81a1c1',
+    operator: '#81a1c1',
+    literal: '#b48ead',
+    variable: '#d8dee9',
+    property: '#88c0d0',
+    punctuation: '#d8dee9',
+    params: '#d8dee9',
+    meta: '#616e88',
+    regexp: '#ebcb8b',
+    selector: '#88c0d0',
+    subst: '#d8dee9',
+    symbol: '#b48ead',
+    link: '#a3be8c',
+  },
+  {
+    theme_name: 'Tokyo Night',
+    class_name: 'tokyoNight',
+    bg: '#1a1b2e',
+    fg: '#a9b1d6',
+    keyword: '#bb9af7',
+    string: '#9ece6a',
+    number: '#ff9e64',
+    comment: '#565f89',
+    function: '#7aa2f7',
+    title: '#7aa2f7',
+    built_in: '#2ac3de',
+    type: '#2ac3de',
+    class: '#e0af68',
+    attr: '#73daca',
+    tag: '#f7768e',
+    name: '#f7768e',
+    operator: '#89ddff',
+    literal: '#ff9e64',
+    variable: '#c0caf5',
+    property: '#73daca',
+    punctuation: '#89ddff',
+    params: '#e0af68',
+    meta: '#565f89',
+    regexp: '#b4f9f8',
+    selector: '#f7768e',
+    subst: '#c0caf5',
+    symbol: '#ff9e64',
+    link: '#9ece6a',
+  },
+  {
+    theme_name: 'GitHub Dark',
+    class_name: 'githubDark',
+    bg: '#0d1117',
+    fg: '#e6edf3',
+    keyword: '#ff7b72',
+    string: '#a5d6ff',
+    number: '#79c0ff',
+    comment: '#8b949e',
+    function: '#d2a8ff',
+    title: '#d2a8ff',
+    built_in: '#79c0ff',
+    type: '#ffa657',
+    class: '#ffa657',
+    attr: '#79c0ff',
+    tag: '#7ee787',
+    name: '#7ee787',
+    operator: '#ff7b72',
+    literal: '#79c0ff',
+    variable: '#ffa657',
+    property: '#79c0ff',
+    punctuation: '#e6edf3',
+    params: '#e6edf3',
+    meta: '#8b949e',
+    regexp: '#a5d6ff',
+    selector: '#7ee787',
+    subst: '#e6edf3',
+    symbol: '#79c0ff',
+    link: '#a5d6ff',
+  },
+  {
+    theme_name: 'GitHub Light',
+    class_name: 'githubLight',
+    bg: '#ffffff',
+    fg: '#24292f',
+    keyword: '#cf222e',
+    string: '#0a3069',
+    number: '#0550ae',
+    comment: '#6e7781',
+    function: '#8250df',
+    title: '#8250df',
+    built_in: '#0550ae',
+    type: '#0550ae',
+    class: '#953800',
+    attr: '#0550ae',
+    tag: '#116329',
+    name: '#116329',
+    operator: '#cf222e',
+    literal: '#0550ae',
+    variable: '#24292f',
+    property: '#0550ae',
+    punctuation: '#24292f',
+    params: '#24292f',
+    meta: '#6e7781',
+    regexp: '#116329',
+    selector: '#116329',
+    subst: '#24292f',
+    symbol: '#0550ae',
+    link: '#0a3069',
+  },
+  {
+    theme_name: 'Solarized',
+    class_name: 'solarized',
+    bg: '#002b36',
+    fg: '#839496',
+    keyword: '#859900',
+    string: '#2aa198',
+    number: '#d33682',
+    comment: '#586e75',
+    function: '#268bd2',
+    title: '#268bd2',
+    built_in: '#268bd2',
+    type: '#b58900',
+    class: '#b58900',
+    attr: '#657b83',
+    tag: '#268bd2',
+    name: '#268bd2',
+    operator: '#859900',
+    literal: '#2aa198',
+    variable: '#839496',
+    property: '#268bd2',
+    punctuation: '#839496',
+    params: '#839496',
+    meta: '#586e75',
+    regexp: '#2aa198',
+    selector: '#268bd2',
+    subst: '#839496',
+    symbol: '#cb4b16',
+    link: '#2aa198',
+  }
+]
 
 export const FONTS = {
   inconsolata: 'Inconsolata',
@@ -81,49 +302,8 @@ export const FONTS = {
   fira_code: 'Fira Code',
   jetbrains_mono: 'JetBrains Mono',
   ubuntu_mono: 'Ubuntu Mono',
-};
+}
 
-export const EXAMPLE_CODE = `using System.Windows.Forms;
-using System.Drawing;
+export const FONT_SIZES = ['10', '11', '12', '13', '14', '16', '18', '20', '22', '24', '28', '32']
 
-public static DialogResult InputBox(string title, string promptText, ref string value)
-{
-  Form form = new Form();
-  Label label = new Label();
-  TextBox textBox = new TextBox();
-  Button buttonOk = new Button();
-  Button buttonCancel = new Button();
-
-  form.Text = title;
-  label.Text = promptText;
-  textBox.Text = value;
-
-  buttonOk.Text = "OK";
-  buttonCancel.Text = "Cancel";
-  buttonOk.DialogResult = DialogResult.OK;
-  buttonCancel.DialogResult = DialogResult.Cancel;
-
-  label.SetBounds(9, 20, 372, 13);
-  textBox.SetBounds(12, 36, 372, 20);
-  buttonOk.SetBounds(228, 72, 75, 23);
-  buttonCancel.SetBounds(309, 72, 75, 23);
-
-  label.AutoSize = true;
-  textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
-  buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-  buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-  form.ClientSize = new Size(396, 107);
-  form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
-  form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
-  form.FormBorderStyle = FormBorderStyle.FixedDialog;
-  form.StartPosition = FormStartPosition.CenterScreen;
-  form.MinimizeBox = false;
-  form.MaximizeBox = false;
-  form.AcceptButton = buttonOk;
-  form.CancelButton = buttonCancel;
-
-  DialogResult dialogResult = form.ShowDialog();
-  value = textBox.Text;
-  return dialogResult;
-}`
+export const CODE_PLACEHOLDER = `// Place your code here...`

@@ -1,9 +1,70 @@
 
 export type T_Store = {
   code: string;
+  html: string;
   lang: string;
-  theme: string;
+  theme: T_Theme | null;
+  showNumbers: boolean;
+  lineNumbers: string;
   fontSize: string;
   fontFamily: string;
+  lineHeight: string;
+  inputColor: string;
   inputBackground: string;
+  flexBasisCode: string;
+  flexBasisPreview: string;
+  selectThemeOpened: boolean;
+  selectTheme: (theme: T_Theme) => void;
+  frameStyle: string;
+  innerPadding: number;
+  outerPadding: number;
+  cornerRadius: number;
+  showShadow: boolean;
+  shadowBlur: number;
+  shadowColor: string;
+  shadowOffset: {x:number, y:number}
+  backgroundType: 'none' | 'solid' | 'gradient';
+  backgroundSolid: string;
+  gradientAngle: number;
+  gradientColor1: string;
+  gradientColor2: string;
+  windowOpacity: number;
+  parseTokens: () => T_Token[];
+  buildLines: () => [T_Token[]];
+  renderBackground: (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
+  renderCode: () => HTMLCanvasElement;
+  renderImage: (canvas: HTMLCanvasElement) => void;
+};
+
+export type T_Token = { text: string; color: string };
+
+export type T_Theme = {
+  theme_name: string;
+  class_name: string;
+  bg: string;
+  fg: string;
+  keyword: string;
+  string: string;
+  number: string;
+  comment: string;
+  function: string;
+  title: string;
+  built_in: string;
+  type: string;
+  class: string;
+  attr: string;
+  tag: string;
+  name: string;
+  operator: string;
+  literal: string;
+  variable: string;
+  property: string;
+  punctuation: string;
+  params: string;
+  meta: string;
+  regexp: string;
+  selector: string;
+  subst: string;
+  symbol: string;
+  link: string;
 };

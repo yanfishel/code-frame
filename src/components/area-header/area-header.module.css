@@ -1,0 +1,15 @@
+
+.areaHeader {
+  height: 46px;
+  min-height: 46px;
+  position: relative;
+  padding-inline: var(--mantine-spacing-xs);
+  background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  box-shadow: var(--mantine-shadow-sm) !important;
+  border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6));
+  z-index: 1;
+}

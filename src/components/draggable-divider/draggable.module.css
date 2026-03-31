@@ -1,0 +1,45 @@
+
+.draggableDivider {
+  position: absolute;
+  left: calc(50% - 3px);
+  top: 0;
+  width: 6px;
+  height: 100%;
+  z-index: 10;
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: col-resize;
+
+  & svg {
+    width: 14px;
+    min-width: 14px;
+    height: 14px;
+    position: relative;
+    opacity: 0.45;
+  }
+
+  & div {
+    width: 3px;
+    min-width: 3px;
+    height: 40px;
+    background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
+    border-radius: 10px;
+  }
+
+  &:hover {
+    width: 8px;
+    left: calc(50% - 4px);
+    background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
+
+    & div {
+      background-color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
+    }
+
+    & svg {
+      opacity: 1;
+    }
+  }
+}

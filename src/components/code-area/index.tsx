@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { SquareCodeIcon } from 'lucide-react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
+import { Flex, Text } from '@mantine/core';
 
 
 
@@ -54,23 +56,41 @@ import 'prismjs/components/prism-yaml';
 
 
 
-import SelectFontFamily from '@/src/components/code-area/select-font-family';
-import SelectFontSize from '@/src/components/code-area/select-font-size';
-import { EXAMPLE_CODE } from '@/src/constants';
+import AreaHeader from '@/src/components/area-header';
+import { CODE_PLACEHOLDER, DEFAULT_CODE } from '@/src/constants';
 import { useStore } from '@/src/store';
-import SelectLanguage from './select-language';
+import CodeToolbar from './code-toolbar';
 import classes from './codearea.module.css';
 
 
 const CodeArea = () => {
 
+  const htmlRef = useRef<HTMLDivElement>(null)
+
+  const theme = useStore((state) => state.theme)
+  const code = useStore((state) => state.code)
   const lang = useStore((state) => state.lang)
+  const lineNumbers = useStore((state) => state.lineNumbers)
+  const showNumbers = useStore((state) => state.showNumbers)
   const fontSize = useStore((state) => state.fontSize)
+  const lineHeight = useStore((state) => state.lineHeight)
   const fontFamily = useStore((state) => state.fontFamily)
+  const inputColor = useStore((state) => state.inputColor)
   const inputBackground = useStore((state) => state.inputBackground)
+  const flexBasisCode = useStore((state) => state.flexBasisCode)
 
 
-  const [code, setCode] = React.useState(EXAMPLE_CODE);
+  useEffect(() => {
+    if (htmlRef.current) {
+      const html = htmlRef.current.querySelector('pre')?.innerHTML ?? '';
+      useStore.setState({ html });
+    }
+  }, [code, htmlRef]);
+
+
+  useEffect(() => {
+    useStore.setState({ code: DEFAULT_CODE });
+  }, []);
 
 
   return (
@@ -78,26 +98,37 @@ const CodeArea = () => {
       className={classes.codeArea}
       style={
         {
+          width: flexBasisCode,
+          minWidth: flexBasisCode,
+          maxWidth: flexBasisCode,
+          flexBasis: flexBasisCode,
           '--theme-font': `var(--font-${fontFamily})`,
+          '--theme-color': inputColor,
           '--theme-background-color': inputBackground,
           '--theme-font-size': `${fontSize}px`,
+          '--theme-line-height': `${lineHeight}`,
         } as React.CSSProperties
       }
     >
-      <div className={classes.codeAreaHeader}>
-        <SelectLanguage />
-        <SelectFontFamily />
-        <SelectFontSize />
-      </div>
+      <AreaHeader>
+        <Flex gap="xs" align="center">
+          <SquareCodeIcon size={14} />
+          <Text size="md" lh={1.2}>
+            Code
+          </Text>
+        </Flex>
+        <CodeToolbar />
+      </AreaHeader>
+
       <div className={classes.scroller}>
-        <div id="code-input" className="oneDark">
-          {lang && (
-            <Editor
-              highlight={(code) => highlight(code, languages[lang])}
-              onValueChange={(val) => setCode(val)}
-              value={code}
-            />
-          )}
+        {!code && <div className={classes.codePlaceholder}>{CODE_PLACEHOLDER}</div>}
+        <div ref={htmlRef} id="code-input" className={theme?.class_name}>
+          {showNumbers && !!code && <div className="line-numbers">{lineNumbers}</div>}
+          <Editor
+            highlight={(code) => highlight(code, languages[lang])}
+            onValueChange={(code) => useStore.setState({ code })}
+            value={code}
+          />
         </div>
       </div>
     </div>

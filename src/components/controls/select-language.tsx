@@ -18,7 +18,7 @@ const SelectLanguage = () => {
 
   return (
     <NativeSelect
-      description="Language"
+      label="Language"
       data={data}
       value={lang}
       onChange={onChange}

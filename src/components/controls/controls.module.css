@@ -1,0 +1,126 @@
+
+.themeSwitcher {
+  flex:1;
+  /*border: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6));*/
+
+  cursor: pointer;
+  opacity: 1;
+  &:hover {
+    box-shadow: var(--mantine-shadow-sm);
+    opacity: 1;
+  }
+}
+
+.themeSwitcherValue {
+  &:hover {
+    box-shadow: none;
+    opacity: 1;
+  }
+}
+
+.themeSwitcherTitle {
+  position: relative;
+  z-index: 1;
+}
+
+.themeSwitcherActive {
+  /*outline: 1px solid var(--mantine-color-blue-filled);*/
+  outline-offset: 1px;
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+.themeSwitcherDot {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 10px;
+}
+
+.themeSwitcherDot_First {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 10px;
+  outline: 1px solid light-dark(#dee0e3, #424242);
+}
+
+.themeSwitcherInput {
+  position: relative;
+  border: 1px solid light-dark(#ced4da, #424242);
+  border-radius: 5px;
+  height: 30px;
+  padding-inline-end: 10px;
+  cursor: pointer;
+}
+
+.themeSwitcherWrapper {
+  position: relative;
+}
+
+.frameStyleItem {
+  flex: 1;
+  position: relative;
+}
+
+.frameStyleMacosPreview {
+  width: 90px;
+  min-width: 90px;
+  height: 16px;
+  border-radius: 5px 5px 0 0;
+  background: #1e2030;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 3px;
+  position: relative;
+}
+
+.frameStyleWindowsPreview {
+  width: 90px;
+  height: 16px;
+  border-radius: 5px 5px 0 0;
+  background: #252840;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.frameStyleGnomePreview {
+  width: 90px;
+  height: 16px;
+  border-radius: 5px 5px 0 0;
+  background: #252840;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+}
+
+.frameStyle_Dot {
+  background:#888;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, .75);
+}
+.frameStyle_Button {
+  width: 11px;
+  height: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, .75);
+}

@@ -19,7 +19,7 @@ const SelectFontFamily = () => {
 
   return (
     <NativeSelect
-      description="Font family"
+      label="Font family"
       data={data}
       value={fontFamily}
       onChange={onChange}

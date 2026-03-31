@@ -1,11 +1,11 @@
 .header {
-  padding-top: var(--mantine-spacing-xs);
+  padding-top: 4px;
   background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
   border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), transparent);
 }
 
 .mainSection {
-  padding-bottom: var(--mantine-spacing-xs);
+  padding-bottom: 4px;
 }
 
 .tabsList {

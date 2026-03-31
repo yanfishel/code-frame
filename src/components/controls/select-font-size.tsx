@@ -1,7 +1,7 @@
 import React from 'react';
-import {  NativeSelect } from '@mantine/core';
+import { NativeSelect } from '@mantine/core';
+import { FONT_SIZES } from '@/src/constants';
 import { useStore } from '@/src/store';
-import classes from './codearea.module.css';
 
 
 const SelectFontSize = () => {
@@ -13,16 +13,16 @@ const SelectFontSize = () => {
   };
 
   return (
-    <div className={classes.fontSizeSelect}>
+    <div>
       <NativeSelect
-        description="Font size"
-        data={['10', '11', '12', '13', '14', '16', '18', '20', '22', '24', '28', '32']}
+        label="Font size"
+        data={FONT_SIZES}
         value={fontSize}
         onChange={onChange}
         size="xs"
       />
     </div>
-  )
+  );
 }
 
 export default SelectFontSize;

@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DM_Mono, Fira_Code, Inconsolata, JetBrains_Mono, Roboto_Mono, Source_Code_Pro, Space_Mono, Ubuntu_Mono } from 'next/font/google';
-import classes from './layout.module.css';
 import clsx from 'clsx';
+import { Container } from '@mantine/core';
+import Aside from '@/src/components/aside';
+import Footer from '@/src/components/footer';
+import Header from '@/src/components/header';
+import classes from './layout.module.css';
+import { useStore } from '@/src/store';
+
 
 const dm_mono = DM_Mono({
   subsets: ['latin'],
@@ -50,9 +56,29 @@ interface LayoutProps {
 
 
 const Layout = ({ children }: LayoutProps) => {
-  return <div className={ clsx(classes.layout, jet_brains.variable, dm_mono.variable, fira.variable, inconsolata.variable, roboto.variable, source_code.variable, space.variable, ubuntu.variable)}>
-    {children}
-  </div>;
+
+  return (
+    <div
+      className={clsx(
+        classes.layout,
+        jet_brains.variable,
+        dm_mono.variable,
+        fira.variable,
+        inconsolata.variable,
+        roboto.variable,
+        source_code.variable,
+        space.variable,
+        ubuntu.variable
+      )}
+    >
+      <Header />
+      <Container fluid className={classes.mainContainer}>
+        <Aside />
+        {children}
+      </Container>
+      <Footer />
+    </div>
+  );
 }
 
 export default Layout;
