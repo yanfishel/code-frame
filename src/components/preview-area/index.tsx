@@ -13,7 +13,6 @@ const PreviewArea = () => {
   const canvasRef = useRef(null)
 
   const flexBasisPreview = useStore((state) => state.flexBasisPreview)
-  const canvas = useStore((state) => state.canvas)
   const theme = useStore((state) => state.theme)
   const lang = useStore((state) => state.lang)
   const code = useStore((state) => state.code);
@@ -133,7 +132,7 @@ const PreviewArea = () => {
           <Box className={classes.imageInfo}>
             <span>{`${previewImageData.width}px ✕ ${previewImageData.height}px`}</span>
             {previewImageData.blob && (
-              <span>{formatFileSize(previewImageData.blob.size)} bytes</span>
+              <span>{formatFileSize(previewImageData.blob.size)}</span>
             )}
           </Box>
         )}
