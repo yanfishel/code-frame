@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Slider, Text } from '@mantine/core';
 import { SLIDER_STYLES } from '@/src/constants';
 import { MARKS_OPACITY } from '@/src/constants/image';
@@ -9,14 +9,22 @@ const ControlWindowOpacity = () => {
 
   const windowOpacity = useStore((state) => state.windowOpacity);
 
+  const [opacity, setOpacity] = useState(windowOpacity);
+
+  useEffect(() => {
+    setOpacity(windowOpacity);
+  }, [windowOpacity]);
+
+
   return (
     <Box mb="md" mt="xs">
       <Text size="xs" fw={500} mb="4px">
         Window Opacity
       </Text>
       <Slider
-        value={windowOpacity}
-        onChange={(value) => useStore.setState({ windowOpacity: value })}
+        value={opacity}
+        onChange={(value) => setOpacity(value)}
+        onChangeEnd={(value) => useStore.setState({ windowOpacity: value })}
         min={0}
         max={100}
         step={1}

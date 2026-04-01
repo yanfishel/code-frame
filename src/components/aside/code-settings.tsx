@@ -14,8 +14,8 @@ const CodeSettings = () => {
 
 
   return (
-    <CollapsePanel isOpen={false} title="Code settings" icon={ <SlidersHorizontalIcon size={14} />}>
-      <Flex direction="column" gap="5px" p="md" pt="xs" pb="md">
+    <CollapsePanel isOpen title="Code settings" icon={ <SlidersHorizontalIcon size={14} />}>
+      <Flex direction="column" gap="5px" style={{padding:'8px 15px 20px 25px'}}>
         <SelectLanguage />
         <SelectFontFamily />
         <Flex gap="xs">

@@ -114,15 +114,15 @@ export const drawMacOS = (
 
 export const drawWindowsWindow = (ctx: CanvasRenderingContext2D, dark:boolean, totalW: number, browserH: number, fontSize:string, pad: number) => {
   const cy = browserH / 2;
-  ctx.fillStyle = dark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)';
+  /*ctx.fillStyle = dark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)';
   ctx.font = `${Math.round(+fontSize * 0.72)}px "Segoe UI",Arial,sans-serif`;
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
-  ctx.fillText('code', pad, cy + 0.5);
+  ctx.fillText('code', pad, cy + 0.5);*/
   // 3 buttons: –  □  ✕
   const bW = Math.round(browserH * 1.55);
   [
-    { icon: '−', close: false },
+    { icon: '—', close: false },
     { icon: '□', close: false },
     { icon: '✕', close: true },
   ].forEach((b, i) => {
@@ -132,10 +132,10 @@ export const drawWindowsWindow = (ctx: CanvasRenderingContext2D, dark:boolean, t
       ctx.fillRect(bx, 0, bW, browserH);
     }
     ctx.fillStyle = b.close ? '#fff' : dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)';
-    ctx.font = `${Math.round(+fontSize * 0.7)}px "Segoe UI",Arial,sans-serif`;
+    ctx.font = `${Math.round(+fontSize * (b.icon === '□' ? 1.2 : 0.8))}px "Segoe UI",Arial,sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(b.icon, bx + bW / 2, cy + (b.icon === '−' ? 2 : 0));
+    ctx.fillText(b.icon, bx + bW / 2, cy + (b.icon === '—' ? 2 : 0));
   });
   ctx.textAlign = 'left';
 }
@@ -150,12 +150,12 @@ export const drawGnomeWindow = (
 ) => {
   const cy = browserH / 2;
   // Title center
-  ctx.fillStyle = dark ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.65)';
+  /*ctx.fillStyle = dark ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.65)';
   ctx.font = `${Math.round(+fontSize * 0.72)}px "Ubuntu","Cantarell",Arial,sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('code.js', totalW / 2, cy);
-  ctx.textAlign = 'left';
+  ctx.textAlign = 'left';*/
   // Left: 2 neutral dots (minimize/maximize)
   const r = Math.max(5, Math.round(+fontSize * 0.38));
   [0, 1].forEach((i) => {
@@ -165,7 +165,7 @@ export const drawGnomeWindow = (
     ctx.fill();
   });
   // Right: close (red circle with X)
-  const cr = Math.max(5, Math.round(+fontSize * 0.4));
+  const cr = Math.max(5, Math.round(+fontSize * 0.5));
   const cx2 = totalW - pad - cr;
   ctx.beginPath();
   ctx.arc(cx2, cy, cr, 0, Math.PI * 2);

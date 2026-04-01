@@ -26,6 +26,8 @@ const CollapsePanel = ({ isOpen, title, icon, children }: CollapsePanelProps) =>
         styles={{
           root: {
             height: 46,
+            width: 'calc(100% + 10px)',
+            paddingInlineEnd: '25px',
             position: 'sticky',
             top: 0,
             zIndex: 10,

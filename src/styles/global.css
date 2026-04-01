@@ -10,3 +10,12 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* -- NOT TOUCH DEVICES - */
+@media (pointer: fine) {
+
+  * {
+    scrollbar-width: thin;
+  }
+
+}

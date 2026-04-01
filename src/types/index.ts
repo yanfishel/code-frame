@@ -1,5 +1,6 @@
 
 export type T_Store = {
+  canvas: HTMLCanvasElement | null;
   code: string;
   html: string;
   lang: string;
@@ -22,17 +23,17 @@ export type T_Store = {
   showShadow: boolean;
   shadowBlur: number;
   shadowColor: string;
-  shadowOffset: {x:number, y:number}
+  shadowOffset: { x: number; y: number };
+  shadowOpacity: number;
   backgroundType: 'none' | 'solid' | 'gradient';
   backgroundSolid: string;
-  gradientAngle: number;
-  gradientColor1: string;
-  gradientColor2: string;
+  gradient: (string | number)[];
   windowOpacity: number;
+  previewImageData: { blob: Blob; base64: string; width: number; height: number } | null;
   parseTokens: () => T_Token[];
   buildLines: () => [T_Token[]];
   renderBackground: (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
-  renderCode: () => HTMLCanvasElement;
+  renderCode: () => HTMLCanvasElement | null;
   renderImage: (canvas: HTMLCanvasElement) => void;
 };
 

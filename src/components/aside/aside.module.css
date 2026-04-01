@@ -1,9 +1,11 @@
 
 .asideControl {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   width: 300px;
   border-right: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6));
+  scrollbar-gutter: stable ;
 }
 
 .asideControlTitle {

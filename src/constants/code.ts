@@ -294,15 +294,15 @@ export const THEMES = [
 ]
 
 export const FONTS = {
-  inconsolata: 'Inconsolata',
   dm_mono: 'DM Mono',
+  inconsolata: 'Inconsolata',
   source_code_pro: 'Source Code Pro',
   roboto_mono: 'Roboto Mono',
   space_mono: 'Space Mono',
   fira_code: 'Fira Code',
   jetbrains_mono: 'JetBrains Mono',
   ubuntu_mono: 'Ubuntu Mono',
-}
+};
 
 export const FONT_SIZES = ['10', '11', '12', '13', '14', '16', '18', '20', '22', '24', '28', '32']
 

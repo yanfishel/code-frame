@@ -1,7 +1,7 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import { DEFAULT_STORE, FONTS } from '@/src/constants';
 import { T_Store, T_Theme, T_Token } from '@/src/types';
-import { adjust, computeCorners, drawBrowser, drawIntoQuad, rrect } from '@/src/util';
+import { adjust, canvasToPng, computeCorners, drawBrowser, drawIntoQuad, rrect } from '@/src/util';
 
 
 export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
@@ -22,7 +22,7 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     const div = document.createElement('div');
     div.innerHTML = html;
     const out: T_Token[] = [];
-    function walk(node: HTMLElement | HTMLDivElement | HTMLSpanElement, color: string) {
+    function walk(node: ChildNode | HTMLElement | HTMLDivElement | HTMLSpanElement, color: string) {
       if (node.nodeType === 3) {
         if (node.textContent) {
           out.push({ text: node.textContent, color });
@@ -33,15 +33,15 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
         return;
       }
       let c = color;
-      // @ts-ignore
-      for (const cl of node.classList) {
+
+      for (const cl of 'classList' in node ? node.classList : []) {
         if (cl !== 'token') {
           const key = cl as keyof typeof theme;
           c = theme && theme[key] ? theme[key] : color;
           break;
         }
       }
-      // @ts-ignore
+
       for (const ch of node.childNodes) {
         walk(ch, c);
       }
@@ -89,6 +89,9 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     const browserH = frameStyle === 'none' ? 0 : Math.round(+fontSize * 2.3);
 
     const lines = buildLines();
+    if(lines.length < 2 && lines[0].length < 1){
+      return null
+    }
 
     const canvas = document.createElement('canvas').getContext('2d');
     if (!canvas) {
@@ -199,8 +202,7 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
   },
 
   renderBackground: (ctx, w, h) => {
-    const { backgroundType, backgroundSolid, gradientAngle, gradientColor1, gradientColor2 } =
-      get();
+    const { backgroundType, backgroundSolid, gradient } = get();
     if (backgroundType === 'none') {
       return;
     }
@@ -208,8 +210,8 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
       ctx.fillStyle = backgroundSolid;
       ctx.fillRect(0, 0, w, h);
     } else {
-      const rad = (gradientAngle * Math.PI) / 180;
-      const dx = Math.cos(rad),
+      const rad = (Number(gradient[2]) * Math.PI) / 180;
+      const dx = -Math.cos(-rad),
         dy = Math.sin(rad);
       const g = ctx.createLinearGradient(
         w / 2 - (dx * w) / 2,
@@ -217,8 +219,8 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
         w / 2 + (dx * w) / 2,
         h / 2 + (dy * h) / 2
       );
-      g.addColorStop(0, gradientColor1);
-      g.addColorStop(1, gradientColor2);
+      g.addColorStop(0, String(gradient[0]));
+      g.addColorStop(1, String(gradient[1]));
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
     }
@@ -233,6 +235,7 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
       shadowBlur,
       shadowColor,
       shadowOffset,
+      shadowOpacity,
       windowOpacity,
     } = get();
 
@@ -247,6 +250,14 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     }
 
     const off = renderCode();
+    if(!off) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      set({
+        canvas: null,
+        previewImageData: null
+      })
+      return
+    }
 
     // Lock canvas size to unzoomed dimensions so background is unaffected
     const baseW = off.width;
@@ -293,7 +304,7 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     if (showShadow) {
       ctx.save();
       ctx.filter = `blur(${shadowBlur}px)`;
-      ctx.globalAlpha = 0.55;
+      ctx.globalAlpha = shadowOpacity / 100;
       ctx.fillStyle = shadowColor;
       ctx.beginPath();
       ctx.moveTo(corners[0].x + shadowOffset.x, corners[0].y + shadowOffset.y);
@@ -351,5 +362,13 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     // Update preview display size
     //scaleCanvasDisplay();
     //document.getElementById('canvas-info').textContent = `${cW}×${cH}`;
-  },
+
+    const pngDataUrl = canvasToPng(canvas);
+
+    set({
+      canvas,
+      previewImageData: { ...pngDataUrl, width: cW, height: cH },
+    });
+  }
+
 }));

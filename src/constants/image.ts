@@ -1,4 +1,3 @@
-
 export const MARKS = [
   { value: 0 },
   { value: 10, label: 10 },
@@ -33,7 +32,7 @@ export const MARKS_CORNER = [
   { value: 20, label: 20 },
   { value: 30, label: 30 },
   { value: 40, label: 40 },
-  { value: 50, label: 50 }
+  { value: 50, label: 50 },
 ];
 
 export const MARKS_OFFSET = [
@@ -49,3 +48,7 @@ export const MARKS_OFFSET = [
   { value: 20, label: 20 },
   { value: 25, label: 25 },
 ];
+
+export const FORMAT_EXT = { png: 'png', jpg: 'jpg', gif: 'gif', tiff: 'tiff', base64: 'txt' };
+
+export const FORMAT_MIME = { png: 'image/png', jpg: 'image/jpeg' };

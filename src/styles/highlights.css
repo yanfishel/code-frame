@@ -9,6 +9,7 @@
   display: flex;
   align-items: flex-start;
   & > div:not(.line-numbers) {
+    height: 100%;
     width: max-content;
     flex: 1;
     /*min-width: 100%;
