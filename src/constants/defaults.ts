@@ -4,7 +4,7 @@ import { DEFAULT_SHADOW_COLOR, GRADIENTS, SOLID_COLORS } from '@/src/constants/c
 
 export const DEFAULT_THEME = THEMES.find((theme) => theme.theme_name === 'One Dark') ?? null;
 
-export const DEFAULT_WATERMARK = `framecode.fishart.co.il`;
+export const DEFAULT_WATERMARK = `codeframe.pro`;
 
 export const DEFAULT_STORE = {
   canvas: null,
