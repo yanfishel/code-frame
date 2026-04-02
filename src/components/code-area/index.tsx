@@ -1,10 +1,8 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { SquareCodeIcon } from 'lucide-react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
 import { Flex, Text } from '@mantine/core';
-
-
 
 import 'prismjs/components/prism-basic';
 import 'prismjs/components/prism-clike';
@@ -54,8 +52,6 @@ import 'prismjs/components/prism-vim';
 import 'prismjs/components/prism-xml-doc';
 import 'prismjs/components/prism-yaml';
 
-
-
 import AreaHeader from '@/src/components/area-header';
 import { CODE_PLACEHOLDER, DEFAULT_CODE } from '@/src/constants';
 import { useStore } from '@/src/store';
@@ -64,6 +60,8 @@ import classes from './codearea.module.css';
 
 
 const CodeArea = () => {
+
+  const numbersRef = useRef<HTMLDivElement>(null)
 
   const htmlRef = useRef<HTMLDivElement>(null)
 
@@ -79,6 +77,7 @@ const CodeArea = () => {
   const inputBackground = useStore((state) => state.inputBackground)
   const flexBasisCode = useStore((state) => state.flexBasisCode)
 
+  const [offset, setOffset] = useState(0)
 
   useEffect(() => {
     if (htmlRef.current) {
@@ -86,6 +85,12 @@ const CodeArea = () => {
       useStore.setState({ html });
     }
   }, [code, htmlRef]);
+
+  useEffect(() => {
+    if(numbersRef.current) {
+      setOffset(numbersRef.current.offsetWidth)
+    }
+  }, [lineNumbers, showNumbers]);
 
 
   useEffect(() => {
@@ -122,8 +127,17 @@ const CodeArea = () => {
 
       <div className={classes.scroller}>
         {!code && <div className={classes.codePlaceholder}>{CODE_PLACEHOLDER}</div>}
-        <div ref={htmlRef} id="code-input" className={theme?.class_name}>
-          {showNumbers && !!code && <div className="line-numbers">{lineNumbers}</div>}
+        <div
+          ref={htmlRef}
+          id="code-input"
+          style={{ '--line-numbers-offset': offset } as CSSProperties}
+          className={theme?.class_name}
+        >
+          {showNumbers && !!code && (
+            <div ref={numbersRef} className="line-numbers">
+              {lineNumbers}
+            </div>
+          )}
           <Editor
             highlight={(code) => highlight(code, languages[lang])}
             onValueChange={(code) => useStore.setState({ code })}

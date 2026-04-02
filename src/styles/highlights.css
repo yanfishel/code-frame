@@ -11,7 +11,7 @@
   & > div:not(.line-numbers) {
     width: max-content;
     flex: 1;
-    min-width: 100%;
+    min-width: calc(100% - var(--line-numbers-offset));
     min-height: 100%;
     padding: var(--mantine-spacing-md) !important;
   }
