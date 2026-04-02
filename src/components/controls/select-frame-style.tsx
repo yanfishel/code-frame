@@ -24,7 +24,7 @@ const SelectFrameStyle = () => {
         <Menu id="frame-style-menu" shadow="md" position="bottom-end">
           <Menu.Target>
             <Flex
-              aria-controls="frame-style-menu"
+              aria-label="Window Style selector"
               align="center"
               gap="sm"
               className={classes.themeSwitcherInput}

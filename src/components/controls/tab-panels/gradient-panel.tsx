@@ -32,8 +32,8 @@ const GradientPanel = () => {
         <Flex flex={1} justify="flex-start" gap="2px">
           {GRADIENTS.map((grad, idx) => (
             <ColorSwatch
+              aria-label={`Gradient swatch ${grad[0]} ${grad[1]}}`}
               key={idx}
-              component="button"
               size="22px"
               color={grad[0].toString()}
               onClick={() => useStore.setState({ gradient: grad })}

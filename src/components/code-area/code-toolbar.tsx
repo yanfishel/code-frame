@@ -15,8 +15,9 @@ const CodeToolbar = () => {
 
   return (
     <Flex gap="5px" align="center">
-      <Tooltip label="Clear" withArrow position="top" transitionProps={{ transition: 'skew-down' }}>
+      <Tooltip label="Clear code input" withArrow position="top" transitionProps={{ transition: 'skew-down' }}>
         <ActionIcon
+          aria-label="Clear code"
           disabled={!code}
           size="input-xs"
           onClick={() => useStore.setState({ code: '' })}
@@ -29,12 +30,13 @@ const CodeToolbar = () => {
       <CopyButton value={code}>
         {({ copied, copy }) => (
           <Tooltip
-            label={copied ? 'Copied!' : 'Copy to Clipboard'}
+            label={copied ? 'Copied!' : 'Copy code to Clipboard'}
             withArrow
             position="top"
             transitionProps={{ transition: 'skew-down' }}
           >
             <ActionIcon
+              aria-label="Copy code to clipboard"
               disabled={!code}
               size="input-xs"
               onClick={copy}

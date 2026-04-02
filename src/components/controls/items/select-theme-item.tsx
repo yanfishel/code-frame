@@ -16,6 +16,7 @@ const SelectThemeItem = (itemTheme: SelectThemeItemProps) => {
 
   return (
     <Paper
+      aria-label="Theme switcher item"
       withBorder={!itemTheme.transparent}
       px="8px"
       py={itemTheme.transparent ? 0 : '6px'}

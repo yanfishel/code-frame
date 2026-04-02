@@ -82,7 +82,7 @@ const PreviewToolbar = () => {
             transitionProps={{ transition: 'pop-top-right' }}
           >
             <Menu.Target>
-              <Button area-label="Download Menu"
+              <Button area-label="Download Menu" title="Download menu"
                 disabled={previewImageData === null || !previewImageData.blob}
                 size="xs"
                 styles={{ root: { paddingInline: '5px', borderLeft: 0 } }}
