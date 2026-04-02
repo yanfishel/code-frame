@@ -1,6 +1,17 @@
 # Code Frame
 
+[![License](https://img.shields.io/github/license/yanfishel/desktop-dev-widgets)](/LICENSE.txt)
+[![Node.js](https://img.shields.io/badge/Node.js-v24.14-6)](https://nodejs.org/)
+[![Typescript](https://img.shields.io/badge/Typescript-v5.9.3-blue)](https://www.typescriptlang.org/)
+[![Next](https://img.shields.io/badge/Next.js-v16-f39f37)](https://nextjs.org/)
+[![NPM](https://img.shields.io/npm/v/code-frame)](https://www.npmjs.com/)
+[![Yarn](https://img.shields.io/badge/Yarn-v4.13.0-red)](https://yarnpkg.com/)
+[![Zustand](https://img.shields.io/badge/Zustand-v5.0.12-green)](https://github.com/pmndrs/zustand)
+
+
 Code Frame is a beautiful code-to-image generator built with Next.js, TypeScript and Mantine. It allows you to create high-quality screenshots of your code snippets with customizable themes, window frames, and backgrounds.
+
+<img src="/public/screenshots/app_001.png" alt="Code Frame" width="100%"/>
 
 ## 🚀 Features
 
