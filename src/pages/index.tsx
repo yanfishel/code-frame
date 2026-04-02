@@ -1,52 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { GripVerticalIcon } from 'lucide-react';
-import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { Box, Container } from '@mantine/core';
-import { useMove } from '@mantine/hooks';
-import Aside from "@/src/components/aside";
-import Footer from "@/src/components/footer";
-import Header from '@/src/components/header';
+import React from 'react';
+import CodeArea from '@/src/components/code-area';
+import DraggableDivider from '@/src/components/draggable-divider';
 import Layout from '@/src/components/layout';
 import PreviewArea from "@/src/components/preview-area";
-import { useStore } from '@/src/store';
 import classes from '@/src/styles/main.module.css';
-import DraggableDivider from '@/src/components/draggable-divider';
-import CodeArea from '@/src/components/code-area';
 
 
 export default function HomePage() {
 
-
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const clipText = await navigator.clipboard.readText();
-        console.log('Clipboard content:', clipText);
-        //setText(clipText);
-        // You can display the text in an element, for example:
-        // document.getElementById("outbox").innerText = clipText;
-      } catch (err) {
-        console.error('Failed to read clipboard contents: ', err);
-      }
-    }
-
-    //init();
-
-  }, []);
-
-
-
-
   
   return (
     <Layout>
-        <div className={classes.mainArea}>
-          <CodeArea />
+      <main role="main" className={classes.mainArea}>
+        <CodeArea />
 
-          <DraggableDivider />
+        <DraggableDivider />
 
-          <PreviewArea />
-        </div>
+        <PreviewArea />
+      </main>
     </Layout>
   );
 }

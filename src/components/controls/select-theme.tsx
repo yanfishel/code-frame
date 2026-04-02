@@ -20,16 +20,21 @@ const SelectTheme = () => {
         Theme
       </Text>
       <Box className={classes.themeSwitcherWrapper}>
-        <Menu shadow="md" position="bottom-end">
+        <Menu id="theme-switcher-menu" shadow="md" position="bottom-end">
           <Menu.Target>
-            <Flex align="center" gap="sm" className={classes.themeSwitcherInput}>
+            <Flex
+              aria-controls="theme-switcher-menu"
+              align="center"
+              gap="sm"
+              className={classes.themeSwitcherInput}
+            >
               <SelectThemeItem transparent {...(selectedTheme as T_Theme)} />
               <Box style={{ opacity: 0.35 }}>
                 <ChevronsUpDown size={12} />
               </Box>
             </Flex>
           </Menu.Target>
-          <Menu.Dropdown styles={{ dropdown: {maxHeight: '260px', overflowY: 'auto'} }}>
+          <Menu.Dropdown styles={{ dropdown: { maxHeight: '260px', overflowY: 'auto' } }}>
             {THEMES.map((theme) => {
               const isSelected = selectedTheme?.theme_name === theme.theme_name;
               return (
