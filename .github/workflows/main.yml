@@ -3,7 +3,6 @@ name: Deploy Vite to VPS
 
 # Controls when the workflow will run
 on:
-
   push:
     branches: [ release ]
 
