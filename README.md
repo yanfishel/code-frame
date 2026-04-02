@@ -11,7 +11,11 @@
 
 Code Frame is a beautiful code-to-image generator built with Next.js, TypeScript and Mantine. It allows you to create high-quality screenshots of your code snippets with customizable themes, window frames, and backgrounds.
 
-<img src="/public/screenshots/app_001.png" alt="Code Frame" width="100%"/>
+<img src="/public/screenshots/app_001.jpg" alt="Code Frame" width="100%"/>
+-
+<img src="/public/screenshots/app_002.jpg" alt="Code Frame" width="100%"/>
+
+### Website: **[codeframe.pro](https://codeframe.pro)**
 
 ## 🚀 Features
 
