@@ -14,10 +14,10 @@ const Footer = () => {
     <Container fluid className={classes.footer}>
       <UnstyledButton component="a" href="https://fishart.co.il" target="_blank">
         <Box lightHidden style={{ opacity: 0.25 }}>
-          <img src="/images/fishart.png" alt="FishArt" style={{ width: '90px' }} />
+          <img src="/images/fishart.png" alt="FishArt" width="90" height="21" />
         </Box>
         <Box darkHidden style={{ opacity: 0.85 }}>
-          <img src="/images/fishart.png" alt="FishArt" style={{ width: '90px' }} />
+          <img src="/images/fishart.png" alt="FishArt" width="90" height="21" />
         </Box>
       </UnstyledButton>
 

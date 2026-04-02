@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Code Frame :: Beautiful Code Snippet Image</title>
         <meta
           name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
         />
         <meta name="description" content="Code Frame. Beautiful Code Snippet Image" />
         <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
