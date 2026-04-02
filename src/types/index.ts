@@ -3,6 +3,7 @@ export type T_Store = {
   canvas: HTMLCanvasElement | null;
   code: string;
   html: string;
+
   lang: string;
   theme: T_Theme | null;
   showNumbers: boolean;
@@ -14,8 +15,8 @@ export type T_Store = {
   inputBackground: string;
   flexBasisCode: string;
   flexBasisPreview: string;
-  selectThemeOpened: boolean;
   selectTheme: (theme: T_Theme) => void;
+
   frameStyle: string;
   innerPadding: number;
   outerPadding: number;
@@ -29,15 +30,28 @@ export type T_Store = {
   backgroundSolid: string;
   gradient: (string | number)[];
   windowOpacity: number;
+  watermark: string;
+
   previewImageData: { blob: Blob; base64: string; width: number; height: number } | null;
+
   parseTokens: () => T_Token[];
   buildLines: () => [T_Token[]];
   renderBackground: (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
+  renderGradientBlur: (
+    direction: string,
+    gradientBlur: number,
+    startPercent: number,
+    steps: number
+  ) => void;
+  renderShadow: (ctx: CanvasRenderingContext2D, corners: T_Corner[]) => void;
   renderCode: () => HTMLCanvasElement | null;
   renderImage: (canvas: HTMLCanvasElement) => void;
+  renderWatermark: (ctx: CanvasRenderingContext2D, canvasW: number, canvasH: number) => void;
 };
 
 export type T_Token = { text: string; color: string };
+
+export type T_Corner = { x: number; y: number }
 
 export type T_Theme = {
   theme_name: string;

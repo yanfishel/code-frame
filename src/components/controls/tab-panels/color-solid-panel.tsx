@@ -12,7 +12,7 @@ const ColorSolidPanel = () => {
 
   return (
     <>
-      <Flex align="flex-start" justify="space-between" gap="md" mb="md">
+      <Flex align="flex-start" justify="space-between" gap="md" >
         <Flex flex={1} direction="column" gap="3px">
           {SOLID_COLORS.map((row, idx) => {
             return (

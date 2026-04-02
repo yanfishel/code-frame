@@ -1,4 +1,4 @@
-import { T_Theme } from '@/src/types';
+import { T_Corner, T_Theme } from '@/src/types';
 import { adjust, isDark } from '@/src/util/color';
 
 
@@ -16,41 +16,20 @@ export const rrect = (ctx:CanvasRenderingContext2D, x:number, y:number, w:number
   ctx.closePath();
 }
 
-export const computeCorners = (iw:number, ih:number, cw:number, ch:number, tZ:number, rX:number, rY:number, trapL:number, trapR:number, trapT:number, trapB:number) => {
-  const focal = Math.max(cw, ch) * 1.4;
-  const halfW  = iw / 2;
-  const halfH  = ih / 2;
-  // trapezoid corner adjustments
-  const tL  = trapL  / 100;  // left side height factor
-  const tR  = trapR  / 100;  // right side height factor
-  const tTop = trapT / 100;  // top side width factor
-  const tBot = trapB / 100;  // bottom side width factor
+export const calculateCorners = (iw:number, ih:number, cw:number, ch:number) => {
+  const halfW = (cw - iw) / 2;
+  const halfH  = (ch - ih) / 2;
 
-  // Raw corners with trapezoid
   const pts = [
-    [-halfW * tTop, -halfH * tL, 0],  // TL
-    [ halfW * tTop, -halfH * tR, 0],  // TR
-    [ halfW * tBot,  halfH * tR, 0],  // BR
-    [-halfW * tBot,  halfH * tL, 0],  // BL
+    [halfW, halfH], // TL
+    [halfW + iw, halfH], // TR
+    [halfW + iw, halfH + ih], // BR
+    [halfW, halfH + ih] // BL
   ];
-
-  const cZ=Math.cos(tZ), sZ=Math.sin(tZ);
-  const cX=Math.cos(rX), sX=Math.sin(rX);
-  const cY=Math.cos(rY), sY=Math.sin(rY);
-
-  return pts.map(([x,y,z]) => {
-    // Z rotation
-    const x1=x*cZ-y*sZ, y1=x*sZ+y*cZ, z1=z;
-    // X rotation (depth)
-    const x2=x1, y2=y1*cX-z1*sX, z2=y1*sX+z1*cX;
-    // Y rotation
-    const x3=x2*cY+z2*sY, y3=y2, z3=-x2*sY+z2*cY;
-    const s = focal / (focal + z3);
-    return {x: x3*s + cw/2, y: y3*s + ch/2};
-  });
+  return pts.map( ([x,y]) => ({x,y}))
 }
 
-export const drawIntoQuad = (ctx: CanvasRenderingContext2D, img: HTMLCanvasElement, corners:{x:number, y:number}[]) => {
+export const drawIntoQuad = (ctx: CanvasRenderingContext2D, img: HTMLCanvasElement, corners:T_Corner[]) => {
   const [TL,TR,BR,BL] = corners;
   const srcH = img.height, srcW = img.width;
   for (let i = 0; i <= srcH; i++) {
@@ -82,20 +61,20 @@ export const drawBrowser = (ctx: CanvasRenderingContext2D, totalW: number, brows
 
   if (style === 'macos') {
 
-    drawMacOS(ctx, fontSize, browserH, pad);
+    drawMacOSWindow(ctx, fontSize, browserH, pad);
 
   } else if (style === 'windows') {
 
-    drawWindowsWindow(ctx, dark, totalW, browserH, fontSize, pad);
+    drawWindowsWindow(ctx, dark, totalW, browserH, fontSize);
 
   } else if (style === 'gnome') {
 
-    drawGnomeWindow(ctx, dark, totalW, browserH, fontSize, pad);
+    drawGnomeWindow(ctx, totalW, browserH, fontSize, pad);
 
   }
 }
 
-export const drawMacOS = (
+export const drawMacOSWindow = (
   ctx: CanvasRenderingContext2D,
   fontSize: string,
   browserH: number,
@@ -112,13 +91,9 @@ export const drawMacOS = (
   });
 };
 
-export const drawWindowsWindow = (ctx: CanvasRenderingContext2D, dark:boolean, totalW: number, browserH: number, fontSize:string, pad: number) => {
+export const drawWindowsWindow = (ctx: CanvasRenderingContext2D, dark:boolean, totalW: number, browserH: number, fontSize:string) => {
   const cy = browserH / 2;
-  /*ctx.fillStyle = dark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)';
-  ctx.font = `${Math.round(+fontSize * 0.72)}px "Segoe UI",Arial,sans-serif`;
-  ctx.textBaseline = 'middle';
-  ctx.textAlign = 'left';
-  ctx.fillText('code', pad, cy + 0.5);*/
+
   // 3 buttons: –  □  ✕
   const bW = Math.round(browserH * 1.55);
   [
@@ -142,20 +117,13 @@ export const drawWindowsWindow = (ctx: CanvasRenderingContext2D, dark:boolean, t
 
 export const drawGnomeWindow = (
   ctx: CanvasRenderingContext2D,
-  dark: boolean,
   totalW: number,
   browserH: number,
   fontSize: string,
   pad: number
 ) => {
   const cy = browserH / 2;
-  // Title center
-  /*ctx.fillStyle = dark ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.65)';
-  ctx.font = `${Math.round(+fontSize * 0.72)}px "Ubuntu","Cantarell",Arial,sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('code.js', totalW / 2, cy);
-  ctx.textAlign = 'left';*/
+
   // Left: 2 neutral dots (minimize/maximize)
   const r = Math.max(5, Math.round(+fontSize * 0.38));
   [0, 1].forEach((i) => {
@@ -182,4 +150,15 @@ export const drawGnomeWindow = (
   ctx.lineTo(cx2 - xs, cy + xs);
   ctx.stroke();
   ctx.lineCap = 'butt';
+}
+
+export const windowTitle = (ctx: CanvasRenderingContext2D, text: string, fontSize:number, width:number, height:number, dark:boolean = false) => {
+  // Title center
+  ctx.fillStyle = dark ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.65)';
+  ctx.font = `${Math.round(+fontSize * 0.72)}px "Segoe UI",Arial,sans-serif`;
+  //ctx.font = `${Math.round(+fontSize * 0.72)}px "Ubuntu","Cantarell",Arial,sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, width / 2, height / 2);
+  ctx.textAlign = 'left';
 };

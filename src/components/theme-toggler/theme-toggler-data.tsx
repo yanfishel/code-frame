@@ -4,8 +4,8 @@ import { Tooltip, VisuallyHidden } from '@mantine/core';
 
 
 const iconProps = {
-  style: { display: 'block', padding: 2 },
-  size: 22,
+  style: { display: 'block', padding: 1 },
+  size: 18,
 }
 
 

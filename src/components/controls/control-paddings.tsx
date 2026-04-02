@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Slider, Text } from '@mantine/core';
+import { Box, Divider, Slider, Space, Text } from '@mantine/core';
 import { SLIDER_STYLES } from '@/src/constants';
 import { MARKS, MARKS_CORNER } from '@/src/constants/image';
 import { useStore } from '@/src/store';
@@ -17,7 +17,8 @@ const ControlPaddings = () => {
 
 
   return (
-    <Box mb="lg" mt="xs">
+    <>
+      <Divider mb="xs" labelPosition="left" />
       <Text size="xs" fw={500} mb="4px">
         Inner Padding
       </Text>
@@ -32,7 +33,7 @@ const ControlPaddings = () => {
         marks={MARKS}
         styles={SLIDER_STYLES}
       />
-      <Box h="md" />
+      <Space h="md" />
       <Text size="xs" fw={500} mb="4px">
         Outer Padding
       </Text>
@@ -47,7 +48,7 @@ const ControlPaddings = () => {
         marks={MARKS}
         styles={SLIDER_STYLES}
       />
-      <Box h="md" />
+      <Space h="md" />
       <Text size="xs" fw={500} mb="4px">
         Corner Radius
       </Text>
@@ -62,7 +63,8 @@ const ControlPaddings = () => {
         marks={MARKS_CORNER}
         styles={SLIDER_STYLES}
       />
-    </Box>
+      <Space h="md" />
+    </>
   );
 };
 

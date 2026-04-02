@@ -11,7 +11,14 @@ export const COLOR_SWATCH_STYLES = {
   alphaOverlay: { borderRadius: 'var(--mantine-radius-sm)' },
   shadowOverlay: { borderRadius: 'var(--mantine-radius-sm)' },
   colorOverlay: { borderRadius: 'var(--mantine-radius-sm)' },
-};
+}
+
+export const COLOR_SWATCH_TRANSPARENT = {
+  root: { height:'36px', width:'160px',minWidth:'160px', margin: 'auto' },
+  alphaOverlay: { borderRadius: 'var(--mantine-radius-sm)' },
+  shadowOverlay: { borderRadius: 'var(--mantine-radius-sm)' },
+  colorOverlay: { borderRadius: 'var(--mantine-radius-sm)', background: 'url(/images/transparent-bg.jpg)' },
+}
 
 export const COLOR_INPUT_STYLES = {
   root: { cursor: 'pointer', display: 'flex', flexDirection: 'column' },

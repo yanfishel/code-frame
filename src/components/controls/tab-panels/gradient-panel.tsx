@@ -28,7 +28,7 @@ const GradientPanel = () => {
 
   return (
     <>
-      <Flex direction="column" gap="sm" mb="md">
+      <Flex direction="column" gap="sm">
         <Flex flex={1} justify="flex-start" gap="2px">
           {GRADIENTS.map((grad, idx) => (
             <ColorSwatch

@@ -1,13 +1,16 @@
+"use client";
+
 import React from 'react';
 import { CheckIcon, FilesIcon, Trash2Icon } from 'lucide-react';
-import { ActionIcon, CopyButton, Flex, Tooltip } from '@mantine/core';
+import { ActionIcon, CopyButton, Flex, Tooltip, useMantineTheme } from '@mantine/core';
 import { useStore } from '@/src/store';
 
 
 const CodeToolbar = () => {
 
-  const code = useStore(state => state.code)
+  const theme = useMantineTheme();
 
+  const code = useStore(state => state.code)
 
 
   return (
@@ -15,7 +18,7 @@ const CodeToolbar = () => {
       <Tooltip label="Clear" withArrow position="top" transitionProps={{ transition: 'skew-down' }}>
         <ActionIcon
           disabled={!code}
-          size="md"
+          size="input-xs"
           onClick={() => useStore.setState({ code: '' })}
           variant="default"
         >
@@ -33,11 +36,15 @@ const CodeToolbar = () => {
           >
             <ActionIcon
               disabled={!code}
-              size="md"
+              size="input-xs"
               onClick={copy}
               variant={copied ? 'primary' : 'default'}
             >
-              {copied ? <CheckIcon size={14} /> : <FilesIcon size={14} />}
+              {copied ? (
+                <CheckIcon size={14} color={theme.colors.green[6]} />
+              ) : (
+                <FilesIcon size={14} />
+              )}
             </ActionIcon>
           </Tooltip>
         )}

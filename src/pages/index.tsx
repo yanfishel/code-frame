@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { GripVerticalIcon } from 'lucide-react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { Box, Container } from '@mantine/core';
@@ -12,9 +11,8 @@ import PreviewArea from "@/src/components/preview-area";
 import { useStore } from '@/src/store';
 import classes from '@/src/styles/main.module.css';
 import DraggableDivider from '@/src/components/draggable-divider';
+import CodeArea from '@/src/components/code-area';
 
-
-const CodeArea = dynamic(() => import('@/src/components/code-area'), { ssr: false });
 
 export default function HomePage() {
 
@@ -42,9 +40,6 @@ export default function HomePage() {
   
   return (
     <Layout>
-
-
-
         <div className={classes.mainArea}>
           <CodeArea />
 

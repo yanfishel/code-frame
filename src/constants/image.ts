@@ -49,6 +49,5 @@ export const MARKS_OFFSET = [
   { value: 25, label: 25 },
 ];
 
-export const FORMAT_EXT = { png: 'png', jpg: 'jpg', gif: 'gif', tiff: 'tiff', base64: 'txt' };
 
 export const FORMAT_MIME = { png: 'image/png', jpg: 'image/jpeg' };

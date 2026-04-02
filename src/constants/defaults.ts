@@ -4,6 +4,8 @@ import { DEFAULT_SHADOW_COLOR, GRADIENTS, SOLID_COLORS } from '@/src/constants/c
 
 export const DEFAULT_THEME = THEMES.find((theme) => theme.theme_name === 'One Dark') ?? null;
 
+export const DEFAULT_WATERMARK = `framecode.fishart.co.il`;
+
 export const DEFAULT_STORE = {
   canvas: null,
   lang: 'typescript',
@@ -17,7 +19,6 @@ export const DEFAULT_STORE = {
   fontFamily: Object.keys(FONTS)[0],
   inputColor: DEFAULT_THEME?.fg,
   inputBackground: DEFAULT_THEME?.bg,
-  selectThemeOpened: false,
 
   flexBasisCode: 'calc(50% - 3px)',
   flexBasisPreview: 'calc(50% - 3px)',
@@ -35,6 +36,7 @@ export const DEFAULT_STORE = {
   backgroundSolid: SOLID_COLORS[0][0],
   gradient: GRADIENTS[0],
   windowOpacity: 100,
+  watermark: DEFAULT_WATERMARK,
   previewImageData: null,
 };
 
@@ -57,5 +59,5 @@ function getValue(value: keyof MyInterface) {
   return myObject[value];
 }
 
-getValue('id'); // 1
-getValue('count')`;
+getValue('id'); // => 1
+getValue('count'); // => undefined`;

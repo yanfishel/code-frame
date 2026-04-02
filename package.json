@@ -1,7 +1,10 @@
 {
-  "name": "mantine-next-template",
+  "name": "@yanfishel/codeframe",
   "version": "1.0.0",
   "private": true,
+  "description": "Code Frame - built with Next.js, TypeScript, Mantine, and Storybook",
+  "author": "Yan Fishel <yan.fishel@gmail.com>",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

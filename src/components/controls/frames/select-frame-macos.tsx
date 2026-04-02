@@ -8,7 +8,7 @@ const SelectFrameMacos = () => {
   return (
     <Flex align="center" gap="md" justify="space-between" className={classes.frameStyleItem}>
       <Text size="xs">
-        Mac OS
+        MacOS
       </Text>
       <Flex className={classes.frameStyleMacosPreview}>
         <Box className={classes.frameStyle_Dot} style={{ backgroundColor: '#ff5f57' }} />

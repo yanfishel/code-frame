@@ -1,27 +1,8 @@
 import { FORMAT_MIME } from '@/src/constants';
+import { formatDateToMonthShort } from '@/src/util/format';
 
 
-export const formatFileSize = (bytes:number, si:boolean = true) => {
-  if(bytes === undefined) {
-    return '';
-  }
-  const thresh = si ? 1000 : 1024;
-  if (Math.abs(bytes) < thresh) {
-    return `${bytes  } B`;
-  }
-  const units = si
-    ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-    : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-  let i = -1;
-  do {
-    // eslint-disable-next-line no-param-reassign
-    bytes /= thresh;
-    ++i;
-  } while (Math.abs(bytes) >= thresh);
-  return `${bytes.toFixed(1)} ${units[i]}`;
-}
-
-export const canvasToGif = (canvas:HTMLCanvasElement, cb:(blob:Blob)=>void) => {
+export const canvasToGif = (canvas:HTMLCanvasElement) => {
   const ctx = canvas.getContext('2d');
   if(!ctx) {
     throw new Error(
@@ -170,7 +151,7 @@ export const canvasToGif = (canvas:HTMLCanvasElement, cb:(blob:Blob)=>void) => {
   }
   out.push(0, 0x3b);
 
-  cb( new Blob([new Uint8Array(out)], { type: 'image/gif' }) );
+  return new Blob([new Uint8Array(out)], { type: 'image/gif' });
 }
 
 export const base64ToBlob = (base64:string, contentType:string = '') => {
@@ -198,4 +179,32 @@ export const base64ToBlob = (base64:string, contentType:string = '') => {
 export const canvasToPng = (canvas:HTMLCanvasElement) => {
   const base64 = canvas.toDataURL(FORMAT_MIME.png);
   return { blob: base64ToBlob(base64, FORMAT_MIME.png), base64 };
+}
+
+export const canvasToJPG = (canvas:HTMLCanvasElement) => {
+  const tmp = document.createElement('canvas');
+  tmp.width = canvas.width;
+  tmp.height = canvas.height;
+  const c = tmp.getContext('2d');
+  if(!c) {
+    throw new Error(
+      'canvasToJPG: canvas must have a 2d context (e.g. canvas.getContext("2d") !== null)'
+    )
+  }
+  c.fillStyle = '#ffffff';
+  c.fillRect(0, 0, tmp.width, tmp.height);
+  c.drawImage(canvas, 0, 0);
+  const base64 = tmp.toDataURL(FORMAT_MIME.jpg, 0.95);
+
+  return { blob: base64ToBlob(base64, FORMAT_MIME.jpg), base64 };
+}
+
+export const downloadFile = (data: Blob | string, ext: string = 'png', isData:boolean = false) => {
+  const date = formatDateToMonthShort(new Date());
+  const stamp = date.replace(/[^a-zA-Z0-9]/g, '_')
+  const a = document.createElement('a');
+  a.href = isData ? data as string : URL.createObjectURL(data as Blob);
+  a.download = `code-${stamp}.${ext}`;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }

@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import { ImageIcon } from 'lucide-react';
 import { Box, Flex, Text } from '@mantine/core';
 import AreaHeader from '@/src/components/area-header';
+import PreviewToolbar from '@/src/components/preview-area/preview-toolbar';
+import PreviewPlaceholder from '@/src/components/preview-placeholder';
 import { useStore } from '@/src/store';
 import { formatFileSize } from '@/src/util';
 import classes from './preview.module.css';
@@ -34,6 +36,7 @@ const PreviewArea = () => {
   const backgroundSolid = useStore((state) => state.backgroundSolid)
   const gradient = useStore((state) => state.gradient)
   const windowOpacity = useStore((state) => state.windowOpacity)
+  const watermark = useStore((state) => state.watermark);
   const previewImageData = useStore((state) => state.previewImageData)
 
   const renderImage = useStore((state) => state.renderImage)
@@ -69,6 +72,7 @@ const PreviewArea = () => {
     backgroundSolid,
     gradient,
     windowOpacity,
+    watermark,
   ]);
 
   useLayoutEffect(() => {
@@ -89,10 +93,11 @@ const PreviewArea = () => {
       <AreaHeader>
         <Flex align="center" gap="xs">
           <ImageIcon size={14} />
-          <Text size="md" lh={1.2}>
-            Image
-          </Text>
+          <Text size="md" lh={1.2}>Image</Text>
         </Flex>
+
+        <PreviewToolbar />
+
       </AreaHeader>
       <Box
         className={clsx(
@@ -100,24 +105,7 @@ const PreviewArea = () => {
           backgroundType === 'none' && classes.backgroundTransparent
         )}
       >
-        {!code && (
-          <Flex className={classes.previewPlaceholder}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style={{ width: '240px', height: '240px' }}>
-              <path
-                fill="currentColor"
-                d="M12 6a6 6 0 0 0-6 6v24a6 6 0 0 0 6 6h24a6 6 0 0 0 6-6V12a6 6 0 0 0-6-6zm8.884 9.366a1.25 1.25 0 0 1 0 1.768L14.018 24l6.866 6.866a1.25 1.25 0 0 1-1.768 1.768l-7.75-7.75a1.25 1.25 0 0 1 0-1.768l7.75-7.75a1.25 1.25 0 0 1 1.768 0m8 0l7.75 7.75a1.25 1.25 0 0 1 0 1.768l-7.75 7.75a1.25 1.25 0 0 1-1.768-1.768L33.982 24l-6.866-6.866a1.25 1.25 0 0 1 1.768-1.768"
-              />
-            </svg>
-            <Text
-              size="70px"
-              lh="1"
-              component="span"
-              style={{ fontWeight: 900, textAlign: 'center' }}
-            >
-              CODE FRAME
-            </Text>
-          </Flex>
-        )}
+        {!code && <PreviewPlaceholder />}
 
         <canvas
           ref={canvasRef}

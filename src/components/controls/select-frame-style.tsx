@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronsUpDown } from 'lucide-react';
-import { Box, Flex, Menu, Text } from '@mantine/core';
+import { Box, Divider, Flex, Menu, Space, Text } from '@mantine/core';
+import ControlWindowOpacity from '@/src/components/controls/control-window-opacity';
 import SelectFrameGnome from '@/src/components/controls/frames/select-frame-gnome';
 import SelectFrameNone from '@/src/components/controls/frames/select-frame-none';
 import SelectFrameWindows from '@/src/components/controls/frames/select-frame-windows';
@@ -14,7 +15,8 @@ const SelectFrameStyle = () => {
   const frameStyle = useStore((state) => state.frameStyle);
 
   return (
-    <Box>
+    <>
+      <Divider mb="xs" labelPosition="left" />
       <Text size="xs" fw={500} mb={3}>
         Window Style
       </Text>
@@ -31,9 +33,8 @@ const SelectFrameStyle = () => {
               {frameStyle === 'macos' && <SelectFrameMacos />}
               {frameStyle === 'windows' && <SelectFrameWindows />}
               {frameStyle === 'gnome' && <SelectFrameGnome />}
-              <Box style={{ opacity: 0.35 }}>
-                <ChevronsUpDown size={12} />
-              </Box>
+
+              <ChevronsUpDown size={12} style={{ opacity: 0.35 }} />
             </Flex>
           </Menu.Target>
           <Menu.Dropdown>
@@ -52,7 +53,11 @@ const SelectFrameStyle = () => {
           </Menu.Dropdown>
         </Menu>
       </Box>
-    </Box>
+
+      <Space h="xs" />
+
+      <ControlWindowOpacity />
+    </>
   );
 };
 

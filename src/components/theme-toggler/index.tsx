@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react';
 import { MantineColorScheme, SegmentedControl, useMantineColorScheme } from '@mantine/core';
 
@@ -13,11 +15,12 @@ function ThemeToggler() {
     <>
       <SegmentedControl
         name="my-control"
+        size="lg"
         data={data}
         withItemsBorders={false}
         value={colorScheme}
         onChange={(value) => setColorScheme(value as MantineColorScheme)}
-        styles={{ label: { padding: '4px' } }}
+        styles={{ label: { padding: '5px' } }}
       />
     </>
   );

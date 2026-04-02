@@ -14,9 +14,12 @@ const CodeSettings = () => {
 
 
   return (
-    <CollapsePanel isOpen title="Code settings" icon={ <SlidersHorizontalIcon size={14} />}>
-      <Flex direction="column" gap="5px" style={{padding:'8px 15px 20px 25px'}}>
+    <CollapsePanel isOpen title="Code settings"
+                   icon={<SlidersHorizontalIcon
+                   size={14} />}>
+      <Flex direction="column" gap="5px" style={{ padding: '8px 15px 20px 25px' }}>
         <SelectLanguage />
+        <SelectTheme />
         <SelectFontFamily />
         <Flex gap="xs">
           <Box style={{ flex: 1 }}>
@@ -27,7 +30,6 @@ const CodeSettings = () => {
           </Box>
         </Flex>
         <LineNumbers />
-        <SelectTheme />
       </Flex>
     </CollapsePanel>
   );

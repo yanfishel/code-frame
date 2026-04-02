@@ -1,32 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Collapse, ColorInput, Flex, Slider, Switch, Text } from '@mantine/core';
+import { Box, Collapse, ColorInput, Divider, Flex, Slider, Space, Switch, Text } from '@mantine/core';
 import { DEFAULT_SHADOW_COLOR, MARKS_CORNER, MARKS_OFFSET, MARKS_OPACITY, ROUNDED_SWITCH_STYLES, SLIDER_STYLES } from '@/src/constants';
 import { useStore } from '@/src/store';
 
 
 const ControlBoxShadow = () => {
+  const showShadow = useStore((state) => state.showShadow);
+  const shadowBlur = useStore((state) => state.shadowBlur);
+  const shadowColor = useStore((state) => state.shadowColor);
+  const shadowOffset = useStore((state) => state.shadowOffset);
+  const shadowOpacity = useStore((state) => state.shadowOpacity);
 
-  const showShadow = useStore((state) => state.showShadow)
-  const shadowBlur = useStore((state) => state.shadowBlur)
-  const shadowColor = useStore((state) => state.shadowColor)
-  const shadowOffset = useStore((state) => state.shadowOffset)
-  const shadowOpacity = useStore((state) => state.shadowOpacity)
-
-  const [blur, setBlur] = useState(shadowBlur)
-  const [color, setColor] = useState(shadowColor)
+  const [blur, setBlur] = useState(shadowBlur);
+  const [color, setColor] = useState(shadowColor);
   const [offsetX, setOffsetX] = useState(shadowOffset.x);
   const [offsetY, setOffsetY] = useState(shadowOffset.y);
   const [opacity, setOpacity] = useState(shadowOpacity);
-
 
   useEffect(() => {
     setColor(showShadow ? DEFAULT_SHADOW_COLOR : '');
     useStore.setState({ shadowColor: showShadow ? DEFAULT_SHADOW_COLOR : '' });
   }, [showShadow]);
 
-
   return (
     <>
+      <Divider mb="xs" labelPosition="left" />
       <Flex gap="lg" justify="space-between" align="flex-end">
         <Box>
           <Switch
@@ -54,7 +52,7 @@ const ControlBoxShadow = () => {
           />
         </Box>
       </Flex>
-      <Box h="2px" />
+      <Space h="xs" />
       <Collapse in={showShadow}>
         <Text size="xs" fw={500} mb="6px">
           Box Shadow Blur
@@ -71,7 +69,7 @@ const ControlBoxShadow = () => {
           marks={MARKS_CORNER}
           styles={SLIDER_STYLES}
         />
-        <Box h="md" />
+        <Space h="md" />
 
         <Text size="xs" fw={500} mb="6px">
           Box Shadow Offset X
@@ -92,7 +90,7 @@ const ControlBoxShadow = () => {
           marks={MARKS_OFFSET}
           styles={SLIDER_STYLES}
         />
-        <Box h="md" />
+        <Space h="md" />
 
         <Text size="xs" fw={500} mb="6px">
           Box Shadow Offset Y
@@ -113,7 +111,7 @@ const ControlBoxShadow = () => {
           marks={MARKS_OFFSET}
           styles={SLIDER_STYLES}
         />
-        <Box h="md" />
+        <Space h="md" />
         <Text size="xs" fw={500} mb="6px">
           Box Shadow Opacity
         </Text>
@@ -121,9 +119,7 @@ const ControlBoxShadow = () => {
           disabled={!showShadow}
           value={opacity}
           onChange={(value) => setOpacity(value)}
-          onChangeEnd={(value) =>
-            useStore.setState({ shadowOpacity: value })
-          }
+          onChangeEnd={(value) => useStore.setState({ shadowOpacity: value })}
           min={0}
           max={100}
           step={1}
@@ -132,8 +128,9 @@ const ControlBoxShadow = () => {
           styles={SLIDER_STYLES}
         />
       </Collapse>
+      <Space h="md" />
     </>
   );
-}
+};
 
 export default ControlBoxShadow;

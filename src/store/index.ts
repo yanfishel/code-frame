@@ -1,19 +1,18 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import { DEFAULT_STORE, FONTS } from '@/src/constants';
 import { T_Store, T_Theme, T_Token } from '@/src/types';
-import { adjust, canvasToPng, computeCorners, drawBrowser, drawIntoQuad, rrect } from '@/src/util';
+import { adjust, calculateCorners, canvasToPng, drawBrowser, isDark, rrect } from '@/src/util';
 
 
 export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
 
-  ...DEFAULT_STORE as T_Store,
+  ...(DEFAULT_STORE as T_Store),
 
   selectTheme: (theme: T_Theme) => {
     set({
       theme,
       inputColor: theme?.fg ?? '',
       inputBackground: theme?.bg ?? '',
-      selectThemeOpened: false,
     });
   },
 
@@ -89,8 +88,8 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     const browserH = frameStyle === 'none' ? 0 : Math.round(+fontSize * 2.3);
 
     const lines = buildLines();
-    if(lines.length < 2 && lines[0].length < 1){
-      return null
+    if (lines.length < 2 && lines[0].length < 1) {
+      return null;
     }
 
     const canvas = document.createElement('canvas').getContext('2d');
@@ -226,18 +225,96 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     }
   },
 
+  renderGradientBlur: (direction, gradientBlur, startPercent, steps = 18) => {
+    const { canvas } = get();
+    if (gradientBlur <= 0 || !canvas) {
+      return;
+    }
+    const dst = document.createElement('canvas');
+    dst.width = canvas.width;
+    dst.height = canvas.height;
+    const W = canvas.width,
+      H = canvas.height;
+    const start = startPercent / 100;
+    const ctx = dst.getContext('2d');
+    if (!ctx) {
+      throw new Error('Failed to get canvas context');
+    }
+    for (let i = 0; i < steps; i++) {
+      const t = i / (steps - 1); // 0→1 along gradient
+      const tAdj = Math.max(0, (t - start) / (1 - start)); // clamp before start
+      const blur = tAdj * gradientBlur;
+
+      ctx.save();
+      ctx.filter = blur > 0 ? `blur(${blur.toFixed(1)}px)` : 'none';
+      ctx.beginPath();
+      if (direction === 'right') {
+        const x0 = (i / steps) * W,
+          x1 = ((i + 1) / steps) * W;
+        ctx.rect(x0, 0, x1 - x0 + 1, H);
+      } else if (direction === 'left') {
+        const x0 = (1 - (i + 1) / steps) * W,
+          x1 = (1 - i / steps) * W;
+        ctx.rect(x0, 0, x1 - x0 + 1, H);
+      } else if (direction === 'bottom') {
+        const y0 = (i / steps) * H,
+          y1 = ((i + 1) / steps) * H;
+        ctx.rect(0, y0, W, y1 - y0 + 1);
+      } else {
+        const y0 = (1 - (i + 1) / steps) * H,
+          y1 = (1 - i / steps) * H;
+        ctx.rect(0, y0, W, y1 - y0 + 1);
+      }
+      ctx.clip();
+      ctx.drawImage(canvas, 0, 0);
+      ctx.restore();
+    }
+    return dst;
+  },
+
+  renderShadow: (ctx, corners) => {
+    const { shadowBlur, shadowColor, shadowOffset, shadowOpacity } = get();
+    ctx.save();
+    ctx.filter = `blur(${shadowBlur}px)`;
+    ctx.globalAlpha = shadowOpacity / 100;
+    ctx.fillStyle = shadowColor;
+    ctx.beginPath();
+    ctx.moveTo(shadowOffset.x + corners[0].x, shadowOffset.y + corners[0].y);
+    for (let i = 1; i < 4; i++) {
+      ctx.lineTo(corners[i].x + shadowOffset.x, corners[i].y + shadowOffset.y);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    ctx.filter = 'none';
+  },
+
+  renderWatermark: (ctx:CanvasRenderingContext2D, canvasW:number, canvasH:number) => {
+    const { watermark, backgroundType, backgroundSolid, gradient } = get();
+    let color;
+    switch (backgroundType) {
+      case 'solid':
+        color = isDark(backgroundSolid) ? '#ffffff' : '#000000';
+        break;
+      case 'gradient':
+        color = isDark(`${gradient[0]}`) && isDark(`${gradient[1]}`) ? '#ffffff' : '#000000';
+        break;
+      default:
+        color = '#000000';
+        break;
+    }
+    ctx.save();
+    ctx.font = `${10}px "Segoe UI",Arial,sans-serif`;
+    ctx.textBaseline = 'bottom';
+    ctx.textAlign = 'right';
+    ctx.globalAlpha = 0.25;
+    ctx.fillStyle = color;
+    ctx.fillText(watermark, canvasW - 10, canvasH - 8);
+    ctx.restore();
+  },
+
   renderImage: (canvas) => {
-    const {
-      renderCode,
-      renderBackground,
-      outerPadding,
-      showShadow,
-      shadowBlur,
-      shadowColor,
-      shadowOffset,
-      shadowOpacity,
-      windowOpacity,
-    } = get();
+    const { renderWatermark, renderCode, renderBackground, outerPadding, renderShadow, showShadow, windowOpacity, watermark } = get();
 
     const ctx = canvas.getContext('2d');
 
@@ -250,39 +327,22 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     }
 
     const off = renderCode();
-    if(!off) {
+    if (!off) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       set({
         canvas: null,
-        previewImageData: null
-      })
-      return
+        previewImageData: null,
+      });
+      return;
     }
 
-    // Lock canvas size to unzoomed dimensions so background is unaffected
     const baseW = off.width;
     const baseH = off.height;
 
-    // Scale code block only
-    /*if (state.zoom !== 100) {
-      const scale = state.zoom / 100;
-      const zoomed = document.createElement('canvas');
-      zoomed.width  = Math.round(off.width  * scale);
-      zoomed.height = Math.round(off.height * scale);
-      zoomed.getContext('2d').drawImage(off, 0, 0, zoomed.width, zoomed.height);
-      off = zoomed;
-    }*/
-
-    // Apply gradient blur before perspective
-    /*if (state.gradBlur) {
-      off = applyGradientBlur(off, state.gradBlurDir, state.gradBlurAmount, state.gradBlurStart);
-    }*/
-
     const iw = off.width,
       ih = off.height;
-    const op = outerPadding;
-    const cW = baseW + op * 2; // fixed — background ignores zoom
-    const cH = baseH + op * 2;
+    const cW = baseW + outerPadding * 2; // fixed — background ignores zoom
+    const cH = baseH + outerPadding * 2;
 
     canvas.width = cW;
     canvas.height = cH;
@@ -290,78 +350,26 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
     ctx.clearRect(0, 0, cW, cH);
     renderBackground(ctx, cW, cH);
 
-    const tZ = 0;
-    const rX = 0;
-    const rY = 0;
-    const tL = 100;
-    const tR = 100;
-    const tT = 100;
-    const tBot = 100;
-
-    const corners = computeCorners(iw, ih, cW, cH, tZ, rX, rY, tL, tR, tT, tBot);
+    const corners = calculateCorners(iw, ih, cW, cH);
 
     // Shadow
     if (showShadow) {
-      ctx.save();
-      ctx.filter = `blur(${shadowBlur}px)`;
-      ctx.globalAlpha = shadowOpacity / 100;
-      ctx.fillStyle = shadowColor;
-      ctx.beginPath();
-      ctx.moveTo(corners[0].x + shadowOffset.x, corners[0].y + shadowOffset.y);
-      for (let i = 1; i < 4; i++) {
-        ctx.lineTo(corners[i].x + shadowOffset.x, corners[i].y + shadowOffset.y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-      ctx.filter = 'none';
+      renderShadow(ctx, corners);
     }
 
     // Draw image
-    const isFlat =
-      tZ === 0 && rX === 0 && rY === 0 && tL === 100 && tR === 100 && tT === 100 && tBot === 100;
     ctx.save();
     ctx.globalAlpha = windowOpacity / 100;
-    if (isFlat) {
-      ctx.drawImage(off, op + (baseW - iw) / 2, op + (baseH - ih) / 2);
-    } else {
-      drawIntoQuad(ctx, off, corners);
-    }
+    ctx.drawImage(off, outerPadding + (baseW - iw), outerPadding + (baseH - ih));
+
     ctx.restore();
 
-    // Apply image filter over the full canvas
-    /*const filterStr = buildFilterString(state.filter, state.filterIntensity);
-    if (filterStr !== 'none') {
-      const tmp = document.createElement('canvas');
-      tmp.width = cW; tmp.height = cH;
-      const tctx = tmp.getContext('2d');
-      tctx.drawImage(canvas, 0, 0);
-      ctx.clearRect(0, 0, cW, cH);
-      ctx.filter = filterStr;
-      ctx.drawImage(tmp, 0, 0);
-      ctx.filter = 'none';
-    }*/
-
-    // Apply texture overlay
-    //applyTexture(ctx, cW, cH, state.texture, state.textureIntensity);
-
     // Watermark
-    /*if (showWatermark) {
-      const wmText = 'github.com/Mansiper/CodeShot';
-      const wmFontSize = Math.max(10, Math.round(cW * 0.015));
-      ctx.save();
-      ctx.font = `${wmFontSize}px "Segoe UI",Arial,sans-serif`;
-      ctx.textBaseline = 'bottom';
-      ctx.textAlign = 'right';
-      ctx.globalAlpha = 0.35;
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText(wmText, cW - 10, cH - 8);
-      ctx.restore();
-    }*/
+    if (watermark) {
 
-    // Update preview display size
-    //scaleCanvasDisplay();
-    //document.getElementById('canvas-info').textContent = `${cW}×${cH}`;
+      renderWatermark(ctx, cW, cH);
+
+    }
 
     const pngDataUrl = canvasToPng(canvas);
 
@@ -369,6 +377,6 @@ export const useStore = createWithEqualityFn<T_Store>()((set, get) => ({
       canvas,
       previewImageData: { ...pngDataUrl, width: cW, height: cH },
     });
-  }
+  },
 
 }));

@@ -7,6 +7,7 @@ import ControlBoxShadow from '@/src/components/controls/control-box-shadow';
 import ControlPaddings from '@/src/components/controls/control-paddings';
 import ControlWindowOpacity from '@/src/components/controls/control-window-opacity';
 import SelectFrameStyle from '@/src/components/controls/select-frame-style';
+import ControlWatermark from '@/src/components/controls/control-watermark';
 
 
 const ImageSettings = () => {
@@ -14,16 +15,13 @@ const ImageSettings = () => {
 
   return (
     <CollapsePanel isOpen title="Image settings" icon={<SettingsIcon size={14} />}>
-      <Flex
-        direction="column"
-        gap="5px"
-        style={{ padding: '8px 15px 50px 25px' }}
-      >
-        <ControlPaddings />
-        <SelectFrameStyle />
-        <ControlWindowOpacity />
+      <Flex direction="column" gap="5px" style={{ padding: '12px 15px 20px 25px' }}>
         <ControlBackground />
+        <SelectFrameStyle />
+
+        <ControlPaddings />
         <ControlBoxShadow />
+        <ControlWatermark />
       </Flex>
     </CollapsePanel>
   );
