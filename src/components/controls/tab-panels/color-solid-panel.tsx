@@ -20,6 +20,7 @@ const ColorSolidPanel = () => {
                 {row.map((color, idx) => (
                   <ColorSwatch
                     key={`${color}_${idx}`}
+                    area-label={`Color swatch ${color}`}
                     component="button"
                     size="22px"
                     color={color}

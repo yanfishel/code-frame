@@ -37,6 +37,7 @@ const Footer = () => {
           transitionProps={{ transition: 'skew-down' }}
         >
           <ActionIcon
+            aria-label="Send feedback"
             radius="xl"
             variant="default"
             size="lg"
@@ -54,6 +55,7 @@ const Footer = () => {
           transitionProps={{ transition: 'skew-down' }}
         >
           <ActionIcon
+            aria-label="Code Frame on GitHub"
             radius="xl"
             variant="default"
             size="lg"

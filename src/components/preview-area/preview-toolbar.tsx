@@ -45,7 +45,7 @@ const PreviewToolbar = () => {
               position="top"
               transitionProps={{ transition: 'skew-down' }}
             >
-              <Button
+              <Button area-label="Copy Base64 (PNG) to Clipboard"
                 disabled={previewImageData === null || !previewImageData.base64}
                 onClick={copy}
                 variant="default"
@@ -65,7 +65,7 @@ const PreviewToolbar = () => {
         </CopyButton>
 
         <Button.Group variant="default">
-          <Button
+          <Button area-label="Download PNG"
             disabled={previewImageData === null || !previewImageData.blob}
             size="xs"
             leftSection={<DownloadIcon size={14} />}
@@ -75,14 +75,14 @@ const PreviewToolbar = () => {
           </Button>
 
           {/* -- MENU DOWNLOAD - */}
-          <Menu
+          <Menu id="preview-download-menu"
             position="bottom-end"
             trigger="hover"
             shadow="md"
             transitionProps={{ transition: 'pop-top-right' }}
           >
             <Menu.Target>
-              <Button
+              <Button area-label="Download Menu"
                 disabled={previewImageData === null || !previewImageData.blob}
                 size="xs"
                 styles={{ root: { paddingInline: '5px', borderLeft: 0 } }}
