@@ -22,7 +22,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Check out latest code
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
