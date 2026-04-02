@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Tooltip } from '@mantine/core';
 import { HardDriveDownload } from 'lucide-react';
+import { Box, Button, Tooltip } from '@mantine/core';
 
 
 const SaveButton = () => {
@@ -8,8 +8,14 @@ const SaveButton = () => {
   return (
     <div>
       <Tooltip label="Coming soon">
-        <Button disabled size="sm" variant="primary" radius="sm" leftSection={ <HardDriveDownload size={14} />}>
-          Save snippet
+        <Button
+          disabled
+          size="sm"
+          variant="primary"
+          radius="sm"
+          leftSection={<HardDriveDownload size={14} />}
+        >
+          Save <Box visibleFrom="xs" style={{marginLeft: '6px'}}>snippet</Box>
         </Button>
       </Tooltip>
     </div>

@@ -13,4 +13,9 @@
   align-items: stretch;
   padding: 0;
   overflow: hidden;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    flex-direction: column;
+    overflow: auto;
+  }
 }

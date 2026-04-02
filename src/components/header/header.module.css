@@ -8,34 +8,8 @@
   padding-bottom: 6px;
 }
 
-.tabsList {
-  &::before {
-    display: none;
-  }
-}
-
-.tab {
-  font-weight: 500;
-  height: 38px;
-  background-color: transparent;
-  position: relative;
-  bottom: -1px;
-
-  &::before,
-  &::after {
-    background-color: light-dark(
-      var(--mantine-color-gray-2),
-      var(--mantine-color-dark-7)
-    ) !important;
-  }
-
-  &:hover {
-    background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));
-  }
-
-  &[data-active] {
-    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
-    border-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-7));
-    border-bottom-color: transparent;
-  }
+.logoText {
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  filter: drop-shadow(1px 1px 1px light-dark(rgba(255, 255, 255, 0.95), rgba(0, 0, 0, 0.95)));
 }

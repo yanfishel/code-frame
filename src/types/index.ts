@@ -4,6 +4,7 @@ export type T_Store = {
   code: string;
   html: string;
 
+  settingsOpened: boolean;
   lang: string;
   theme: T_Theme | null;
   showNumbers: boolean;

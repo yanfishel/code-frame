@@ -9,4 +9,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    padding: var(--mantine-spacing-md);
+    height: auto;
+    justify-content: center;
+    flex-direction: column;
+  }
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { Burger, Container, Flex, Group, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { SettingsIcon } from 'lucide-react';
+import { ActionIcon, Box, Container, Flex, Group, Text } from '@mantine/core';
 import { LogoIcon } from '@/src/assets/icons';
 import SaveButton from '@/src/components/header/save-button';
-import UserMenu from '@/src/components/user-menu';
+import { useStore } from '@/src/store';
 import classes from './header.module.css';
 
 
@@ -13,28 +13,27 @@ const ThemeToggler = dynamic(() => import('@/src/components/theme-toggler'), { s
 
 const Header = () => {
 
-  const [opened, { toggle }] = useDisclosure(false);
-
   return (
-    <div className={classes.header}>
+    <Box className={classes.header}>
       <Container fluid className={classes.mainSection}>
         <Group justify="space-between">
           <Flex gap="xs" align="center">
-            <LogoIcon />
-            <Text
-              size="xl"
-              lh="1.1"
-              variant="gradient"
-              component="span"
-              gradient={{ from: '#7d4fc6', to: '#228be6', deg: 32 }}
-              style={{
-                fontWeight: 900,
-                filter:
-                  'drop-shadow(1px 1px 1px light-dark(rgba(255, 255, 255, 0.95), rgba(0, 0, 0, 0.95))',
-              }}
-            >
-              CODE FRAME
-            </Text>
+            <LogoIcon size={36} />
+            <Flex direction="column" gap="1px" visibleFrom="xs">
+              <Text
+                size="xl"
+                lh="1.1"
+                variant="gradient"
+                component="span"
+                gradient={{ from: '#7d4fc6', to: '#228be6', deg: 32 }}
+                className={classes.logoText}
+              >
+                CODE FRAME
+              </Text>
+              <Text size="10px" c="dimmed" style={{ lineHeight: '1.1',textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+                Code snippet image
+              </Text>
+            </Flex>
           </Flex>
 
           <Group>
@@ -42,17 +41,21 @@ const Header = () => {
 
             <ThemeToggler />
 
-            <Burger
-              opened={opened}
-              onClick={toggle}
-              hiddenFrom="xs"
-              size="sm"
-              aria-label="Toggle navigation"
-            />
+            <Box hiddenFrom="md">
+              <ActionIcon
+                size="lg"
+                variant="default"
+                aria-label="Settings"
+                onClick={() => useStore.setState({ settingsOpened: true })}
+                style={{ width: '36px', height: '36px' }}
+              >
+                <SettingsIcon size={18} />
+              </ActionIcon>
+            </Box>
           </Group>
         </Group>
       </Container>
-    </div>
+    </Box>
   );
 };
 

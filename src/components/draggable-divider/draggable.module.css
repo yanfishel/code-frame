@@ -13,6 +13,10 @@
   overflow: hidden;
   cursor: col-resize;
 
+  @media (max-width: $mantine-breakpoint-md) {
+    display: none;
+  }
+
   & svg {
     width: 14px;
     min-width: 14px;
@@ -41,5 +45,12 @@
     & svg {
       opacity: 1;
     }
+  }
+}
+
+.spacer {
+  width: 6px;
+  @media (max-width: $mantine-breakpoint-md) {
+    display: none;
   }
 }

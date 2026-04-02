@@ -1,7 +1,9 @@
 import React from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import { Collapse, Flex, Text } from '@mantine/core';
+import { Collapse, Flex, Text, useMantineTheme } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import classes from './aside.module.css';
+import clsx from 'clsx';
 
 
 interface CollapsePanelProps {
@@ -23,22 +25,13 @@ const CollapsePanel = ({ isOpen, title, icon, children }: CollapsePanelProps) =>
         p="xs"
         style={{ cursor: 'pointer' }}
         onClick={toggle}
-        styles={{
-          root: {
-            height: 46,
-            width: 'calc(100% + 10px)',
-            paddingInlineEnd: '25px',
-            position: 'sticky',
-            top: 0,
-            zIndex: 10,
-            boxShadow: opened ? 'var(--mantine-shadow-sm)' : 'none',
-            borderBottom: '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
-          },
-        }}
+        className={ clsx( classes.collapsePanel, opened && classes.collapsePanelOpened)}
       >
         <Flex gap="xs">
           {icon && <span>{icon}</span>}
-          <Text size="md" lh={1.3}>{title}</Text>
+          <Text size="md" lh={1.3}>
+            {title}
+          </Text>
         </Flex>
         {opened ? <ChevronUpIcon size={16} /> : <ChevronDownIcon size={16} />}
       </Flex>

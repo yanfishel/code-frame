@@ -7,9 +7,66 @@
   min-width: 300px;
   border-right: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6));
   scrollbar-gutter: stable ;
+  padding: 0;
+  border-radius: 0;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    position: fixed;
+    bottom: 0;
+    left: -370px;
+    width: 100%;
+    max-width: 350px;
+    height: 100%;
+    z-index: 210;
+  }
+}
+
+.asideControl_opened {
+  left: 0;
 }
 
 .asideControlTitle {
   font-size: 16px;
   font-weight: bold;
+}
+
+.asideHeader {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--mantine-color-body);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  padding-inline-end: 5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  @media (min-width: $mantine-breakpoint-md) {
+    display: none;
+  }
+}
+.asideCloseButton {
+  /*position: absolute;
+  top: 5px;
+  right: 5px;*/
+}
+
+.collapsePanel {
+  height: 46px;
+  width: calc(100% + 10px);
+  padding-inline-end: 25px;
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  box-shadow: none;
+  border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6));
+
+  @media (max-width: $mantine-breakpoint-md) {
+    width: 100%;
+    top: 46px;
+  }
+}
+
+.collapsePanelOpened {
+  box-shadow: var(--mantine-shadow-sm);
 }

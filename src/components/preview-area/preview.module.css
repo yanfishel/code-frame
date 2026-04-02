@@ -4,11 +4,21 @@
   display: flex;
   flex-direction: column;
   pointer-events: auto;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+  }
 }
 
 .canvasWrapper {
   flex: 1;
   position: relative;
+  @media (max-width: $mantine-breakpoint-md) {
+    min-height: 350px;
+  }
 }
 
 .backgroundTransparent {

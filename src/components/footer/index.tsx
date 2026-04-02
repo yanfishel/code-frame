@@ -22,11 +22,11 @@ const Footer = () => {
       </UnstyledButton>
 
       <Flex gap="3px" align="center" style={{ fontSize: '0.7rem' }}>
-        <span style={{ opacity: 0.25 }}>
+        <span style={{ opacity: 0.65 }}>
           Code Frame &copy; {new Date().getFullYear()}. Made with
         </span>
-        <span style={{ color: theme.colors.red[8], fontSize: '1.2rem', opacity: 0.45 }}>♥</span>
-        <span style={{ opacity: 0.25 }}>for the web</span>
+        <span style={{ color: theme.colors.red[8], fontSize: '1.2rem', opacity: 0.75 }}>♥</span>
+        <span style={{ opacity: 0.65 }}>for the web</span>
       </Flex>
 
       <Flex gap="xs" align="center">

@@ -1,6 +1,6 @@
 
-export const LogoIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48">
+export const LogoIcon = ({size}:{size: number}) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 48 48">
     <g fill="none">
       <path
         fill="url(#SVGIRbAbbIU)"

@@ -9,6 +9,9 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
+  @media (max-width: $mantine-breakpoint-md) {
+    height: max-content;
+  }
 }
 
 /* -- NOT TOUCH DEVICES - */

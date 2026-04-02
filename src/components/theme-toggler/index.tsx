@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
 import React from 'react';
 import { MantineColorScheme, SegmentedControl, useMantineColorScheme } from '@mantine/core';
-
 import { data } from './theme-toggler-data';
 
 
@@ -14,6 +13,7 @@ function ThemeToggler() {
   return (
     <>
       <SegmentedControl
+        visibleFrom="xs"
         name="my-control"
         size="lg"
         data={data}

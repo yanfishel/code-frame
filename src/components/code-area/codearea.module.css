@@ -4,6 +4,14 @@
   display: flex;
   flex-direction: column;
   pointer-events: auto;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+  }
+
 }
 
 .scroller {
@@ -12,6 +20,12 @@
   width: 100%;
   background-color: var(--theme-background-color);
   position: relative;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    height: 350px;
+    min-height: 350px;
+    max-height: 350px;
+  }
 }
 
 .codeAreaEditor {

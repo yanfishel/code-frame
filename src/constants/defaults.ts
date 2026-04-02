@@ -17,11 +17,13 @@ export const DEFAULT_STORE = {
   fontSize: '13',
   lineHeight: '1.4',
   fontFamily: Object.keys(FONTS)[0],
-  inputColor: DEFAULT_THEME?.fg,
-  inputBackground: DEFAULT_THEME?.bg,
+  inputColor: DEFAULT_THEME?.fg ?? '',
+  inputBackground: DEFAULT_THEME?.bg ?? '',
 
   flexBasisCode: 'calc(50% - 3px)',
   flexBasisPreview: 'calc(50% - 3px)',
+
+  settingsOpened: false,
 
   frameStyle: 'macos',
   innerPadding: 20,
