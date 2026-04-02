@@ -10,7 +10,7 @@ import '@/src/styles/highlights.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider theme={theme} defaultColorScheme="auto">
       <Head>
         <title>Code Frame :: Beautiful Code Snippet Image</title>
         <meta
