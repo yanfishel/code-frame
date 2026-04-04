@@ -1,8 +1,10 @@
 import React from 'react';
+import { ClerkProvider } from "@clerk/nextjs";
 import { Container } from '@mantine/core';
 import Footer from '@/src/components/footer';
 import Header from '@/src/components/header';
 import GoogleFonts from '@/src/components/layout/google-fonts';
+
 import classes from './layout.module.css';
 
 
@@ -12,15 +14,19 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
 
   return (
-
-      <GoogleFonts>
-        <Header />
-        <Container fluid className={classes.mainContainer}>
-          {children}
-        </Container>
-        <Footer />
-      </GoogleFonts>
-
+    <ClerkProvider
+      appearance={{
+        cssLayerName: 'clerk',
+      }}
+    >
+    <GoogleFonts >
+      <Header />
+      <Container fluid className={classes.mainContainer}>
+        {children}
+      </Container>
+      <Footer />
+    </GoogleFonts>
+    </ClerkProvider>
   );
 }
 

@@ -4,6 +4,11 @@ export type T_Store = {
   code: string;
   html: string;
 
+  isSaved: boolean;
+
+  userId: string;
+  snippetId: string;
+
   settingsOpened: boolean;
   lang: string;
   theme: T_Theme | null;
@@ -84,3 +89,18 @@ export type T_Theme = {
   symbol: string;
   link: string;
 };
+
+export type T_Snippet = {
+  id:string;
+  name: string
+  userId: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type T_User = {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+}

@@ -7,10 +7,15 @@ export const DEFAULT_THEME = THEMES.find((theme) => theme.theme_name === 'One Da
 export const DEFAULT_WATERMARK = `codeframe.pro`;
 
 export const DEFAULT_STORE = {
+  isSaved: true,
+
+  userId: '',
+  snippetId: '',
+
   canvas: null,
+  html: '',
   lang: 'typescript',
   code: '',
-  html: '',
   theme: THEMES.find((theme) => theme.theme_name === 'One Dark') ?? null,
   showNumbers: false,
   lineNumbers: '',
@@ -63,3 +68,34 @@ function getValue(value: keyof MyInterface) {
 
 getValue('id'); // => 1
 getValue('count'); // => undefined`;
+
+
+
+export const FIELDS_TO_SAVE = [
+  'backgroundSolid',
+  'backgroundType',
+  'code',
+  'cornerRadius',
+  'flexBasisCode',
+  'flexBasisPreview',
+  'fontFamily',
+  'fontSize',
+  'frameStyle',
+  'innerPadding',
+  'inputBackground',
+  'inputColor',
+  'isSaved',
+  'lang',
+  'lineHeight',
+  'lineNumbers',
+  'outerPadding',
+  'shadowBlur',
+  'shadowColor',
+  'shadowOpacity',
+  'showNumbers',
+  'showShadow',
+  'watermark',
+  'gradient',
+  'shadowOffset',
+  'theme',
+];

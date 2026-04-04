@@ -1,7 +1,8 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
+import { SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { SettingsIcon } from 'lucide-react';
-import { ActionIcon, Box, Container, Flex, Group, Text } from '@mantine/core';
+import { ActionIcon, Box, Container, Flex, Group, Text, useMantineColorScheme } from '@mantine/core';
 import { LogoIcon } from '@/src/assets/icons';
 import SaveButton from '@/src/components/header/save-button';
 import { useStore } from '@/src/store';
@@ -12,6 +13,9 @@ const ThemeToggler = dynamic(() => import('@/src/components/theme-toggler'), { s
 
 
 const Header = () => {
+
+  const { isLoaded, isSignedIn } = useUser();
+  const { colorScheme } = useMantineColorScheme();
 
   return (
     <Box className={classes.header}>
@@ -30,14 +34,36 @@ const Header = () => {
               >
                 CODE FRAME
               </Text>
-              <Text size="10px" c="dimmed" style={{ lineHeight: '1.1',textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+              <Text
+                size="10px"
+                c="dimmed"
+                style={{ lineHeight: '1.1', textTransform: 'uppercase', letterSpacing: '1.5px' }}
+              >
                 Code snippet image
               </Text>
             </Flex>
           </Flex>
 
           <Group>
-            <SaveButton />
+            {isLoaded && (
+              <>
+                {isSignedIn ? (
+                  <UserButton />
+                ) : (
+                  <SignUpButton
+                    mode="modal"
+                    oauthFlow="popup"
+                    fallbackRedirectUrl="/user"
+                    forceRedirectUrl="/user"
+                    signInFallbackRedirectUrl="/user"
+                    signInForceRedirectUrl="/user"
+                    appearance={{ colorScheme }}
+                  >
+                    <SaveButton />
+                  </SignUpButton>
+                )}
+              </>
+            )}
 
             <ThemeToggler />
 

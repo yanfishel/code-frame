@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Snippet {
+  id        String   @id
+  name      String
+  userId    String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  users     User[]
+
+  @@index([id, userId])
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  userId   String    @unique
+  email    String
+  name     String?
+  snippets Snippet[]
+
+  @@index([userId])
+}

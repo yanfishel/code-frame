@@ -5,6 +5,7 @@ import { Box, Flex, Text } from '@mantine/core';
 import AreaHeader from '@/src/components/area-header';
 import PreviewToolbar from '@/src/components/preview-area/preview-toolbar';
 import PreviewPlaceholder from '@/src/components/preview-placeholder';
+import { FIELDS_TO_SAVE } from '@/src/constants';
 import { useStore } from '@/src/store';
 import { formatFileSize } from '@/src/util';
 import classes from './preview.module.css';
@@ -40,6 +41,11 @@ const PreviewArea = () => {
   const previewImageData = useStore((state) => state.previewImageData)
 
   const renderImage = useStore((state) => state.renderImage)
+
+
+  const store = useStore(state => state)
+  const storeFields = Object.entries(store).filter(([key]) => FIELDS_TO_SAVE.includes(key))
+  console.log(JSON.stringify(storeFields));
 
 
   const renderHandler = useCallback(()=>{
