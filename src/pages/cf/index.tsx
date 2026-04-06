@@ -20,14 +20,15 @@ const IndexCFPage = () => {
 
   return (
     <Layout>
-      { isLoaded
-        ? <SnippetsList />
-        : <Flex flex={1} align="center" justify="center">
-            <Loader size={30} />
-          </Flex>
-      }
+      {isLoaded && isSignedIn ? (
+        <SnippetsList />
+      ) : (
+        <Flex flex={1} align="center" justify="center">
+          <Loader size={30} />
+        </Flex>
+      )}
     </Layout>
-  )
+  );
 
 }
 

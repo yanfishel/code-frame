@@ -14,8 +14,7 @@ const ThemeToggler = dynamic(() => import('@/src/components/theme-toggler'), { s
 
 const Header = () => {
 
-  const { isLoaded, isSignedIn } = useUser();
-  const { colorScheme } = useMantineColorScheme();
+
 
   return (
     <Box className={classes.header}>
@@ -44,41 +43,34 @@ const Header = () => {
             </Flex>
           </Flex>
 
-          <Group>
-            {isLoaded && (
-              <>
-                {isSignedIn ? (
-                  <UserButton />
-                ) : (
-                  <SignUpButton
-                    mode="modal"
-                    oauthFlow="popup"
-                    fallbackRedirectUrl="/user"
-                    forceRedirectUrl="/user"
-                    signInFallbackRedirectUrl="/user"
-                    signInForceRedirectUrl="/user"
-                    appearance={{ colorScheme }}
-                  >
-                    <SaveButton />
-                  </SignUpButton>
-                )}
-              </>
-            )}
 
-            <ThemeToggler />
+            <Flex
+              align="center"
+              gap="xs"
+              p="xs"
+              style={{
+                height: '40px',
+                borderRadius: 'var(--mantine-radius-sm)',
+                background: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
+              }}
+            >
+              <SaveButton />
 
-            <Box hiddenFrom="md">
-              <ActionIcon
-                size="lg"
-                variant="default"
-                aria-label="Settings"
-                onClick={() => useStore.setState({ settingsOpened: true })}
-                style={{ width: '36px', height: '36px' }}
-              >
-                <SettingsIcon size={18} />
-              </ActionIcon>
-            </Box>
-          </Group>
+              <ThemeToggler />
+
+              <Box hiddenFrom="md">
+                <ActionIcon
+                  size="lg"
+                  variant="default"
+                  aria-label="Settings"
+                  onClick={() => useStore.setState({ settingsOpened: true })}
+                  style={{ width: '36px', height: '36px' }}
+                >
+                  <SettingsIcon size={18} />
+                </ActionIcon>
+              </Box>
+            </Flex>
+
         </Group>
       </Container>
     </Box>

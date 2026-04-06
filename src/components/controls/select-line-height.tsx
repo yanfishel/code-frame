@@ -1,14 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { NativeSelect } from '@mantine/core';
 import { useStore } from '@/src/store';
 
 
 const SelectLineHeight = () => {
 
-  const lineHeight = useStore((state) => state.lineHeight);
+  const codeSettings = useStore((state) => state.codeSettings);
+  const setSettings = useStore((state) => state.setSettings);
 
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    useStore.setState({ lineHeight: e.target.value });
+    setSettings('code', 'lineHeight', e.target.value );
   }
 
   const heights = useMemo(()=>{
@@ -21,7 +22,7 @@ const SelectLineHeight = () => {
       <NativeSelect
         label="Line height"
         data={heights}
-        value={lineHeight}
+        value={codeSettings.lineHeight}
         onChange={onChange}
         size="xs"
       />
@@ -29,4 +30,4 @@ const SelectLineHeight = () => {
   );
 }
 
-export default SelectLineHeight;
+export default memo(SelectLineHeight);

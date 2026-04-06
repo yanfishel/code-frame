@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Divider, Slider, Space, Text } from '@mantine/core';
+import React, { memo, useEffect, useState } from 'react';
+import { Divider, Slider, Space, Text } from '@mantine/core';
 import { SLIDER_STYLES } from '@/src/constants';
 import { MARKS, MARKS_CORNER } from '@/src/constants/image';
 import { useStore } from '@/src/store';
@@ -7,13 +7,24 @@ import { useStore } from '@/src/store';
 
 const ControlPaddings = () => {
 
-  const innerPadding = useStore((state) => state.innerPadding);
-  const outerPadding = useStore((state) => state.outerPadding);
-  const cornerRadius = useStore((state) => state.cornerRadius);
+  const imageSettings = useStore((state) => state.imageSettings);
+  const setSettings = useStore((state) => state.setSettings);
 
-  const [inner, setInner] = useState(innerPadding)
-  const [outer, setOuter] = useState(outerPadding)
-  const [corner, setCorner] = useState(cornerRadius)
+  const [inner, setInner] = useState(imageSettings.innerPadding)
+  const [outer, setOuter] = useState(imageSettings.outerPadding)
+  const [corner, setCorner] = useState(imageSettings.cornerRadius)
+
+  useEffect(() => {
+    setInner(imageSettings.innerPadding);
+  }, [imageSettings.innerPadding]);
+
+  useEffect(() => {
+    setOuter(imageSettings.outerPadding);
+  }, [imageSettings.outerPadding]);
+
+  useEffect(()=>{
+    setCorner(imageSettings.cornerRadius);
+  }, [imageSettings.cornerRadius])
 
 
   return (
@@ -25,7 +36,7 @@ const ControlPaddings = () => {
       <Slider
         value={inner}
         onChange={(value) => setInner(value)}
-        onChangeEnd={(value) => useStore.setState({ innerPadding: value })}
+        onChangeEnd={(value) => setSettings('image', 'innerPadding', value)}
         min={10}
         max={100}
         step={1}
@@ -40,7 +51,7 @@ const ControlPaddings = () => {
       <Slider
         value={outer}
         onChange={(value) => setOuter(value)}
-        onChangeEnd={(value) => useStore.setState({ outerPadding: value })}
+        onChangeEnd={(value) => setSettings('image', 'outerPadding', value)}
         min={10}
         max={100}
         step={1}
@@ -55,7 +66,7 @@ const ControlPaddings = () => {
       <Slider
         value={corner}
         onChange={(value) => setCorner(value)}
-        onChangeEnd={(value) => useStore.setState({ cornerRadius: value })}
+        onChangeEnd={(value) => setSettings('image', 'cornerRadius', value)}
         min={0}
         max={50}
         step={1}
@@ -68,4 +79,4 @@ const ControlPaddings = () => {
   );
 };
 
-export default ControlPaddings;
+export default memo(ControlPaddings);

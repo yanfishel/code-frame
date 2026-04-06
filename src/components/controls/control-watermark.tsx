@@ -1,27 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { Box, Divider, Flex, Input, Space, Switch, Text } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { DEFAULT_WATERMARK } from '@/src/constants';
 import { useStore } from '@/src/store';
 
 
 const ControlWatermark = () => {
 
-  const watermark = useStore((state) => state.watermark);
+  const debounceRef = useRef(false);
 
-  const [text, setText] = useState(watermark);
-  const [showWatermark, setShowWatermark] = useState(true);
+  const imageSettings = useStore((state) => state.imageSettings);
+  const setSettings = useStore((state) => state.setSettings);
+  const [text, setText] = useState('');
 
   const [debounced] = useDebouncedValue(text, 250);
 
 
   useEffect(() => {
-    setText(showWatermark ? DEFAULT_WATERMARK : '')
-  }, [showWatermark]);
+    if (debounceRef.current) {
+      setSettings('image', 'watermark', debounced);
+      useStore.setState({ isReady: true });
+    } else {
+      debounceRef.current = true
+    }
+  }, [debounced]);
 
   useEffect(() => {
-    useStore.setState({ watermark: debounced });
-  }, [debounced]);
+    setText(imageSettings.watermark);
+  }, [imageSettings.watermark]);
 
 
   return (
@@ -39,18 +44,25 @@ const ControlWatermark = () => {
             labelPosition="left"
             onLabel="ON"
             offLabel="OFF"
-            checked={showWatermark}
+            checked={imageSettings.showWatermark}
             radius="sm"
-            onChange={(event) => setShowWatermark(event.currentTarget.checked)}
+            onChange={(event) => setSettings('image', 'showWatermark', event.currentTarget.checked)}
           />
         </Box>
       </Flex>
-      <Box py="xs">
-        <Input size="xs" placeholder="Watermark text" value={text} onChange={(e) => setText(e.target.value)} disabled={!showWatermark} style={{ width: '100%' }} />
+      <Space h="1px" />
+      <Box>
+        <Input
+          size="xs"
+          placeholder="Watermark text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={!imageSettings.showWatermark}
+          style={{ width: '100%' }}
+        />
       </Box>
-      <Space h="md" />
     </>
   );
 };
 
-export default ControlWatermark;
+export default memo(ControlWatermark);

@@ -1,8 +1,10 @@
-import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, memo, useEffect, useRef, useState } from 'react';
 import { SquareCodeIcon } from 'lucide-react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
 import { Flex, Text } from '@mantine/core';
+
+
 
 import 'prismjs/components/prism-basic';
 import 'prismjs/components/prism-clike';
@@ -52,6 +54,8 @@ import 'prismjs/components/prism-vim';
 import 'prismjs/components/prism-xml-doc';
 import 'prismjs/components/prism-yaml';
 
+
+
 import AreaHeader from '@/src/components/area-header';
 import { CODE_PLACEHOLDER, DEFAULT_CODE } from '@/src/constants';
 import { useStore } from '@/src/store';
@@ -62,40 +66,31 @@ import classes from './codearea.module.css';
 const CodeArea = () => {
 
   const numbersRef = useRef<HTMLDivElement>(null)
-
   const htmlRef = useRef<HTMLDivElement>(null)
 
-  const theme = useStore((state) => state.theme)
   const code = useStore((state) => state.code)
-  const lang = useStore((state) => state.lang)
-  const lineNumbers = useStore((state) => state.lineNumbers)
-  const showNumbers = useStore((state) => state.showNumbers)
-  const fontSize = useStore((state) => state.fontSize)
-  const lineHeight = useStore((state) => state.lineHeight)
-  const fontFamily = useStore((state) => state.fontFamily)
+  const codeSettings = useStore((state) => state.codeSettings)
   const inputColor = useStore((state) => state.inputColor)
   const inputBackground = useStore((state) => state.inputBackground)
   const flexBasisCode = useStore((state) => state.flexBasisCode)
+  const htmlUpdated = useStore((state) => state.htmlUpdated);
 
   const [offset, setOffset] = useState(0)
+
 
   useEffect(() => {
     if (htmlRef.current) {
       const html = htmlRef.current.querySelector('pre')?.innerHTML ?? '';
-      useStore.setState({ html });
+      htmlUpdated( html );
     }
-  }, [code, htmlRef]);
-
-  useEffect(() => {
-    if(numbersRef.current) {
-      setOffset(numbersRef.current.offsetWidth)
-    }
-  }, [lineNumbers, showNumbers]);
+  }, [code, codeSettings.lang, htmlRef]);
 
 
   useEffect(() => {
-    useStore.setState({ code: DEFAULT_CODE });
-  }, []);
+    if (numbersRef.current) {
+      setOffset(numbersRef.current.offsetWidth);
+    }
+  }, [codeSettings.lineNumbers, codeSettings.showNumbers]);
 
 
   return (
@@ -107,11 +102,11 @@ const CodeArea = () => {
           minWidth: flexBasisCode,
           maxWidth: flexBasisCode,
           flexBasis: flexBasisCode,
-          '--theme-font': `var(--font-${fontFamily})`,
+          '--theme-font': `var(--font-${codeSettings.fontFamily})`,
           '--theme-color': inputColor,
           '--theme-background-color': inputBackground,
-          '--theme-font-size': `${fontSize}px`,
-          '--theme-line-height': `${lineHeight}`,
+          '--theme-font-size': `${codeSettings.fontSize}px`,
+          '--theme-line-height': `${codeSettings.lineHeight}`,
         } as React.CSSProperties
       }
     >
@@ -131,15 +126,15 @@ const CodeArea = () => {
           ref={htmlRef}
           id="code-input"
           style={{ '--line-numbers-offset': offset } as CSSProperties}
-          className={theme?.class_name}
+          className={codeSettings.theme?.class_name}
         >
-          {showNumbers && !!code && (
+          {codeSettings.showNumbers && !!code && (
             <div ref={numbersRef} className="line-numbers">
-              {lineNumbers}
+              {codeSettings.lineNumbers}
             </div>
           )}
           <Editor
-            highlight={(code) => highlight(code, languages[lang])}
+            highlight={(code) => highlight(code, languages[codeSettings.lang])}
             onValueChange={(code) => useStore.setState({ code })}
             value={code}
           />
@@ -149,4 +144,4 @@ const CodeArea = () => {
   );
 }
 
-export default CodeArea;
+export default memo(CodeArea)

@@ -1,4 +1,4 @@
-import { T_Corner, T_Theme } from '@/src/types';
+import { T_Cords, T_Theme } from '@/src/types';
 import { adjust, isDark } from '@/src/util/color';
 
 
@@ -29,7 +29,7 @@ export const calculateCorners = (iw:number, ih:number, cw:number, ch:number) => 
   return pts.map( ([x,y]) => ({x,y}))
 }
 
-export const drawIntoQuad = (ctx: CanvasRenderingContext2D, img: HTMLCanvasElement, corners:T_Corner[]) => {
+export const drawIntoQuad = (ctx: CanvasRenderingContext2D, img: HTMLCanvasElement, corners:T_Cords[]) => {
   const [TL,TR,BR,BL] = corners;
   const srcH = img.height, srcW = img.width;
   for (let i = 0; i <= srcH; i++) {

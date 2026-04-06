@@ -1,6 +1,7 @@
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { createWithEqualityFn } from 'zustand/traditional';
-import { DEFAULT_STORE, FONTS } from '@/src/constants';
+import { DEFAULT_STORE, DEFAULT_THEME, FONTS } from '@/src/constants';
+import { E_BACKGROUND_TYPE } from '@/src/constants/enums';
 import { T_Store, T_Theme, T_Token } from '@/src/types';
 import { adjust, calculateCorners, canvasToPng, drawBrowser, isDark, rrect } from '@/src/util';
 
@@ -10,16 +11,52 @@ export const useStore = createWithEqualityFn<T_Store>()(
     (set, get) => ({
       ...(DEFAULT_STORE as T_Store),
 
-      selectTheme: (theme: T_Theme) => {
-        set({
-          theme,
-          inputColor: theme?.fg ?? '',
-          inputBackground: theme?.bg ?? '',
-        });
+      setUser: (user) => {
+        if (user && user.userId === get().user?.userId) {
+          return;
+        }
+        set({ user });
+      },
+
+      setSettings: (section, key, val) => {
+        const { codeSettings, imageSettings, renderImage } = get();
+        if (section === 'code') {
+          if (key === 'theme') {
+            set({
+              codeSettings: {
+                ...codeSettings,
+                theme: val as T_Theme,
+              },
+              inputColor: (val as T_Theme)?.fg ?? '',
+              inputBackground: (val as T_Theme)?.bg ?? ''
+            });
+          } else {
+            set({
+              codeSettings: {
+                ...codeSettings,
+                [key]: val,
+              }
+            });
+          }
+        } else if (section === 'image') {
+          set({
+            imageSettings: {
+              ...imageSettings,
+              [key]: val,
+            }
+          });
+        } else if(section === 'root') {
+          set({
+            [key]: val
+          })
+        }
+
+        renderImage();
       },
 
       parseTokens: () => {
-        const { html, theme } = get();
+        const { html, codeSettings } = get();
+        const { theme } = codeSettings;
         const div = document.createElement('div');
         div.innerHTML = html;
         const out: T_Token[] = [];
@@ -27,6 +64,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
           node: ChildNode | HTMLElement | HTMLDivElement | HTMLSpanElement,
           color: string
         ) {
+
           if (node.nodeType === 3) {
             if (node.textContent) {
               out.push({ text: node.textContent, color });
@@ -39,7 +77,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
           let c = color;
 
           for (const cl of 'classList' in node ? node.classList : []) {
-            if (cl !== 'token') {
+            if (cl !== 'token' && !cl.startsWith('literal-')) {
               const key = cl as keyof typeof theme;
               c = theme && theme[key] ? theme[key] : color;
               break;
@@ -75,18 +113,9 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       renderCode: () => {
-        const {
-          theme,
-          fontFamily,
-          fontSize,
-          lineHeight,
-          showNumbers,
-          lineNumbers,
-          frameStyle,
-          buildLines,
-          innerPadding,
-          cornerRadius,
-        } = get();
+        const { buildLines, codeSettings, imageSettings } = get();
+        const { theme, fontFamily, fontSize, lineHeight, showNumbers, lineNumbers } = codeSettings;
+        const { frameStyle, innerPadding, cornerRadius } = imageSettings;
 
         const fontStr = `${fontSize}px "${FONTS[fontFamily as keyof typeof FONTS]}", monospace`;
         const lh = Math.round(+fontSize * +lineHeight);
@@ -96,7 +125,6 @@ export const useStore = createWithEqualityFn<T_Store>()(
         if (lines.length < 2 && lines[0].length < 1) {
           return null;
         }
-
         const canvas = document.createElement('canvas').getContext('2d');
         if (!canvas) {
           throw new Error(
@@ -173,11 +201,13 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       renderBackground: (ctx, w, h) => {
-        const { backgroundType, backgroundSolid, gradient } = get();
-        if (backgroundType === 'none') {
+        const { imageSettings } = get();
+        const { backgroundType, backgroundSolid, gradient } = imageSettings;
+
+        if (backgroundType === E_BACKGROUND_TYPE.NONE) {
           return;
         }
-        if (backgroundType === 'solid') {
+        if (backgroundType === E_BACKGROUND_TYPE.SOLID) {
           ctx.fillStyle = backgroundSolid;
           ctx.fillRect(0, 0, w, h);
         } else {
@@ -245,7 +275,9 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       renderShadow: (ctx, corners) => {
-        const { shadowBlur, shadowColor, shadowOffset, shadowOpacity } = get();
+        const { imageSettings } = get();
+        const { shadowBlur, shadowColor, shadowOffset, shadowOpacity } = imageSettings;
+
         ctx.save();
         ctx.filter = `blur(${shadowBlur}px)`;
         ctx.globalAlpha = shadowOpacity / 100;
@@ -262,7 +294,9 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       renderWatermark: (ctx: CanvasRenderingContext2D, canvasW: number, canvasH: number) => {
-        const { watermark, backgroundType, backgroundSolid, gradient } = get();
+        const { imageSettings } = get();
+        const { backgroundType, backgroundSolid, gradient, watermark } = imageSettings;
+
         let color;
         switch (backgroundType) {
           case 'solid':
@@ -285,17 +319,21 @@ export const useStore = createWithEqualityFn<T_Store>()(
         ctx.restore();
       },
 
-      renderImage: (canvas) => {
+      renderImage: () => {
         const {
+          isReady,
+          canvas,
           renderWatermark,
           renderCode,
           renderBackground,
-          outerPadding,
           renderShadow,
-          showShadow,
-          windowOpacity,
-          watermark,
+          imageSettings,
         } = get();
+        const { watermark, showWatermark, showShadow, windowOpacity, outerPadding } = imageSettings;
+
+        if (!canvas) {
+          return;
+        }
 
         const ctx = canvas.getContext('2d');
 
@@ -308,16 +346,15 @@ export const useStore = createWithEqualityFn<T_Store>()(
         }
 
         const off = renderCode();
+
         if (!off) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           set({
-            canvas: null,
             previewImageData: null,
-            isSaved: false,
+            isSaved: !isReady,
           });
           return;
         }
-
         const baseW = off.width;
         const baseH = off.height;
 
@@ -347,19 +384,45 @@ export const useStore = createWithEqualityFn<T_Store>()(
         ctx.restore();
 
         // Watermark
-        if (watermark) {
+        if (showWatermark && watermark) {
           renderWatermark(ctx, cW, cH);
         }
 
         const pngDataUrl = canvasToPng(canvas);
 
         set({
-          canvas,
           previewImageData: { ...pngDataUrl, width: cW, height: cH },
-          isSaved: false,
+          isSaved: !isReady,
         });
       },
 
+      resetCodeSettings: () => {
+        set({
+          codeSettings: DEFAULT_STORE.codeSettings,
+          inputColor: DEFAULT_THEME?.fg ?? '',
+          inputBackground: DEFAULT_THEME?.bg ?? '',
+          isSaved: false,
+        });
+        get().renderImage();
+      },
+
+      resetImageSettings: () => {
+        set({
+          imageSettings: DEFAULT_STORE.imageSettings,
+          isSaved: false,
+        });
+        get().renderImage();
+      },
+
+      htmlUpdated: (html) => {
+        set({ html });
+        get().renderImage();
+      },
+
+      canvasUpdated: (canvas) => {
+        set({ canvas });
+        get().renderImage();
+      },
     }),
     {
       name: 'store-code-frame',
@@ -370,6 +433,9 @@ export const useStore = createWithEqualityFn<T_Store>()(
         ...{
           canvas: null,
           html: '',
+          user: null,
+          isReady: false,
+          isSaved: true,
           previewImageData: null,
         },
       }),

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, Slider, Space, Text } from '@mantine/core';
+import { Slider, Space, Text } from '@mantine/core';
 import { SLIDER_STYLES } from '@/src/constants';
 import { MARKS_OPACITY } from '@/src/constants/image';
 import { useStore } from '@/src/store';
@@ -7,13 +7,14 @@ import { useStore } from '@/src/store';
 
 const ControlWindowOpacity = () => {
 
-  const windowOpacity = useStore((state) => state.windowOpacity);
+  const imageSettings = useStore((state) => state.imageSettings);
+  const setSettings = useStore((state) => state.setSettings);
 
-  const [opacity, setOpacity] = useState(windowOpacity);
+  const [opacity, setOpacity] = useState(imageSettings.windowOpacity);
 
   useEffect(() => {
-    setOpacity(windowOpacity);
-  }, [windowOpacity]);
+    setOpacity(imageSettings.windowOpacity);
+  }, [imageSettings.windowOpacity]);
 
 
   return (
@@ -24,7 +25,7 @@ const ControlWindowOpacity = () => {
       <Slider
         value={opacity}
         onChange={(value) => setOpacity(value)}
-        onChangeEnd={(value) => useStore.setState({ windowOpacity: value })}
+        onChangeEnd={(value) => setSettings('image', 'windowOpacity', value )}
         min={0}
         max={100}
         step={1}

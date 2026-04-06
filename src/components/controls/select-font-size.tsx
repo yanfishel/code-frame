@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { NativeSelect } from '@mantine/core';
 import { FONT_SIZES } from '@/src/constants';
 import { useStore } from '@/src/store';
@@ -6,10 +6,11 @@ import { useStore } from '@/src/store';
 
 const SelectFontSize = () => {
 
-  const fontSize = useStore((state) => state.fontSize);
+  const codeSettings = useStore((state) => state.codeSettings);
+  const setSettings = useStore((state) => state.setSettings);
 
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    useStore.setState({ fontSize: e.target.value });
+    setSettings('code', 'fontSize', e.target.value );
   };
 
   return (
@@ -17,7 +18,7 @@ const SelectFontSize = () => {
       <NativeSelect
         label="Font size"
         data={FONT_SIZES}
-        value={fontSize}
+        value={codeSettings.fontSize}
         onChange={onChange}
         size="xs"
       />
@@ -25,4 +26,4 @@ const SelectFontSize = () => {
   );
 }
 
-export default SelectFontSize;
+export default memo(SelectFontSize);

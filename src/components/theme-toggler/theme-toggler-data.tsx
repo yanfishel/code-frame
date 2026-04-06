@@ -4,10 +4,14 @@ import { Tooltip, VisuallyHidden } from '@mantine/core';
 
 
 const iconProps = {
-  style: { display: 'block', padding: 1 },
-  size: 18,
+  size: 14,
 }
 
+export const THEME_MENU_ITEMS = {
+  light: { label: 'Light', value: 'light', icon: <Sun {...iconProps} /> },
+  auto: { label: 'System', value: 'auto', icon: <Monitor {...iconProps} /> },
+  dark: { label: 'Dark', value: 'dark', icon: <Moon {...iconProps} /> },
+};
 
 export const data = [
   {

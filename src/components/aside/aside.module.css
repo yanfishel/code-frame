@@ -54,7 +54,8 @@
 .collapsePanel {
   height: 46px;
   width: calc(100% + 10px);
-  padding-inline-end: 25px;
+  padding-inline-start: var(--mantine-spacing-lg) !important;
+  padding-inline-end: 18px !important;
   position: sticky;
   top: 0;
   z-index: 8;
