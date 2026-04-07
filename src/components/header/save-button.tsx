@@ -5,7 +5,7 @@ import { HardDriveDownload, SquareChartGanttIcon } from 'lucide-react';
 import { Box, Button, Flex, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useStore } from '@/src/store';
-import UserMenu from './user-menu';
+
 
 
 const SaveButton = () => {
@@ -95,8 +95,6 @@ const SaveButton = () => {
       >
         Your snippets
       </Button>
-
-      <UserMenu />
 
       <Modal
         opened={opened}

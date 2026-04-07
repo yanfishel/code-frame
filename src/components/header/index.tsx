@@ -4,8 +4,9 @@ import { SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { SettingsIcon } from 'lucide-react';
 import { ActionIcon, Box, Container, Flex, Group, Text, useMantineColorScheme } from '@mantine/core';
 import { LogoIcon } from '@/src/assets/icons';
-import SaveButton from '@/src/components/header/save-button';
 import { useStore } from '@/src/store';
+import SaveButton from './save-button';
+import UserMenu from './user-menu';
 import classes from './header.module.css';
 
 
@@ -57,6 +58,8 @@ const Header = () => {
               <SaveButton />
 
               <ThemeToggler />
+
+              <UserMenu />
 
               <Box hiddenFrom="md">
                 <ActionIcon
