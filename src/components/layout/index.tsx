@@ -1,8 +1,9 @@
 import React from 'react';
+import { Bounce, ToastContainer } from 'react-toastify';
 import { Container } from '@mantine/core';
 import Footer from '@/src/components/footer';
 import Header from '@/src/components/header';
-import GoogleFonts from '@/src/components/layout/google-fonts';
+import GoogleFonts from './google-fonts';
 import classes from './layout.module.css';
 
 
@@ -11,7 +12,21 @@ interface LayoutProps {
 }
 const Layout = ({ children }: LayoutProps) => {
 
+
   return (
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
 
       <GoogleFonts>
         <Header />
@@ -20,7 +35,7 @@ const Layout = ({ children }: LayoutProps) => {
         </Container>
         <Footer />
       </GoogleFonts>
-
+    </>
   );
 }
 

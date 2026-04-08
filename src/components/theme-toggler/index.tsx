@@ -1,22 +1,22 @@
-"use client";
-
-import React from 'react';
-import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react';
-import { ActionIcon, MantineColorScheme, Menu, SegmentedControl, Tooltip, useMantineColorScheme } from '@mantine/core';
-import { E_COLOR_SCHEME } from '@/src/constants';
-import { data, THEME_MENU_ITEMS } from './theme-toggler-data';
+import React, { useEffect, useState } from 'react';
+import { ActionIcon, MantineColorScheme, Menu, Tooltip, useMantineColorScheme } from '@mantine/core';
+import { THEME_MENU_ITEMS } from './theme-toggler-data';
 
 
-function ThemeToggler() {
+const ThemeToggler = () => {
 
   const { setColorScheme, colorScheme } = useMantineColorScheme();
 
+  const [scheme, setScheme] = useState<MantineColorScheme>('auto');
+
+
+  useEffect(() => setScheme(colorScheme), [colorScheme]);
+
 
   return (
-    <>
       <Menu shadow="md" position="bottom-end" transitionProps={{ transition: 'pop-top-right' }}>
         <Menu.Target>
-          <Tooltip label={`${THEME_MENU_ITEMS[colorScheme].label} theme`} withArrow position="bottom">
+          <Tooltip label={`${THEME_MENU_ITEMS[scheme].label} theme`} withArrow position="bottom">
             <ActionIcon
               size={30}
               radius="sm"
@@ -24,7 +24,7 @@ function ThemeToggler() {
               aria-label="Color scheme"
               style={{ boxShadow: 'var(--mantine-shadow-xs)' }}
             >
-              {THEME_MENU_ITEMS[colorScheme].icon}
+              {THEME_MENU_ITEMS[scheme].icon}
             </ActionIcon>
           </Tooltip>
         </Menu.Target>
@@ -45,18 +45,6 @@ function ThemeToggler() {
           })}
         </Menu.Dropdown>
       </Menu>
-
-      {/*<SegmentedControl
-        visibleFrom="xs"
-        name="my-control"
-        size="lg"
-        data={data}
-        withItemsBorders={false}
-        value={colorScheme}
-        onChange={(value) => setColorScheme(value as MantineColorScheme)}
-        styles={{ label: { padding: '5px' } }}
-      />*/}
-    </>
   );
 }
 

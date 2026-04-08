@@ -1,21 +1,16 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { SettingsIcon } from 'lucide-react';
-import { ActionIcon, Box, Container, Flex, Group, Text, useMantineColorScheme } from '@mantine/core';
+import { ActionIcon, Box, Container, Flex, Group, Text } from '@mantine/core';
 import { LogoIcon } from '@/src/assets/icons';
+import ThemeToggler from '@/src/components/theme-toggler';
 import { useStore } from '@/src/store';
 import SaveButton from './save-button';
 import UserMenu from './user-menu';
 import classes from './header.module.css';
 
 
-const ThemeToggler = dynamic(() => import('@/src/components/theme-toggler'), { ssr: false });
-
-
 const Header = () => {
-
-
 
   return (
     <Box className={classes.header}>
@@ -34,46 +29,31 @@ const Header = () => {
               >
                 CODE FRAME
               </Text>
-              <Text
-                size="10px"
-                c="dimmed"
-                style={{ lineHeight: '1.1', textTransform: 'uppercase', letterSpacing: '1.5px' }}
-              >
+              <Text size="10px" c="dimmed" className={classes.logoSubText}>
                 Code snippet image
               </Text>
             </Flex>
           </Flex>
 
+          <Flex align="center" gap="xs" className={classes.headerToolbar} >
+            <SaveButton />
 
-            <Flex
-              align="center"
-              gap="xs"
-              p="xs"
-              style={{
-                height: '40px',
-                borderRadius: 'var(--mantine-radius-sm)',
-                background: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7))',
-              }}
-            >
-              <SaveButton />
+            <ThemeToggler />
 
-              <ThemeToggler />
+            <UserMenu />
 
-              <UserMenu />
-
-              <Box hiddenFrom="md">
-                <ActionIcon
-                  size="lg"
-                  variant="default"
-                  aria-label="Settings"
-                  onClick={() => useStore.setState({ settingsOpened: true })}
-                  style={{ width: '36px', height: '36px' }}
-                >
-                  <SettingsIcon size={18} />
-                </ActionIcon>
-              </Box>
-            </Flex>
-
+            <Box hiddenFrom="md">
+              <ActionIcon
+                size="lg"
+                variant="default"
+                aria-label="Settings"
+                onClick={() => useStore.setState({ settingsOpened: true })}
+                style={{ width: '36px', height: '36px' }}
+              >
+                <SettingsIcon size={18} />
+              </ActionIcon>
+            </Box>
+          </Flex>
         </Group>
       </Container>
     </Box>

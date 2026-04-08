@@ -1,43 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useAuth, useClerk, useUser } from '@clerk/nextjs';
-import {
-  CircleUserRoundIcon,
-  HardDriveDownload,
-  LogOutIcon,
-  SettingsIcon,
-  UserIcon,
-} from 'lucide-react';
-import { v4 as uuid } from 'uuid';
-import { ActionIcon, Avatar, Divider, Flex, Menu, Stack, Text, Tooltip } from '@mantine/core';
-import { THEME_MENU_ITEMS } from '@/src/components/theme-toggler/theme-toggler-data';
+import { LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react';
+import { ActionIcon, Avatar, Divider, Flex, Menu, Text, Tooltip } from '@mantine/core';
 import { useStore } from '@/src/store';
+import { mapUserData } from '@/src/util';
 
 
 const UserMenu = () => {
 
   const { isLoaded, isSignedIn } = useUser();
   const { signOut } = useAuth();
-  const { openSignIn, openSignUp, openUserProfile, user } = useClerk();
+  const { openSignIn, openUserProfile, user } = useClerk();
 
   const setUser = useStore((state) => state.setUser);
-
 
 
   useEffect(() => {
     if (!isLoaded) {
       return;
     }
-    setUser(
-      user
-        ? {
-            id: uuid(),
-            userId: user.id,
-            email: user.primaryEmailAddress?.emailAddress ?? '',
-            name: user.fullName ?? '',
-            imageUrl: user.imageUrl ?? '',
-          }
-        : null
-    );
+    setUser(mapUserData(user));
+
   }, [user, isLoaded]);
 
 
@@ -98,7 +81,7 @@ const UserMenu = () => {
         </Flex>
         <Divider />
         <Menu.Item onClick={() => openUserProfile()} leftSection={<SettingsIcon size={14} />}>
-          Manage Accaunt
+          Manage Account
         </Menu.Item>
         <Divider />
         <Menu.Item onClick={() => signOut()} leftSection={<LogOutIcon size={14} />}>
@@ -109,4 +92,4 @@ const UserMenu = () => {
   );
 };
 
-export default UserMenu;
+export default memo(UserMenu)

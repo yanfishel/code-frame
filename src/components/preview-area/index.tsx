@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import clsx from 'clsx';
 import { ImageIcon } from 'lucide-react';
 import { Box, Flex, Text } from '@mantine/core';
 import AreaHeader from '@/src/components/area-header';
 import PreviewToolbar from '@/src/components/preview-area/preview-toolbar';
 import PreviewPlaceholder from '@/src/components/preview-placeholder';
-import { E_BACKGROUND_TYPE, FIELDS_TO_SAVE } from '@/src/constants';
+import { E_BACKGROUND_TYPE } from '@/src/constants';
 import { useStore } from '@/src/store';
 import { formatFileSize } from '@/src/util';
 import classes from './preview.module.css';
@@ -17,24 +17,17 @@ const PreviewArea = () => {
   const flexBasisPreview = useStore((state) => state.flexBasisPreview);
 
   const code = useStore((state) => state.code);
-  //const codeSettings = useStore((state) => state.codeSettings);
   const imageSettings = useStore((state) => state.imageSettings);
   const previewImageData = useStore((state) => state.previewImageData);
-  const canvasUpdated = useStore((state) => state.canvasUpdated);
-
-  //const renderImage = useStore((state) => state.renderImage);
-
-  /*const store = useStore((state) => state);
-  const storeFields = Object.entries(store).filter(([key]) => FIELDS_TO_SAVE.includes(key));
-  console.log({ ...store });*/
-
+  const setCanvas = useStore((state) => state.setCanvas);
 
 
   useEffect(() => {
     if (canvasRef.current) {
-      canvasUpdated( canvasRef.current );
+      setCanvas( canvasRef.current );
     }
   }, [canvasRef]);
+
 
   return (
     <div

@@ -4,6 +4,8 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { MantineProvider } from '@mantine/core';
 import { theme } from '@/src/theme';
 
+
+
 import '@mantine/core/styles.css';
 import "@/src/styles/global.css";
 import '@/src/styles/highlights.css';
@@ -16,11 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <MantineProvider theme={theme} defaultColorScheme="auto">
-      <ClerkProvider
-        appearance={{
-          cssLayerName: 'clerk'
-        }}
-      >
+      <ClerkProvider>
         <Head>
           <title>Code Frame :: Beautiful Code Snippet Image</title>
           <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />

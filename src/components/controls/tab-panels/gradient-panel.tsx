@@ -15,16 +15,10 @@ const GradientPanel = () => {
 
 
   useEffect(() => {
-    setAngle(Number(imageSettings.gradient[2]));
-  }, [imageSettings.gradient[0], imageSettings.gradient[1]]);
-
-  useEffect(() => {
     setColor1(`${imageSettings.gradient[0]}`);
-  }, [imageSettings.gradient[1], imageSettings.gradient[2]]);
-
-  useEffect(() => {
     setColor2(`${imageSettings.gradient[1]}`);
-  }, [imageSettings.gradient[0], imageSettings.gradient[2]]);
+    setAngle(Number(imageSettings.gradient[2]));
+  }, [imageSettings.gradient]);
 
 
   return (

@@ -5,15 +5,15 @@ import { adjust, isDark } from '@/src/util/color';
 import { canvasToPng } from '@/src/util/image';
 
 
-export const parseTokens = (html:string, theme:T_Theme) => {
+interface IParseHtmlProps {
+  html:string,
+  theme:T_Theme
+}
+export const parseHtml = ({html, theme}: IParseHtmlProps) => {
   const div = document.createElement('div');
   div.innerHTML = html;
   const out: T_Token[] = [];
-  function walk(
-    node: ChildNode | HTMLElement | HTMLDivElement | HTMLSpanElement,
-    color: string
-  ) {
-  
+  function walk(node: ChildNode | HTMLElement | HTMLDivElement | HTMLSpanElement, color: string) {
     if (node.nodeType === 3) {
       if (node.textContent) {
         out.push({ text: node.textContent, color });
@@ -24,7 +24,7 @@ export const parseTokens = (html:string, theme:T_Theme) => {
       return;
     }
     let c = color;
-  
+
     for (const cl of 'classList' in node ? node.classList : []) {
       if (cl !== 'token' && !cl.startsWith('literal-')) {
         const key = cl as keyof typeof theme;
@@ -32,7 +32,7 @@ export const parseTokens = (html:string, theme:T_Theme) => {
         break;
       }
     }
-  
+
     for (const ch of node.childNodes) {
       walk(ch, c);
     }
@@ -41,8 +41,24 @@ export const parseTokens = (html:string, theme:T_Theme) => {
   return out;
 }
 
-export const buildLines = (html: string, theme: T_Theme) => {
-  const tokens = parseTokens(html, theme);
+
+interface IRenderCodeProps {
+  html: string;
+  codeSettings: T_CodeSettings;
+  imageSettings: T_ImageSettings;
+}
+export const renderCode = ({ html, codeSettings, imageSettings }:IRenderCodeProps) => {
+  const { theme, fontFamily, fontSize, lineHeight, showNumbers, lineNumbers } = codeSettings;
+  const { frameStyle, innerPadding, cornerRadius } = imageSettings;
+
+  const fontStr = `${fontSize}px "${FONTS[fontFamily as keyof typeof FONTS]}", monospace`;
+  const lh = Math.round(+fontSize * +lineHeight);
+  const browserH = frameStyle === 'none' ? 0 : Math.round(+fontSize * 2.3);
+  if (!theme) {
+    return null;
+  }
+
+  const tokens = parseHtml({ html, theme });
 
   const lines: [T_Token[]] = [[]];
   for (const t of tokens) {
@@ -57,21 +73,7 @@ export const buildLines = (html: string, theme: T_Theme) => {
       }
     }
   }
-  return lines;
-}
 
-export const renderCode = (html:string, codeSettings:T_CodeSettings, imageSettings:T_ImageSettings) => {
-  const { theme, fontFamily, fontSize, lineHeight, showNumbers, lineNumbers } = codeSettings;
-  const { frameStyle, innerPadding, cornerRadius } = imageSettings;
-
-  const fontStr = `${fontSize}px "${FONTS[fontFamily as keyof typeof FONTS]}", monospace`;
-  const lh = Math.round(+fontSize * +lineHeight);
-  const browserH = frameStyle === 'none' ? 0 : Math.round(+fontSize * 2.3);
-  if (!theme) {
-    return null;
-  }
-
-  const lines = buildLines(html, theme);
   if (lines.length < 2 && lines[0].length < 1) {
     return null;
   }
@@ -151,8 +153,13 @@ export const renderCode = (html:string, codeSettings:T_CodeSettings, imageSettin
 }
 
 
-export const renderBackground = (ctx:CanvasRenderingContext2D, w:number, h:number, imageSettings:T_ImageSettings) => {
-
+interface IRenderBackgroundProps {
+  ctx: CanvasRenderingContext2D;
+  w: number;
+  h: number;
+  imageSettings: T_ImageSettings;
+}
+export const renderBackground = ({ ctx, w, h, imageSettings }: IRenderBackgroundProps) => {
   const { backgroundType, backgroundSolid, gradient } = imageSettings;
 
   if (backgroundType === E_BACKGROUND_TYPE.NONE) {
@@ -179,12 +186,13 @@ export const renderBackground = (ctx:CanvasRenderingContext2D, w:number, h:numbe
 }
 
 
-export const renderWatermark = (
-  ctx: CanvasRenderingContext2D,
-  canvasW: number,
-  canvasH: number,
-  imageSettings:T_ImageSettings
-) => {
+interface IRenderWatermarkProps {
+  ctx: CanvasRenderingContext2D;
+  canvasW: number;
+  canvasH: number;
+  imageSettings: T_ImageSettings;
+}
+export const renderWatermark = ({ ctx, canvasH, canvasW, imageSettings }:IRenderWatermarkProps) => {
   const { backgroundType, backgroundSolid, gradient, watermark } = imageSettings;
 
   let color;
@@ -210,7 +218,12 @@ export const renderWatermark = (
 }
 
 
-export const renderShadow = (ctx: CanvasRenderingContext2D, corners:T_Cords[], imageSettings:T_ImageSettings) => {
+interface IRenderShadowProps {
+  ctx: CanvasRenderingContext2D;
+  corners: T_Cords[];
+  imageSettings: T_ImageSettings;
+}
+export const renderShadow = ({ ctx, corners, imageSettings }:IRenderShadowProps) => {
   const { shadowBlur, shadowColor, shadowOffset, shadowOpacity } = imageSettings;
 
   ctx.save();
@@ -228,76 +241,15 @@ export const renderShadow = (ctx: CanvasRenderingContext2D, corners:T_Cords[], i
   ctx.filter = 'none';
 }
 
-export const renderImage = (
-  canvas: HTMLCanvasElement,
-  html: string,
-  imageSettings: T_ImageSettings,
-  codeSettings: T_CodeSettings
-) => {
-  const { watermark, showWatermark, showShadow, windowOpacity, outerPadding } = imageSettings;
 
-  if (!canvas) {
-    return;
-  }
-
-  const ctx = canvas.getContext('2d');
-
-  if (!ctx) {
-    throw new Error(
-      'Could not create canvas context. ' +
-        'This is likely due to a browser security restriction. ' +
-        'Try using a different browser or enabling canvas in your browser settings.'
-    );
-  }
-
-  const off = renderCode(html, codeSettings, imageSettings);
-
-  if (!off) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    return null;
-  }
-  const baseW = off.width;
-  const baseH = off.height;
-
-  const iw = off.width,
-    ih = off.height;
-  const cW = baseW + outerPadding * 2; // fixed — background ignores zoom
-  const cH = baseH + outerPadding * 2;
-
-  canvas.width = cW;
-  canvas.height = cH;
-
-  ctx.clearRect(0, 0, cW, cH);
-  renderBackground(ctx, cW, cH, imageSettings);
-
-  const corners = calculateCorners(iw, ih, cW, cH);
-
-  // Shadow
-  if (showShadow) {
-    renderShadow(ctx, corners, imageSettings);
-  }
-
-  // Draw image
-  ctx.save();
-  ctx.globalAlpha = windowOpacity / 100;
-  ctx.drawImage(off, outerPadding + (baseW - iw), outerPadding + (baseH - ih));
-
-  ctx.restore();
-
-  // Watermark
-  if (showWatermark && watermark) {
-    renderWatermark(ctx, cW, cH, imageSettings);
-  }
-
-  const pngDataUrl = canvasToPng(canvas);
-
-  return { ...pngDataUrl, width: cW, height: cH };
-
+interface IRenderImageBlurProps {
+  canvas: HTMLCanvasElement;
+  direction: string;
+  gradientBlur: number;
+  startPercent: number;
+  steps: number;
 }
-
-
-
-export const renderGradientBlur = (canvas:HTMLCanvasElement, direction:string, gradientBlur:number, startPercent:number, steps = 18) => {
+export const renderGradientBlur = ({ canvas, direction, gradientBlur, startPercent, steps = 18 }: IRenderImageBlurProps) => {
   if (gradientBlur <= 0 || !canvas) {
     return;
   }
@@ -341,4 +293,72 @@ export const renderGradientBlur = (canvas:HTMLCanvasElement, direction:string, g
     ctx.restore();
   }
   return dst;
+}
+
+
+interface IRenderImageProps {
+  canvas: HTMLCanvasElement;
+  html: string;
+  imageSettings: T_ImageSettings;
+  codeSettings: T_CodeSettings;
+}
+export const renderImage = ({ canvas, html, imageSettings, codeSettings }:IRenderImageProps) => {
+  const { watermark, showWatermark, showShadow, windowOpacity, outerPadding } = imageSettings;
+
+  if (!canvas) {
+    return null;
+  }
+
+  const ctx = canvas.getContext('2d');
+
+  if (!ctx) {
+    throw new Error(
+      'Could not create canvas context. ' +
+        'This is likely due to a browser security restriction. ' +
+        'Try using a different browser or enabling canvas in your browser settings.'
+    );
+  }
+
+  const off = renderCode({ html, codeSettings, imageSettings });
+
+  if (!off) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return null;
+  }
+  const baseW = off.width;
+  const baseH = off.height;
+
+  const iw = off.width,
+    ih = off.height;
+  const canvasW = baseW + outerPadding * 2; // fixed — background ignores zoom
+  const canvasH = baseH + outerPadding * 2;
+
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+
+  ctx.clearRect(0, 0, canvasW, canvasH);
+  renderBackground({ ctx, w: canvasW, h: canvasH, imageSettings });
+
+  const corners = calculateCorners(iw, ih, canvasW, canvasH);
+
+  // Shadow
+  if (showShadow) {
+    renderShadow({ ctx, corners, imageSettings });
+  }
+
+  // Draw image
+  ctx.save();
+  ctx.globalAlpha = windowOpacity / 100;
+  ctx.drawImage(off, outerPadding + (baseW - iw), outerPadding + (baseH - ih));
+
+  ctx.restore();
+
+  // Watermark
+  if (showWatermark && watermark) {
+    renderWatermark({ ctx, canvasW, canvasH, imageSettings });
+  }
+
+  const pngDataUrl = canvasToPng(canvas);
+
+  return { ...pngDataUrl, width: canvasW, height: canvasH };
 }

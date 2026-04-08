@@ -37,31 +37,33 @@ async function getUser(_: NextRequest, { params }: { params: Promise<{ id: strin
   }
 }
 
-async function updateUser(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const id = (await params).id;
+async function updateUser(request: Request, { params }: { params: Promise<{ userId: string }> }) {
+  const userId = (await params).userId;
   const body = await request.json();
 
+  if(userId !== body.userId) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+  }
+
   const user = await prisma.user.upsert({
-    where: { userId: id },
+    where: { userId },
     update: {}, // Does nothing if the record exists
     create: {
-      userId: body.id,
-      email: body.primaryEmailAddress.emailAddress,
-      name: body.fullName,
-    },
-  });
+      userId: body.userId,
+      email: body.email,
+      name: body.name
+    }
+  })
 
   await prisma.$disconnect();
 
-  if(!user){
+  if (!user) {
     return new Response(null, { status: 500 });
   }
   return new Response(JSON.stringify(user), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
-
-
 
   /*await prisma.user.upsert({
         where: { userId: id },

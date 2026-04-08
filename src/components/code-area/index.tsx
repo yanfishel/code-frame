@@ -73,7 +73,7 @@ const CodeArea = () => {
   const inputColor = useStore((state) => state.inputColor)
   const inputBackground = useStore((state) => state.inputBackground)
   const flexBasisCode = useStore((state) => state.flexBasisCode)
-  const htmlUpdated = useStore((state) => state.htmlUpdated);
+  const setHtml = useStore((state) => state.setHtml);
 
   const [offset, setOffset] = useState(0)
 
@@ -81,7 +81,7 @@ const CodeArea = () => {
   useEffect(() => {
     if (htmlRef.current) {
       const html = htmlRef.current.querySelector('pre')?.innerHTML ?? '';
-      htmlUpdated( html );
+      setHtml(html);
     }
   }, [code, codeSettings.lang, htmlRef]);
 

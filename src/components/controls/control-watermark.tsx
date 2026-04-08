@@ -1,32 +1,40 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Divider, Flex, Input, Space, Switch, Text } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 import { useStore } from '@/src/store';
 
 
 const ControlWatermark = () => {
 
-  const debounceRef = useRef(false);
-
   const imageSettings = useStore((state) => state.imageSettings);
   const setSettings = useStore((state) => state.setSettings);
-  const [text, setText] = useState('');
+  const [text, setText] = useState(imageSettings.watermark);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const [debounced] = useDebouncedValue(text, 250);
 
+  const handleTextChange = useCallback((value: string) => {
+    setText(value);
 
-  useEffect(() => {
-    if (debounceRef.current) {
-      setSettings('image', 'watermark', debounced);
-      useStore.setState({ isReady: true });
-    } else {
-      debounceRef.current = true
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
-  }, [debounced]);
+
+    debounceTimeout.current = setTimeout(() => {
+      setSettings('image', 'watermark', value);
+    }, 500);
+  }, [setSettings]);
+
 
   useEffect(() => {
     setText(imageSettings.watermark);
   }, [imageSettings.watermark]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, []);
 
 
   return (
@@ -56,7 +64,7 @@ const ControlWatermark = () => {
           size="xs"
           placeholder="Watermark text"
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => handleTextChange(e.target.value)}
           disabled={!imageSettings.showWatermark}
           style={{ width: '100%' }}
         />

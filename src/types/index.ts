@@ -5,74 +5,44 @@ export type T_Store = {
   wantToSave: boolean;
   isSaved: boolean;
   isReady: boolean;
-  userId: string;
-  snippetId: string;
   settingsOpened: boolean;
-
-  flexBasisCode: string;
-  flexBasisPreview: string;
-
+  id: string;
+  name: string;
+  user: T_User | null;
   canvas: HTMLCanvasElement | null;
   code: string;
   html: string;
-  user: T_User | null;
-
-  /*lang: string;
-  theme: T_Theme | null;
-  showNumbers: boolean;
-  lineNumbers: string;
-  fontSize: string;
-  fontFamily: string;
-  lineHeight: string;*/
-
+  flexBasisCode: string;
+  flexBasisPreview: string;
   inputColor: string;
   inputBackground: string;
-
-  /*frameStyle: string;
-  innerPadding: number;
-  outerPadding: number;
-  cornerRadius: number;
-  showShadow: boolean;
-  shadowBlur: number;
-  shadowColor: string;
-  shadowOffset: T_Cords;
-  shadowOpacity: number;
-  backgroundType: T_Background;
-  backgroundSolid: string;
-  gradient: T_Gradient;
-  windowOpacity: number;
-  watermark: string;*/
-
   codeSettings: T_CodeSettings;
   imageSettings: T_ImageSettings;
   previewImageData: T_ImageData | null;
-
-  setUser: (user: T_User|null) => void;
-
+  setUser: (user: T_User | null) => void;
   setSettings: (
     section: string,
     key: string,
     val: boolean | string | number | T_Theme | T_Cords | T_Background | T_Gradient | T_FrameStyle
   ) => void;
-
-  selectTheme: (theme: T_Theme) => void;
-  canvasUpdated: (canvas: HTMLCanvasElement) => void;
-  parseTokens: () => T_Token[];
-  buildLines: () => [T_Token[]];
-  renderBackground: (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
-  renderGradientBlur: (
-    direction: string,
-    gradientBlur: number,
-    startPercent: number,
-    steps: number
-  ) => void;
-  renderShadow: (ctx: CanvasRenderingContext2D, corners: T_Cords[]) => void;
-  renderCode: () => HTMLCanvasElement | null;
+  setTheme: (theme: T_Theme) => void;
+  setCanvas: (canvas: HTMLCanvasElement) => void;
+  setHtml: (html: string) => void;
   renderImage: () => void;
-  renderWatermark: (ctx: CanvasRenderingContext2D, canvasW: number, canvasH: number) => void;
-  htmlUpdated: (html: string) => void;
   resetCodeSettings: () => void;
   resetImageSettings: () => void;
+};
+
+
+export type T_StoreData = {
+  id: string
+  name: string
+  code: string
+  html: string
+  codeSettings: T_CodeSettings
+  imageSettings: T_ImageSettings
+  inputBackground: string
+  inputColor: string
 };
 
 
@@ -157,7 +127,6 @@ export type T_Snippet = {
 }
 
 export type T_User = {
-  id: string;
   userId: string;
   name: string;
   email: string;

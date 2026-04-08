@@ -1,4 +1,3 @@
-import { boolean } from 'fast-check';
 
 
 async function snippets() {}

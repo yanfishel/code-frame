@@ -13,7 +13,6 @@ export const LANGUAGES = {
   toml: 'TOML',
   sql: 'SQL',
   php: 'PHP',
-  jsx: 'JSX',
   tsx: 'TSX',
   xml: 'XML',
   graphql: 'GraphQL',

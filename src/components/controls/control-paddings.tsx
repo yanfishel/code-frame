@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Divider, Slider, Space, Text } from '@mantine/core';
 import { SLIDER_STYLES } from '@/src/constants';
 import { MARKS, MARKS_CORNER } from '@/src/constants/image';
@@ -13,18 +13,6 @@ const ControlPaddings = () => {
   const [inner, setInner] = useState(imageSettings.innerPadding)
   const [outer, setOuter] = useState(imageSettings.outerPadding)
   const [corner, setCorner] = useState(imageSettings.cornerRadius)
-
-  useEffect(() => {
-    setInner(imageSettings.innerPadding);
-  }, [imageSettings.innerPadding]);
-
-  useEffect(() => {
-    setOuter(imageSettings.outerPadding);
-  }, [imageSettings.outerPadding]);
-
-  useEffect(()=>{
-    setCorner(imageSettings.cornerRadius);
-  }, [imageSettings.cornerRadius])
 
 
   return (

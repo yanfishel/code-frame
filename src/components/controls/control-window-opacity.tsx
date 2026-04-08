@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Slider, Space, Text } from '@mantine/core';
 import { SLIDER_STYLES } from '@/src/constants';
 import { MARKS_OPACITY } from '@/src/constants/image';
@@ -11,10 +11,6 @@ const ControlWindowOpacity = () => {
   const setSettings = useStore((state) => state.setSettings);
 
   const [opacity, setOpacity] = useState(imageSettings.windowOpacity);
-
-  useEffect(() => {
-    setOpacity(imageSettings.windowOpacity);
-  }, [imageSettings.windowOpacity]);
 
 
   return (

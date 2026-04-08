@@ -135,3 +135,5 @@ next-env.d.ts
 .idea
 .idea/*
 /prisma/prisma
+
+/prisma/prisma/prisma
