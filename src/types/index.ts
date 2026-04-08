@@ -1,3 +1,4 @@
+import type { User } from '@clerk/nextjs/server';
 import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from '@/src/constants';
 
 
@@ -5,6 +6,7 @@ export type T_Store = {
   wantToSave: boolean;
   isSaved: boolean;
   isReady: boolean;
+  fetching: boolean;
   settingsOpened: boolean;
   id: string;
   name: string;
@@ -19,6 +21,8 @@ export type T_Store = {
   codeSettings: T_CodeSettings;
   imageSettings: T_ImageSettings;
   previewImageData: T_ImageData | null;
+  selectedSnippet: T_Snippet | null;
+  selectSnippet: (snippet:T_Snippet|null) => void
   setUser: (user: T_User | null) => void;
   setSettings: (
     section: string,
@@ -118,12 +122,24 @@ export type T_Theme = {
   link: string;
 };
 
-export type T_Snippet = {
+export type T_SnippetData = {
   id:string;
   name: string
   userId: string
+  content?: string
   createdAt: string
   updatedAt: string
+}
+
+export type T_Snippet = {
+  id:string;
+  name: string
+  code: string
+  html: string
+  inputColor: string
+  inputBackground: string
+  codeSettings: T_CodeSettings
+  imageSettings: T_ImageSettings
 }
 
 export type T_User = {
@@ -131,4 +147,9 @@ export type T_User = {
   name: string;
   email: string;
   imageUrl: string;
+}
+
+export type T_RequestBodyWithAuth<T> = {
+    user: User & T_User
+    params?: Promise<T>
 }

@@ -1,8 +1,8 @@
+import { undefined } from 'effect/Match';
 import { FONTS, THEMES } from '@/src/constants/code';
 import { DEFAULT_SHADOW_COLOR, GRADIENTS, SOLID_COLORS } from '@/src/constants/colors';
 import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from '@/src/constants/enums';
 import { T_User } from '@/src/types';
-import { undefined } from 'effect/Match';
 
 
 export const DEFAULT_THEME = THEMES.find((theme) => theme.theme_name === 'One Dark') ?? null;
@@ -49,26 +49,34 @@ export const FIELDS_TO_SAVE = [
 ];
 
 
-
-export const DEFAULT_STORE = {
+export const BASE_STORE = {
   wantToSave: false,
   isSaved: false,
   isReady: false,
   settingsOpened: false,
-  id: '',
-  name: '',
-
+  fetching: false,
+  selectedSnippet: null,
   flexBasisCode: 'calc(50% - 3px)',
   flexBasisPreview: 'calc(50% - 3px)',
+  id: '',
+  name: '',
+  previewImageData: null,
+  inputColor: DEFAULT_THEME?.fg ?? '',
+  inputBackground: DEFAULT_THEME?.bg ?? '',
+  html: '',
+};
+
+
+export const DEFAULT_STORE = {
+  ...BASE_STORE,
 
   canvas: null,
-  html: '',
   code: DEFAULT_CODE,
   user: null,
 
   codeSettings: {
     lang: DEFAULT_LANG,
-    theme: THEMES.find((theme) => theme.theme_name === 'One Dark') ?? null,
+    theme: THEMES[0],
     showNumbers: false,
     lineNumbers: '',
     fontSize: '13',
@@ -92,9 +100,4 @@ export const DEFAULT_STORE = {
     showWatermark: true,
     watermark: DEFAULT_WATERMARK,
   },
-
-  inputColor: DEFAULT_THEME?.fg ?? '',
-  inputBackground: DEFAULT_THEME?.bg ?? '',
-
-  previewImageData: null,
 };

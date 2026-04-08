@@ -1,6 +1,6 @@
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { createWithEqualityFn } from 'zustand/traditional';
-import { DEFAULT_STORE, DEFAULT_THEME } from '@/src/constants';
+import { BASE_STORE, DEFAULT_STORE, DEFAULT_THEME } from '@/src/constants';
 import { T_Store, T_Theme } from '@/src/types';
 import { renderImage } from '@/src/util';
 
@@ -9,6 +9,24 @@ export const useStore = createWithEqualityFn<T_Store>()(
   persist(
     (set, get) => ({
       ...(DEFAULT_STORE as T_Store),
+
+      selectSnippet: (snippet) => {
+        const {renderImage} = get();
+        if(!snippet){
+          set({ ...BASE_STORE, code: '' })
+        } else {
+          set({
+            id: snippet.id,
+            name: snippet.name,
+            selectedSnippet: snippet,
+            html: snippet.html,
+            code: snippet.code,
+            codeSettings: snippet.codeSettings,
+            imageSettings: snippet.imageSettings,
+          });
+        }
+        renderImage();
+      },
 
       setUser: (user) => {
         if (user && user.userId === get().user?.userId) {
@@ -64,7 +82,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       renderImage: () => {
-        const { canvas, html, imageSettings, codeSettings } = get();
+        const { isReady, isSaved, canvas, html, imageSettings, codeSettings } = get();
 
         if (!canvas) {
           return;
@@ -75,7 +93,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
         set({
           isReady: true,
           previewImageData,
-          isSaved: false,
+          isSaved: !isReady ? isSaved : false,
         });
       },
 
@@ -104,10 +122,14 @@ export const useStore = createWithEqualityFn<T_Store>()(
       partialize: (state) => ({
         ...state,
         ...{
+          settingsOpened: false,
+          fetching: false,
           canvas: null,
           user: null,
           isReady: false,
-          previewImageData: null,
+          previewImageData: DEFAULT_STORE.previewImageData,
+          flexBasisCode: DEFAULT_STORE.flexBasisCode,
+          flexBasisPreview: DEFAULT_STORE.flexBasisPreview,
         },
       }),
     }

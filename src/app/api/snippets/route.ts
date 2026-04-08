@@ -1,34 +1,20 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/src/lib/prisma';
+import { withAuth } from '@/src/lib/with-auth';
+import { T_RequestBodyWithAuth } from '@/src/types';
 
 
-async function snippets() {}
+const getSnippets = async (_:NextRequest, body: T_RequestBodyWithAuth<{}>) => {
+  try {
+    const { user } = body
+    const snippets = await prisma.snippet.findMany({ where: { userId: user.userId } })
+    return NextResponse.json(snippets)
+  } catch (error) {
+    console.error('Error fetching snippets:', error)
+    return new NextResponse('Internal Error', { status: 500 })
+  } finally {
+    await prisma.$disconnect()
+  }
+}
 
-/*
-backgroundSolid: string;
-backgroundType: string;
-code: string;
-cornerRadius: number;
-flexBasisCode: string;
-flexBasisPreview: string;
-fontFamily: string;
-fontSize: string;
-frameStyle: string;
-innerPadding: number;
-inputBackground: string
-inputColor: string
-isSaved: string
-lang: string
-lineHeight: string
-lineNumbers: string
-outerPadding: number
-shadowBlur:number
-shadowColor:string
-shadowOpacity: number
-showNumbers:boolean
-showShadow:boolean
-watermark: string
-
-gradient: string;
-shadowOffset: string;
-theme: string*/
-
-
+export const GET = withAuth(getSnippets)

@@ -1,0 +1,18 @@
+
+.snippetsMain {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+}

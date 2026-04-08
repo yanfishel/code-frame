@@ -12,3 +12,10 @@ export const SIGNUP_OPTIONS = {
   forceRedirectUrl: '/',
   fallbackRedirectUrl: '/',
 };
+
+export const SIGNIN_LIST_OPTIONS = {
+  signUpFallbackRedirectUrl: '/',
+  signUpForceRedirectUrl: '/snippets',
+  forceRedirectUrl: '/snippets',
+  fallbackRedirectUrl: '/',
+};

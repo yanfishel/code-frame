@@ -10,7 +10,6 @@ export const getUsers = async () => {
   } catch (error) {
     console.error('Error fetching users:', error);
     await prisma.$disconnect();
-    process.exit(1);
   } finally {
     await prisma.$disconnect();
   }

@@ -57,7 +57,7 @@ import 'prismjs/components/prism-yaml';
 
 
 import AreaHeader from '@/src/components/area-header';
-import { CODE_PLACEHOLDER, DEFAULT_CODE } from '@/src/constants';
+import { CODE_PLACEHOLDER } from '@/src/constants';
 import { useStore } from '@/src/store';
 import CodeToolbar from './code-toolbar';
 import classes from './codearea.module.css';

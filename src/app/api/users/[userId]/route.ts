@@ -1,7 +1,8 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/src/lib/prisma';
 import { withAuth } from '@/src/lib/with-auth';
+import { T_RequestBodyWithAuth } from "@/src/types";
 
 
 async function getUser(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -37,57 +38,40 @@ async function getUser(_: NextRequest, { params }: { params: Promise<{ id: strin
   }
 }
 
-async function updateUser(request: Request, { params }: { params: Promise<{ userId: string }> }) {
-  const userId = (await params).userId;
+
+async function updateUser(request: Request, { params }:T_RequestBodyWithAuth<{ userId: string }> ) {
+  const userId = (await params)?.userId;
   const body = await request.json();
 
   if(userId !== body.userId) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
   }
 
-  const user = await prisma.user.upsert({
-    where: { userId },
-    update: {}, // Does nothing if the record exists
-    create: {
-      userId: body.userId,
-      email: body.email,
-      name: body.name
+  try {
+    const user = await prisma.user.upsert({
+      where: { userId },
+      update: {},
+      create: {
+        userId: body.userId,
+        email: body.email,
+        name: body.name,
+      }
+    })
+    if (!user) {
+      return new Response(null, { status: 500 });
     }
-  })
+    return new Response(JSON.stringify(user), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
 
-  await prisma.$disconnect();
-
-  if (!user) {
-    return new Response(null, { status: 500 });
+  } catch (error) {
+    console.error('Error Update User data:', error);
+    return new NextResponse('Internal Error', { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
-  return new Response(JSON.stringify(user), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
 
-  /*await prisma.user.upsert({
-        where: { userId: id },
-        update: {}, // Does nothing if the record exists
-        create: {
-          userId: body.id,
-          email: body.primaryEmailAddress.emailAddress,
-          name: body.fullName,
-        },
-      }).then(user => {
-
-      }).catch(async (error) => {
-          console.log(error);
-
-          return new Response(null, { status: 500 });
-      }).finally(async () => {
-        await prisma.$disconnect();
-        process.exit(1);
-      });*/
-
-  /*return new Response(JSON.stringify(user), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });*/
 }
 
 
