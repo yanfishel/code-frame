@@ -17,6 +17,7 @@ const Snippets = () => {
 
   const fetching = useStore((state) => state.fetching);
   const selectSnippet = useStore((state) => state.selectSnippet);
+  const resetToStart = useStore((state) => state.resetToStart);
 
   const [snippets, setSnippets] = useState<T_SnippetData[]>([]);
 
@@ -32,7 +33,7 @@ const Snippets = () => {
   }
 
   const editHandler = (snippet:T_Snippet) => {
-    useStore.setState({ isReady: false, isSaved: true });
+    resetToStart()
     router.push(`/snippets/${snippet.id}`)
   }
 
@@ -56,18 +57,18 @@ const Snippets = () => {
 
 
   useEffect(() => {
-    useStore.setState({ ...BASE_STORE, code:'', fetching: true });
+    useStore.setState({ fetching: true });
     fetchSnippets()
   }, []);
 
 
   useEffect(() => {
     try {
-      const cont = snippets.length > 0 && snippets[0].content ? JSON.parse(snippets[0].content) : null;
-      selectSnippet(cont);
+      const content = snippets.length > 0 && snippets[0].content ? JSON.parse(snippets[0].content) : null;
+      selectSnippet(content, true);
     } catch (error) {
       console.error('Error in SnippetRow useEffect:', error);
-      selectSnippet(null);
+      selectSnippet(null, true);
     }
   }, [snippets]);
 

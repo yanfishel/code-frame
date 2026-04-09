@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useClerk, useUser } from '@clerk/nextjs';
@@ -27,14 +27,12 @@ const ActionButtons = () => {
 
   const onSnippetsClickHandler = useCallback(() => {
     if (isSignedIn) {
-      useStore.setState({ isReady: false });
+      resetToStart();
       router.push('/snippets');
     } else {
       openSignUp(SIGNUP_LIST_OPTIONS);
     }
   }, [isSignedIn]);
-
-  console.log(pathname, router.asPath, router.pathname, router.query);
 
 
   return (
@@ -53,18 +51,18 @@ const ActionButtons = () => {
           Main page
         </Button>
       )}
-      {pathname !== '/snippets' && (
-        <Button
-          size="xs"
-          variant="default"
-          radius="sm"
-          onClick={onSnippetsClickHandler}
-          leftSection={<SquareChartGanttIcon size={14} />}
-          className={classes.toolbarButton}
-        >
-          Your snippets
-        </Button>
-      )}
+
+      <Button
+        size="xs"
+        variant="default"
+        radius="sm"
+        disabled={pathname === '/snippets'}
+        onClick={onSnippetsClickHandler}
+        leftSection={<SquareChartGanttIcon size={14} />}
+        className={classes.toolbarButton}
+      >
+        Your snippets
+      </Button>
     </>
   );
 

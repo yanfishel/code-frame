@@ -1,4 +1,4 @@
-import React, { CSSProperties, memo, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { SquareCodeIcon } from 'lucide-react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
@@ -69,22 +69,29 @@ const CodeArea = () => {
   const htmlRef = useRef<HTMLDivElement>(null)
 
   const code = useStore((state) => state.code)
+  const canvas = useStore((state) => state.canvas)
   const codeSettings = useStore((state) => state.codeSettings)
   const inputColor = useStore((state) => state.inputColor)
   const inputBackground = useStore((state) => state.inputBackground)
   const flexBasisCode = useStore((state) => state.flexBasisCode)
-  const setHtml = useStore((state) => state.setHtml);
+  const setHtml = useStore((state) => state.setHtml)
 
   const [offset, setOffset] = useState(0)
 
 
-  useEffect(() => {
+  const updateHtml = useCallback(() => {
     if (htmlRef.current) {
       const html = htmlRef.current.querySelector('pre')?.innerHTML ?? '';
-      setHtml(html);
+      setHtml(html === '<br>' ? '' : html);
     }
-  }, [code, codeSettings.lang, htmlRef]);
+  }, [htmlRef]);
 
+
+  useEffect(() => {
+    if (canvas) {
+      updateHtml();
+    }
+  }, [canvas, code, codeSettings.lang]);
 
   useEffect(() => {
     if (numbersRef.current) {

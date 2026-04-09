@@ -34,8 +34,8 @@ export const DEFAULT_AREA_WIDTH = 'calc(50% - 3px)'
 
 export const BASE_STORE = {
   wantToSave: false,
-  isSaved: false,
-  isReady: false,
+  isSaved: true,
+  setSaved: false,
   settingsOpened: false,
   fetching: false,
   rendering: false,
@@ -47,8 +47,8 @@ export const BASE_STORE = {
   previewImageData: null,
   inputColor: DEFAULT_THEME.fg,
   inputBackground: DEFAULT_THEME.bg,
-  html: ''
-}
+  html: '',
+};
 
 
 export const DEFAULT_STORE = {

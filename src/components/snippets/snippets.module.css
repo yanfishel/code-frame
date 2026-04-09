@@ -22,3 +22,22 @@
   width: 100%;
   padding-inline-start: var(--mantine-spacing-sm);
 }
+
+.rowCodePreview {
+  flex: 1;
+  padding-inline-end: 40px;
+}
+
+.previewCodeButton {
+  position: absolute;
+  top: 50%;
+  right:6px;
+  transform: translateY(-50%);
+  z-index: 3;
+}
+.previewCodePopover {
+  padding: 0;
+  max-height: 160px;
+  overflow: auto;
+  box-shadow: var(--mantine-shadow-lg);
+}

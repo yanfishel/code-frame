@@ -4,8 +4,8 @@ import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from '@/src/constants';
 
 export type T_Store = {
   wantToSave: boolean;
+  setSaved: boolean;
   isSaved: boolean;
-  isReady: boolean;
   rendering: boolean;
   fetching: boolean;
   settingsOpened: boolean;
@@ -23,7 +23,7 @@ export type T_Store = {
   imageSettings: T_ImageSettings;
   previewImageData: T_ImageData | null;
   selectedSnippet: T_Snippet | null;
-  selectSnippet: (snippet: T_Snippet | null) => void;
+  selectSnippet: (snippet: T_Snippet | null, render?: boolean) => void;
   setUser: (user: T_User | null) => void;
   setSettings: (
     section: string,

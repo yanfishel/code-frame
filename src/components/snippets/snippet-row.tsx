@@ -5,6 +5,7 @@ import { useClickOutside } from '@mantine/hooks';
 import { LANGUAGES } from '@/src/constants';
 import { useStore } from '@/src/store';
 import { T_Snippet, T_SnippetData } from '@/src/types';
+import classes from "./snippets.module.css";
 
 
 interface SnippetRowProps {
@@ -72,7 +73,7 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
   return (
     <Table.Tr
       bg={isSelected ? 'var(--mantine-color-blue-light)' : undefined}
-      onClick={() => (row ? selectSnippet(row) : null)}
+      onClick={() => (row ? selectSnippet(row, true) : null)}
       style={{ cursor: 'pointer' }}
     >
       {row ? (
@@ -87,7 +88,7 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
             <Popover width="target" withArrow offset={0} opened={opened}>
               <Popover.Target>
                 <Flex style={{ position: 'relative' }}>
-                  <Code p="xs" color="var(--mantine-color-blue-light)" style={{ flex: 1,paddingInlineEnd:40 }}>
+                  <Code p="xs" className={classes.rowCodePreview} color="var(--mantine-color-blue-light)">
                     <Text size="xs" lineClamp={1}>
                       {row.code}
                     </Text>
@@ -97,17 +98,13 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
                     size="md"
                     title="Preview code"
                     onMouseEnter={() => setOpened(true)}
-                    style={{position:'absolute', top:'50%',right:6,transform:'translateY(-50%)', zIndex:3}}
+                    className={classes.previewCodeButton}
                   >
                     <ViewIcon size={14} />
                   </ActionIcon>
                 </Flex>
               </Popover.Target>
-              <Popover.Dropdown
-                mah={160}
-                p="0"
-                style={{ overflow: 'auto', boxShadow: 'var(--mantine-shadow-lg)' }}
-              >
+              <Popover.Dropdown className={classes.previewCodePopover} >
                 <Code block c="blue.0" color="dark">
                   <Text size="xs">{row.code}</Text>
                 </Code>

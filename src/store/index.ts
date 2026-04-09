@@ -10,24 +10,24 @@ export const useStore = createWithEqualityFn<T_Store>()(
     (set, get) => ({
       ...(DEFAULT_STORE as T_Store),
 
-      selectSnippet: (snippet) => {
-        const {renderImage} = get();
-        if(!snippet){
-          set({ ...BASE_STORE, code: '' })
+      selectSnippet: (snippet, render = false) => {
+        if (!snippet) {
+          set({ ...BASE_STORE, code: '' });
         } else {
           set({
-            isReady: false,
-            isSaved: true,
+            setSaved: true,
             id: snippet.id,
             name: snippet.name,
             selectedSnippet: snippet,
             html: snippet.html,
-            code: snippet.code,
+            code: snippet.code, // Trigger RenderImage
             codeSettings: snippet.codeSettings,
             imageSettings: snippet.imageSettings,
           });
         }
-        renderImage();
+        if (render) {
+          get().renderImage();
+        }
       },
 
       setUser: (user) => {
@@ -72,35 +72,32 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       setCanvas: (canvas) => {
-        set({ canvas, rendering: true });
-        get().renderImage();
+        set({ canvas });
       },
 
       setHtml: (html) => {
+        const { renderImage } = get();
         set({ html, rendering: true });
-        get().renderImage();
+        renderImage();
       },
 
       renderImage: () => {
-        const { isReady, isSaved, canvas, html, imageSettings, codeSettings, fetching } = get();
+        const { setSaved, canvas, html, imageSettings, codeSettings } = get();
 
-        if (!canvas || !html || html === '<br>' || fetching) {
-          set({
-            isReady: true,
-            rendering: false,
-            isSaved: true,
-          });
+        if (!canvas || !html) {
+          set({ rendering: false });
           return;
         }
-        console.log(isReady, isSaved);
+
         const previewImageData = renderImage({ canvas, html, imageSettings, codeSettings });
 
         set({
-          isReady: true,
+          isSaved: setSaved,
+          setSaved: false,
+          fetching: false,
           rendering: false,
           previewImageData,
-          isSaved: !isReady ? isSaved : false,
-        })
+        });
       },
 
       resetCodeSettings: () => {
@@ -108,7 +105,6 @@ export const useStore = createWithEqualityFn<T_Store>()(
           codeSettings: DEFAULT_STORE.codeSettings,
           inputColor: DEFAULT_THEME?.fg ?? '',
           inputBackground: DEFAULT_THEME?.bg ?? '',
-          isSaved: false,
           rendering: true,
         });
         get().renderImage();
@@ -117,7 +113,6 @@ export const useStore = createWithEqualityFn<T_Store>()(
       resetImageSettings: () => {
         set({
           imageSettings: DEFAULT_STORE.imageSettings,
-          isSaved: false,
           rendering: true,
         });
         get().renderImage();
@@ -127,10 +122,9 @@ export const useStore = createWithEqualityFn<T_Store>()(
         set({
           ...DEFAULT_STORE,
           rendering: true,
+          setSaved: true,
         });
-        get().renderImage();
-      }
-
+      },
     }),
     {
       name: 'store-code-frame',
@@ -139,11 +133,12 @@ export const useStore = createWithEqualityFn<T_Store>()(
       partialize: (state) => ({
         ...state,
         ...{
+          setSaved: false,
+          isSaved: true,
           settingsOpened: false,
           fetching: false,
           canvas: null,
           user: null,
-          isReady: false,
           previewImageData: DEFAULT_STORE.previewImageData,
           flexBasisCode: DEFAULT_STORE.flexBasisCode,
           flexBasisPreview: DEFAULT_STORE.flexBasisPreview,

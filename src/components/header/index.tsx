@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useRouter } from 'next/router';
 import { SettingsIcon } from 'lucide-react';
 import { ActionIcon, Box, Container, Flex, Group, Text } from '@mantine/core';
@@ -54,7 +54,9 @@ const Header = () => {
           </Flex>
 
           <Flex gap="md" align="center">
+            { router.asPath !== '/' && router.asPath !== '/snippets' &&
             <SavingIndicator />
+            }
 
             <Flex align="center" gap="xs" className={classes.headerToolbar}>
               <ActionButtons />
@@ -82,4 +84,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header)

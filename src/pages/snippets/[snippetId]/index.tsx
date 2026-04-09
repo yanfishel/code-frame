@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useClerk, useUser } from '@clerk/nextjs';
 import { toast } from 'react-toastify';
@@ -14,7 +14,7 @@ import { useStore } from '@/src/store';
 import classes from '@/src/styles/main.module.css';
 
 
-const Index = () => {
+const SnippetPage = () => {
 
   const params = useParams();
 
@@ -24,14 +24,15 @@ const Index = () => {
   const { openSignIn } = useClerk();
   const { isLoaded, isSignedIn } = useUser();
 
+
   const fetchSnippet = async (snippetId: string) => {
     const response = await fetch(`/api/snippets/${snippetId}`);
     if (response.ok) {
       const snippet = await response.json();
       try {
         const content = snippet.content ? JSON.parse(snippet.content) : null;
+        useStore.setState({ setSaved: true });
         selectSnippet(content);
-        useStore.setState({ fetching: false });
       } catch (error) {
         toast.error('Failed to parse snippet data');
         useStore.setState({ ...BASE_STORE, fetching: false });
@@ -42,20 +43,14 @@ const Index = () => {
     }
   }
 
-
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       openSignIn(SIGNIN_LIST_OPTIONS);
     } else if (isLoaded && isSignedIn && params?.snippetId) {
-      useStore.setState({ ...BASE_STORE, code: '', fetching: true });
+      useStore.setState({ fetching: true, setSaved: true });
       fetchSnippet(params.snippetId as string)
     }
   }, [isLoaded, isSignedIn, params?.snippetId]);
-
-
-
-  console.log(params?.snippetId);
-
 
   
   return (
@@ -66,16 +61,16 @@ const Index = () => {
         </Flex>
       ) : isSignedIn ? (
         <>
-            <LoadingOverlay visible={fetching} loaderProps={{ children: <Loader size={30} /> }} />
+          <LoadingOverlay visible={!isLoaded || fetching} loaderProps={{ children: <Loader size={30} /> }} />
 
-            <Aside />
-            <main role="main" className={classes.mainArea}>
-              <CodeArea />
+          <Aside />
+          <main role="main" className={classes.mainArea}>
+            <CodeArea />
 
-              <DraggableDivider />
+            <DraggableDivider />
 
-              <PreviewArea />
-            </main>
+            <PreviewArea />
+          </main>
         </>
       ) : (
         <SnippetsSignin />
@@ -84,4 +79,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default memo(SnippetPage);
