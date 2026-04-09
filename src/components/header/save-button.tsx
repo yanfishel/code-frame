@@ -1,34 +1,35 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useClerk, useUser } from '@clerk/nextjs';
-import { HardDriveDownload, SquareChartGanttIcon } from 'lucide-react';
+import { HardDriveDownload } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { v4 as uuid } from 'uuid';
 import { Box, Button, Flex, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { SIGNUP_LIST_OPTIONS, SIGNUP_OPTIONS } from '@/src/constants';
+import classes from '@/src/components/header/header.module.css';
+import { SIGNUP_OPTIONS } from '@/src/constants';
 import { useStore } from '@/src/store';
 import { mapStore } from '@/src/util';
-import classes from './header.module.css';
 
 
 const SaveButton = () => {
 
-  const router = useRouter();
   const { openSignUp } = useClerk();
   const { isSignedIn } = useUser();
 
-  const store = useStore((state) => state)
-  const code = useStore((state) => state.code)
-  const user = useStore((state) => state.user)
-  const html = useStore((state) => state.html)
-  const name = useStore((state) => state.name)
-  const isSaved = useStore((state) => state.isSaved)
-  const wantToSave = useStore((state) => state.wantToSave)
+  const router = useRouter();
 
-  const [opened, { open, close }] = useDisclosure(false)
+  const store = useStore((state) => state);
+  const code = useStore((state) => state.code);
+  const user = useStore((state) => state.user);
+  const html = useStore((state) => state.html);
+  const isSaved = useStore((state) => state.isSaved);
+  const wantToSave = useStore((state) => state.wantToSave);
 
-  const [processing, setProcessing] = useState(false)
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const name = useStore((state) => state.name);
+  const [processing, setProcessing] = useState(false);
 
 
   const onSave = useCallback(async () => {
@@ -41,22 +42,22 @@ const SaveButton = () => {
     setProcessing(true);
     const data = mapStore(store);
 
-    if(!data.id){
-      data.id = uuid()
+    if (!data.id) {
+      data.id = uuid();
     }
 
     const [userRes, snippetRes] = await Promise.all([
       fetch(`/api/users/${user.userId}`, {
-          method: 'POST',
-          body: JSON.stringify(user),
-        }),
+        method: 'POST',
+        body: JSON.stringify(user),
+      }),
       fetch(`/api/snippets/${data.id}`, {
         method: 'POST',
         body: JSON.stringify(data),
-      })
+      }),
     ]);
 
-    if(userRes.ok && snippetRes.ok){
+    if (userRes.ok && snippetRes.ok) {
       const snippetResponse = await snippetRes.json();
       useStore.setState({ isSaved: true, wantToSave: false });
       toast.success('Snippet saved successfully!', { autoClose: 3000 });
@@ -68,23 +69,7 @@ const SaveButton = () => {
     }
 
     setProcessing(false);
-
   }, [user, code, html, name]);
-
-  const onCloseHandler = () => {
-    useStore.setState({ wantToSave: false });
-    close()
-  }
-
-
-  const onSnippetsClickHandler = useCallback(() => {
-    if (isSignedIn) {
-      useStore.setState({ isReady: false });
-      router.push('/snippets');
-    } else {
-      openSignUp(SIGNUP_LIST_OPTIONS);
-    }
-  }, [isSignedIn]);
 
   const onSaveHandler = useCallback(() => {
     if (isSignedIn) {
@@ -94,6 +79,12 @@ const SaveButton = () => {
       openSignUp(SIGNUP_OPTIONS);
     }
   }, [isSignedIn]);
+
+
+  const onCloseHandler = () => {
+    useStore.setState({ wantToSave: false });
+    close();
+  };
 
 
   useEffect(() => {
@@ -119,17 +110,6 @@ const SaveButton = () => {
         <Box visibleFrom="xs" style={{ marginLeft: '6px' }}>
           snippet
         </Box>
-      </Button>
-
-      <Button
-        size="xs"
-        variant="default"
-        radius="sm"
-        onClick={onSnippetsClickHandler}
-        leftSection={<SquareChartGanttIcon size={14} />}
-        className={classes.toolbarButton}
-      >
-        Your snippets
       </Button>
 
       <Modal
@@ -160,7 +140,6 @@ const SaveButton = () => {
       </Modal>
     </>
   );
+};
 
-}
-
-export default memo(SaveButton)
+export default SaveButton;

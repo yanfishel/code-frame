@@ -32,6 +32,7 @@ const Snippets = () => {
   }
 
   const editHandler = (snippet:T_Snippet) => {
+    useStore.setState({ isReady: false, isSaved: true });
     router.push(`/snippets/${snippet.id}`)
   }
 

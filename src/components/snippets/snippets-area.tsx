@@ -6,6 +6,7 @@ import AreaHeader from '@/src/components/area-header';
 import SnippetRow from '@/src/components/snippets/snippet-row';
 import { useStore } from '@/src/store';
 import { T_Snippet, T_SnippetData } from '@/src/types';
+import classes from './snippets.module.css';
 
 
 interface SnippetsAreaProps {
@@ -33,13 +34,13 @@ const SnippetsArea = ({ snippets, editHandler, deleteHandler }: SnippetsAreaProp
         </Flex>
       </AreaHeader>
 
-      <div style={{ flex: 1, width: '100%' }}>
+      <div className={classes.snippetsArea}>
         {snippets.length > 0 && (
-          <Table.ScrollContainer minWidth={500} maxHeight={height - 64}>
+          <Table.ScrollContainer minWidth={300} maxHeight={height - 64}>
             <Table striped highlightOnHover stickyHeader>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th w={40} />
+                  <Table.Th miw={50} h={40} />
                   <Table.Th w="17%">
                     <Text size="xs" fw={500}>
                       Name

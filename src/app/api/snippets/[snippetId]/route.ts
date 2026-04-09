@@ -31,7 +31,7 @@ async function updateSnippet( request: Request, { user, params }:T_HandlerBody )
   const snippetId = (await params)?.snippetId;
   const body = await request.json();
 
-  if(snippetId !== body.id || body.userId !== user.userId) {
+  if(snippetId !== body.id) {
     return new Response(JSON.stringify({ error: 'Bad Request' }), { status: 400 })
   }
 

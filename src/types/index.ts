@@ -6,6 +6,7 @@ export type T_Store = {
   wantToSave: boolean;
   isSaved: boolean;
   isReady: boolean;
+  rendering: boolean;
   fetching: boolean;
   settingsOpened: boolean;
   id: string;
@@ -22,7 +23,7 @@ export type T_Store = {
   imageSettings: T_ImageSettings;
   previewImageData: T_ImageData | null;
   selectedSnippet: T_Snippet | null;
-  selectSnippet: (snippet:T_Snippet|null) => void
+  selectSnippet: (snippet: T_Snippet | null) => void;
   setUser: (user: T_User | null) => void;
   setSettings: (
     section: string,
@@ -35,18 +36,20 @@ export type T_Store = {
   renderImage: () => void;
   resetCodeSettings: () => void;
   resetImageSettings: () => void;
+  resetToStart: () => void;
 };
 
 
 export type T_StoreData = {
-  id: string
-  name: string
-  code: string
-  html: string
-  codeSettings: T_CodeSettings
-  imageSettings: T_ImageSettings
-  inputBackground: string
-  inputColor: string
+  id: string;
+  name: string;
+  code: string;
+  html: string;
+  user: T_User | null;
+  codeSettings: T_CodeSettings;
+  imageSettings: T_ImageSettings;
+  inputBackground: string;
+  inputColor: string;
 };
 
 

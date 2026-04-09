@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { CheckIcon, ClipboardPasteIcon, FilesIcon, ReplaceIcon, Trash2Icon } from 'lucide-react';
 import { ActionIcon, CopyButton, Flex, Tooltip, useMantineTheme } from '@mantine/core';
 import { DEFAULT_CODE, DEFAULT_LANG } from '@/src/constants';
@@ -101,7 +101,10 @@ const CodeToolbar = () => {
               aria-label="Copy code to clipboard"
               disabled={!code}
               size="input-xs"
-              onClick={copy}
+              onClick={()=>{
+                setClipboardText(code);
+                copy()
+              }}
               variant={copied ? 'primary' : 'default'}
             >
               {copied ? (
@@ -134,4 +137,4 @@ const CodeToolbar = () => {
   );
 };
 
-export default CodeToolbar;
+export default memo(CodeToolbar);

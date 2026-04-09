@@ -1,15 +1,13 @@
-import { undefined } from 'effect/Match';
-import { FONTS, THEMES } from '@/src/constants/code';
-import { DEFAULT_SHADOW_COLOR, GRADIENTS, SOLID_COLORS } from '@/src/constants/colors';
-import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from '@/src/constants/enums';
-import { T_User } from '@/src/types';
+import { FONTS, THEMES } from './code';
+import { DEFAULT_SHADOW_COLOR, GRADIENTS, SOLID_COLORS } from './colors';
+import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from './enums';
 
 
-export const DEFAULT_THEME = THEMES.find((theme) => theme.theme_name === 'One Dark') ?? null;
+export const DEFAULT_THEME = THEMES[0]
 
-export const DEFAULT_WATERMARK = `codeframe.pro`;
+export const DEFAULT_WATERMARK = `codeframe.pro`
 
-export const DEFAULT_LANG = 'typescript';
+export const DEFAULT_LANG = 'typescript'
 
 export const DEFAULT_CODE = `// Get a value of an interface property
 
@@ -30,24 +28,9 @@ function getValue(value: keyof MyInterface) {
 }
 
 getValue('id'); // => 1
-getValue('count'); // => undefined`;
+getValue('count'); // => undefined`
 
-
-
-export const FIELDS_TO_SAVE = [
-  'id',
-  'name',
-  'code',
-  'html',
-  'codeSettings',
-  'imageSettings',
-  'flexBasisCode',
-  'flexBasisPreview',
-  'inputBackground',
-  'inputColor',
-  'isSaved'
-];
-
+export const DEFAULT_AREA_WIDTH = 'calc(50% - 3px)'
 
 export const BASE_STORE = {
   wantToSave: false,
@@ -55,23 +38,24 @@ export const BASE_STORE = {
   isReady: false,
   settingsOpened: false,
   fetching: false,
+  rendering: false,
   selectedSnippet: null,
-  flexBasisCode: 'calc(50% - 3px)',
-  flexBasisPreview: 'calc(50% - 3px)',
+  flexBasisCode: DEFAULT_AREA_WIDTH,
+  flexBasisPreview: DEFAULT_AREA_WIDTH,
   id: '',
   name: '',
   previewImageData: null,
-  inputColor: DEFAULT_THEME?.fg ?? '',
-  inputBackground: DEFAULT_THEME?.bg ?? '',
-  html: '',
-};
+  inputColor: DEFAULT_THEME.fg,
+  inputBackground: DEFAULT_THEME.bg,
+  html: ''
+}
 
 
 export const DEFAULT_STORE = {
   ...BASE_STORE,
 
   canvas: null,
-  code: DEFAULT_CODE,
+  code: '', //DEFAULT_CODE
   user: null,
 
   codeSettings: {

@@ -86,18 +86,18 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
           <Table.Td onMouseLeave={() => setOpened(false)}>
             <Popover width="target" withArrow offset={0} opened={opened}>
               <Popover.Target>
-                <Flex align="center" justify="space-between" gap="sm">
-                  <Code p="xs" color="var(--mantine-color-blue-light)" style={{ flex: 1 }}>
+                <Flex style={{ position: 'relative' }}>
+                  <Code p="xs" color="var(--mantine-color-blue-light)" style={{ flex: 1,paddingInlineEnd:40 }}>
                     <Text size="xs" lineClamp={1}>
                       {row.code}
                     </Text>
                   </Code>
-
                   <ActionIcon
                     variant="default"
-                    size="lg"
+                    size="md"
                     title="Preview code"
                     onMouseEnter={() => setOpened(true)}
+                    style={{position:'absolute', top:'50%',right:6,transform:'translateY(-50%)', zIndex:3}}
                   >
                     <ViewIcon size={14} />
                   </ActionIcon>

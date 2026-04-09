@@ -16,6 +16,8 @@ export const useStore = createWithEqualityFn<T_Store>()(
           set({ ...BASE_STORE, code: '' })
         } else {
           set({
+            isReady: false,
+            isSaved: true,
             id: snippet.id,
             name: snippet.name,
             selectedSnippet: snippet,
@@ -63,38 +65,42 @@ export const useStore = createWithEqualityFn<T_Store>()(
             },
           });
         } else if (section === 'root') {
-          set({
-            [key]: val,
-          });
+          set({ [key]: val });
         }
 
         renderImage();
       },
 
       setCanvas: (canvas) => {
-        set({ canvas });
+        set({ canvas, rendering: true });
         get().renderImage();
       },
 
       setHtml: (html) => {
-        set({ html });
+        set({ html, rendering: true });
         get().renderImage();
       },
 
       renderImage: () => {
-        const { isReady, isSaved, canvas, html, imageSettings, codeSettings } = get();
+        const { isReady, isSaved, canvas, html, imageSettings, codeSettings, fetching } = get();
 
-        if (!canvas) {
+        if (!canvas || !html || html === '<br>' || fetching) {
+          set({
+            isReady: true,
+            rendering: false,
+            isSaved: true,
+          });
           return;
         }
-
+        console.log(isReady, isSaved);
         const previewImageData = renderImage({ canvas, html, imageSettings, codeSettings });
 
         set({
           isReady: true,
+          rendering: false,
           previewImageData,
           isSaved: !isReady ? isSaved : false,
-        });
+        })
       },
 
       resetCodeSettings: () => {
@@ -103,6 +109,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
           inputColor: DEFAULT_THEME?.fg ?? '',
           inputBackground: DEFAULT_THEME?.bg ?? '',
           isSaved: false,
+          rendering: true,
         });
         get().renderImage();
       },
@@ -111,9 +118,19 @@ export const useStore = createWithEqualityFn<T_Store>()(
         set({
           imageSettings: DEFAULT_STORE.imageSettings,
           isSaved: false,
+          rendering: true,
         });
         get().renderImage();
       },
+
+      resetToStart: () => {
+        set({
+          ...DEFAULT_STORE,
+          rendering: true,
+        });
+        get().renderImage();
+      }
+
     }),
     {
       name: 'store-code-frame',

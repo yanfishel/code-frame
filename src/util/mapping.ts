@@ -15,6 +15,7 @@ export const mapStore = (store: T_Store): T_StoreData => ({
   name: store.name,
   code: store.code,
   html: store.html,
+  user: store.user,
   codeSettings: store.codeSettings,
   imageSettings: store.imageSettings,
   inputBackground: store.inputBackground,

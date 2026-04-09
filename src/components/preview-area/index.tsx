@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { ImageIcon } from 'lucide-react';
-import { Box, Flex, Text } from '@mantine/core';
+import { Box, Flex, Loader, LoadingOverlay, Text } from '@mantine/core';
 import AreaHeader from '@/src/components/area-header';
 import PreviewToolbar from '@/src/components/preview-area/preview-toolbar';
 import PreviewPlaceholder from '@/src/components/preview-placeholder';
@@ -17,6 +17,7 @@ const PreviewArea = () => {
   const flexBasisPreview = useStore((state) => state.flexBasisPreview);
 
   const code = useStore((state) => state.code);
+  const rendering = useStore((state) => state.rendering);
   const imageSettings = useStore((state) => state.imageSettings);
   const previewImageData = useStore((state) => state.previewImageData);
   const setCanvas = useStore((state) => state.setCanvas);
@@ -55,6 +56,8 @@ const PreviewArea = () => {
           imageSettings.backgroundType === E_BACKGROUND_TYPE.NONE && classes.backgroundTransparent
         )}
       >
+        <LoadingOverlay visible={rendering} loaderProps={{ children: <Loader size={30} /> }} />
+
         {!code && <PreviewPlaceholder />}
 
         <canvas

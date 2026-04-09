@@ -8,6 +8,10 @@
   padding-bottom: 8px;
 }
 
+.logoContainer {
+  width: calc(300px - var(--mantine-spacing-md));
+}
+
 .logoText {
   font-weight: 900;
   letter-spacing: -0.5px;
@@ -19,6 +23,16 @@
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
+.headerSnippetName {
+  .editNameButton {
+    margin-top: 4px;
+    opacity: 0.35;
+  }
+  &:hover {
+    .editNameButton { opacity: 1; }
+  }
+}
+
 
 .headerToolbar {
   height: 40px;
