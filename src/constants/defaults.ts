@@ -35,11 +35,13 @@ export const DEFAULT_AREA_WIDTH = 'calc(50% - 3px)'
 export const BASE_STORE = {
   wantToSave: false,
   isSaved: true,
-  setSaved: false,
+  saving: false,
   settingsOpened: false,
   fetching: false,
   rendering: false,
   selectedSnippet: null,
+  savingDebounce: null,
+  abortController: null,
   flexBasisCode: DEFAULT_AREA_WIDTH,
   flexBasisPreview: DEFAULT_AREA_WIDTH,
   id: '',
@@ -84,4 +86,16 @@ export const DEFAULT_STORE = {
     showWatermark: true,
     watermark: DEFAULT_WATERMARK,
   },
+}
+
+export const DEFAULT_SNIPPET = {
+  id: '',
+  name: '',
+  selectedSnippet: null,
+  html: '',
+  code: DEFAULT_CODE,
+  codeSettings: DEFAULT_STORE.codeSettings,
+  imageSettings: DEFAULT_STORE.imageSettings,
+  inputColor: DEFAULT_THEME.fg,
+  inputBackground: DEFAULT_THEME.bg,
 };

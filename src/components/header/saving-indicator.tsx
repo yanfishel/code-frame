@@ -1,24 +1,41 @@
-import React from 'react';
-import { CheckIcon } from 'lucide-react';
-import { Flex, Text } from '@mantine/core';
+import React, { memo, useMemo } from 'react';
+import { CheckIcon, TriangleAlertIcon } from 'lucide-react';
+import { Badge, Flex, Loader, Text, useMantineColorScheme } from '@mantine/core';
 import { useStore } from '@/src/store';
 
 
 const SavingIndicator = () => {
 
+  const { colorScheme } = useMantineColorScheme();
+
   const isSaved = useStore(state => state.isSaved)
+  const saving = useStore(state => state.saving)
   const selectedSnippet = useStore(state => state.selectedSnippet)
+
+  const color = useMemo(() => {
+    return saving ? 'blue.7' : isSaved ? 'teal.8' : 'red';
+  }, [colorScheme, isSaved, saving]);
+
+  const icon = useMemo(() => {
+    return saving ? (
+      <Loader color="rgba(255, 255, 255, 1)" size={12} />
+    ) : isSaved ? (
+      <CheckIcon size={18} />
+    ) : (
+      <TriangleAlertIcon size={14} />
+    );
+  }, [colorScheme, isSaved, saving]);
+
 
   return (
     <>
-      { selectedSnippet &&
-        <Flex align="center" gap="xs">
-          <CheckIcon size={16} />
-          <Text size="sm">{isSaved ? 'Saved' : 'Saving...'}</Text>
-        </Flex>
-      }
+      {selectedSnippet && (
+        <Badge autoContrast size="sm" h={24} color={color} leftSection={icon}>
+          {saving ? 'Saving...' : isSaved ? 'Saved' : 'Not saved'}
+        </Badge>
+      )}
     </>
   );
 };
 
-export default SavingIndicator;
+export default memo(SavingIndicator);

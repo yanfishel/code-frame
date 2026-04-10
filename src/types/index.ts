@@ -3,9 +3,12 @@ import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from '@/src/constants';
 
 
 export type T_Store = {
+  savingDebounce: ReturnType<typeof setTimeout> | null;
+  abortController: AbortController | null;
   wantToSave: boolean;
-  setSaved: boolean;
   isSaved: boolean;
+  savingError: string
+  saving: boolean;
   rendering: boolean;
   fetching: boolean;
   settingsOpened: boolean;
@@ -37,6 +40,7 @@ export type T_Store = {
   resetCodeSettings: () => void;
   resetImageSettings: () => void;
   resetToStart: () => void;
+  saveSnippet:() => Promise<void>;
 };
 
 

@@ -31,7 +31,7 @@ const SnippetPage = () => {
       const snippet = await response.json();
       try {
         const content = snippet.content ? JSON.parse(snippet.content) : null;
-        useStore.setState({ setSaved: true });
+        useStore.setState({ isSaved: true });
         selectSnippet(content);
       } catch (error) {
         toast.error('Failed to parse snippet data');
@@ -47,7 +47,7 @@ const SnippetPage = () => {
     if (isLoaded && !isSignedIn) {
       openSignIn(SIGNIN_LIST_OPTIONS);
     } else if (isLoaded && isSignedIn && params?.snippetId) {
-      useStore.setState({ fetching: true, setSaved: true });
+      useStore.setState({ fetching: true });
       fetchSnippet(params.snippetId as string)
     }
   }, [isLoaded, isSignedIn, params?.snippetId]);

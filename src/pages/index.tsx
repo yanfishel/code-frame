@@ -5,18 +5,19 @@ import CodeArea from '@/src/components/code-area';
 import DraggableDivider from '@/src/components/draggable-divider';
 import Layout from '@/src/components/layout';
 import PreviewArea from "@/src/components/preview-area";
+import { DEFAULT_SNIPPET } from '@/src/constants';
 import { useStore } from '@/src/store';
 import classes from '@/src/styles/main.module.css';
-import { DEFAULT_CODE } from '@/src/constants';
 
 
 export default function HomePage() {
 
   const fetching = useStore((state) => state.fetching);
+  const selectSnippet = useStore((state) => state.selectSnippet);
 
 
   useEffect(() => {
-    useStore.setState({ code:DEFAULT_CODE })
+    selectSnippet(DEFAULT_SNIPPET, true);
   }, []);
 
 

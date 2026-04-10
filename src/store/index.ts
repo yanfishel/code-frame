@@ -2,7 +2,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { createWithEqualityFn } from 'zustand/traditional';
 import { BASE_STORE, DEFAULT_STORE, DEFAULT_THEME } from '@/src/constants';
 import { T_Store, T_Theme } from '@/src/types';
-import { renderImage } from '@/src/util';
+import { mapStore, renderImage } from '@/src/util';
 
 
 export const useStore = createWithEqualityFn<T_Store>()(
@@ -15,7 +15,6 @@ export const useStore = createWithEqualityFn<T_Store>()(
           set({ ...BASE_STORE, code: '' });
         } else {
           set({
-            setSaved: true,
             id: snippet.id,
             name: snippet.name,
             selectedSnippet: snippet,
@@ -38,7 +37,9 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       setSettings: (section, key, val) => {
-        const { codeSettings, imageSettings, renderImage } = get();
+        const { codeSettings, imageSettings, renderImage } =
+          get();
+
         if (section === 'code') {
           if (key === 'theme') {
             set({
@@ -82,7 +83,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       renderImage: () => {
-        const { setSaved, canvas, html, imageSettings, codeSettings } = get();
+        const { canvas, html, imageSettings, codeSettings, selectedSnippet, isSaved, saveSnippet } = get();
 
         if (!canvas || !html) {
           set({ rendering: false });
@@ -92,12 +93,15 @@ export const useStore = createWithEqualityFn<T_Store>()(
         const previewImageData = renderImage({ canvas, html, imageSettings, codeSettings });
 
         set({
-          isSaved: setSaved,
-          setSaved: false,
+          isSaved: false,
           fetching: false,
           rendering: false,
           previewImageData,
         });
+        if (selectedSnippet && !isSaved) {
+          console.log(isSaved);
+          saveSnippet();
+        }
       },
 
       resetCodeSettings: () => {
@@ -122,9 +126,48 @@ export const useStore = createWithEqualityFn<T_Store>()(
         set({
           ...DEFAULT_STORE,
           rendering: true,
-          setSaved: true,
+          savingError: '',
         });
       },
+
+      saveSnippet: async () => {
+        const store = get();
+        if (!store.id || !store.user) {
+          return;
+        }
+        if (store.savingDebounce) {
+          clearTimeout(store.savingDebounce);
+        }
+        set({ saving: true, savingError: '' });
+        if (store.abortController) {
+          store.abortController.abort();
+        }
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+        const savingDebounce = setTimeout(async () => {
+          const data = mapStore(store);
+          try {
+            const res = await fetch(`/api/snippets/${data.id}`, {
+              method: 'POST',
+              body: JSON.stringify(data),
+              signal,
+            });
+            if (res.ok) {
+              set({ isSaved: true });
+            }
+          } catch (error:any) {
+            if (error.name === 'AbortError') {
+              return;
+            }
+            set({  isSaved: false, savingError: 'Saving failed!' });
+          } finally {
+            set({ saving: false, abortController: null, savingDebounce: null });
+          }
+
+        }, 300);
+        set({ savingDebounce, abortController });
+      }
+
     }),
     {
       name: 'store-code-frame',
@@ -133,12 +176,15 @@ export const useStore = createWithEqualityFn<T_Store>()(
       partialize: (state) => ({
         ...state,
         ...{
-          setSaved: false,
+          savingDebounce: null,
+          abortController: null,
           isSaved: true,
+          saving: false,
           settingsOpened: false,
           fetching: false,
           canvas: null,
           user: null,
+          savingError: '',
           previewImageData: DEFAULT_STORE.previewImageData,
           flexBasisCode: DEFAULT_STORE.flexBasisCode,
           flexBasisPreview: DEFAULT_STORE.flexBasisPreview,
