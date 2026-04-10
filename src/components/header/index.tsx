@@ -1,12 +1,12 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { SettingsIcon } from 'lucide-react';
-import { ActionIcon, Box, Container, Flex, Group, Text } from '@mantine/core';
-import { LogoIcon } from '@/src/assets/icons';
+import { ActionIcon, Box, Container, Flex, Group } from '@mantine/core';
 import SavingIndicator from '@/src/components/header/saving-indicator';
 import ThemeToggler from '@/src/components/theme-toggler';
 import { useStore } from '@/src/store';
 import ActionButtons from './action-buttons';
+import HeaderLogo from './header-logo';
 import SnippetName from './snippet-name';
 import UserMenu from './user-menu';
 import classes from './header.module.css';
@@ -15,13 +15,14 @@ import classes from './header.module.css';
 const Header = () => {
 
   const router = useRouter()
-  const goToPage = useStore((state) => state.goToPage)
 
-  const onLogoClick = () => {
-    if (router.asPath !== '/') {
-      goToPage(() => router.push('/'));
+  useEffect(() => {
+    let dividerPosition = 0;
+    if (router.asPath === '/snippets') {
+      dividerPosition = Math.round(window.innerWidth * 0.1);
     }
-  }
+    useStore.setState({ dividerPosition });
+  }, [router.asPath]);
 
 
   return (
@@ -29,26 +30,7 @@ const Header = () => {
       <Container fluid className={classes.mainSection}>
         <Group justify="space-between">
           <Flex align="center">
-            <Box className={classes.logoContainer}>
-              <Flex gap="xs" align="center" onClick={onLogoClick} style={{ cursor: 'pointer' }}>
-                <LogoIcon size={36} />
-                <Flex direction="column" gap="1px" visibleFrom="xs">
-                  <Text
-                    size="xl"
-                    lh="1.1"
-                    variant="gradient"
-                    component="span"
-                    gradient={{ from: '#7d4fc6', to: '#228be6', deg: 32 }}
-                    className={classes.logoText}
-                  >
-                    CODE FRAME
-                  </Text>
-                  <Text size="10px" c="dimmed" className={classes.logoSubText}>
-                    Code snippet image
-                  </Text>
-                </Flex>
-              </Flex>
-            </Box>
+            <HeaderLogo />
 
             <SnippetName />
           </Flex>

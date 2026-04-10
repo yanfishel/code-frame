@@ -1,4 +1,4 @@
-import React, { CSSProperties, memo, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, memo, useEffect, useMemo, useRef, useState } from 'react';
 import { SquareCodeIcon } from 'lucide-react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
@@ -75,13 +75,35 @@ const CodeArea = () => {
   const codeSettings = useStore((state) => state.codeSettings)
   const inputColor = useStore((state) => state.inputColor)
   const inputBackground = useStore((state) => state.inputBackground)
-  const flexBasisCode = useStore((state) => state.flexBasisCode)
+  const dividerPosition = useStore((state) => state.dividerPosition)
   const setSettings = useStore((state) => state.setSettings)
 
   const [inputCode, setInputCode] = useState<string>(code)
   const [inputHtml, setInputHtml] = useState<string>(html);
   const [offset, setOffset] = useState(0)
 
+
+  const areaWidth = useMemo(() => {
+    return `calc(50% + ${dividerPosition}px - 3px)`;
+  }, [dividerPosition]);
+
+
+  const highlightHandler = (code: string) => {
+    if (!languages[codeSettings.lang]){
+      console.error('Language not present:', codeSettings.lang);
+      return highlight(code, languages.text);
+    }
+    try {
+      return highlight(code, languages[codeSettings.lang]);
+    } catch (error) {
+      console.error('Error highlighting code:', error);
+      return highlight(code, 'plaintext');
+    }
+  }
+
+  const onChangeHandler = (code:string) => {
+    useStore.setState({ code });
+  };
 
 
   useEffect(() => {
@@ -114,10 +136,10 @@ const CodeArea = () => {
       className={classes.codeArea}
       style={
         {
-          width: flexBasisCode,
-          minWidth: flexBasisCode,
-          maxWidth: flexBasisCode,
-          flexBasis: flexBasisCode,
+          width: areaWidth,
+          minWidth: areaWidth,
+          maxWidth: areaWidth,
+          flexBasis: areaWidth,
           '--theme-font': `var(--font-${codeSettings.fontFamily})`,
           '--theme-color': inputColor,
           '--theme-background-color': inputBackground,
@@ -152,10 +174,8 @@ const CodeArea = () => {
           <Editor
             disabled={fetching}
             value={inputCode}
-            highlight={(code) => highlight(code, languages[codeSettings.lang])}
-            onValueChange={(code) => {
-              useStore.setState({ code });
-            }}
+            highlight={highlightHandler}
+            onValueChange={onChangeHandler}
           />
         </div>
       </div>

@@ -100,7 +100,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       renderImage: (isSaved = false) => {
-        const { canvas, html, code, imageSettings, codeSettings, editableSnippet, saveSnippet } = get();
+        const { canvas, html, imageSettings, codeSettings, editableSnippet, saveSnippet } = get();
 
         if (!canvas) {
           set({ rendering: false });
@@ -190,9 +190,9 @@ export const useStore = createWithEqualityFn<T_Store>()(
         set({ savingDebounce, abortController });
       },
 
-      goToPage: (fn) => {
+      goToPage: (target, route) => {
         set({ fetching: true });
-        fn();
+        route(target);
 
         /*if (!document.startViewTransition) {
           fn();
@@ -221,8 +221,6 @@ export const useStore = createWithEqualityFn<T_Store>()(
           selectedSnippet: null,
           editableSnippet: null,
           previewImageData: DEFAULT_STORE.previewImageData,
-          flexBasisCode: DEFAULT_STORE.flexBasisCode,
-          flexBasisPreview: DEFAULT_STORE.flexBasisPreview,
         },
       }),
     }

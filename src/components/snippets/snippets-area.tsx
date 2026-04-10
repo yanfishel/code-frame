@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { SquareCodeIcon } from 'lucide-react';
 import { Flex, Table, Text } from '@mantine/core';
 import { useElementSize } from '@mantine/hooks';
@@ -16,14 +16,17 @@ interface SnippetsAreaProps {
 }
 const SnippetsArea = ({ snippets, editHandler, deleteHandler }: SnippetsAreaProps) => {
   const { ref, height } = useElementSize();
-  const flexBasisCode = useStore((state) => state.flexBasisCode);
+  const dividerPosition = useStore((state) => state.dividerPosition);
+
+  const areaWidth = useMemo(() => `calc(50% + ${dividerPosition}px - 3px)`, [dividerPosition]);
+
 
   return (
     <Flex
       ref={ref}
       flex={1}
       direction="column"
-      style={{ width: flexBasisCode, minWidth: flexBasisCode, maxWidth: flexBasisCode }}
+      style={{ width: areaWidth, minWidth: areaWidth, maxWidth: areaWidth }}
     >
       <AreaHeader>
         <Flex gap="xs" align="center">

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import clsx from 'clsx';
 import { ImageIcon } from 'lucide-react';
 import { Box, Flex, Loader, LoadingOverlay, Text } from '@mantine/core';
@@ -12,14 +12,17 @@ import classes from './preview.module.css';
 
 
 const PreviewArea = () => {
-  const canvasRef = useRef(null);
 
-  const flexBasisPreview = useStore((state) => state.flexBasisPreview);
+  const canvasRef = useRef(null);
 
   const code = useStore((state) => state.code);
   const rendering = useStore((state) => state.rendering);
+  const dividerPosition = useStore((state) => state.dividerPosition);
   const imageSettings = useStore((state) => state.imageSettings);
   const previewImageData = useStore((state) => state.previewImageData);
+
+
+  const areaWidth = useMemo(() => `calc(50% - ${dividerPosition}px - 3px)`, [dividerPosition]);
 
 
   useEffect(() => {
@@ -37,10 +40,10 @@ const PreviewArea = () => {
     <div
       className={classes.previewArea}
       style={{
-        width: flexBasisPreview,
-        minWidth: flexBasisPreview,
-        maxWidth: flexBasisPreview,
-        flexBasis: flexBasisPreview,
+        width: areaWidth,
+        minWidth: areaWidth,
+        maxWidth: areaWidth,
+        flexBasis: areaWidth,
       }}
     >
       <AreaHeader>

@@ -11,6 +11,7 @@ export type T_Store = {
   saving: boolean;
   rendering: boolean;
   fetching: boolean;
+  dividerPosition: number;
   settingsOpened: boolean;
   id: string;
   name: string;
@@ -18,8 +19,6 @@ export type T_Store = {
   canvas: HTMLCanvasElement | null;
   code: string;
   html: string;
-  flexBasisCode: string;
-  flexBasisPreview: string;
   inputColor: string;
   inputBackground: string;
   codeSettings: T_CodeSettings;
@@ -50,7 +49,7 @@ export type T_Store = {
   resetImageSettings: () => void;
   reset: () => void;
   saveSnippet: () => Promise<void>;
-  goToPage:(fn:()=>void) => void;
+  goToPage: (target:string, route: (...args: any[]) => void) => void;
 };
 
 

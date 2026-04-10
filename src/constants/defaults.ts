@@ -30,7 +30,6 @@ function getValue(value: keyof MyInterface) {
 getValue('id'); // => 1
 getValue('count'); // => undefined`
 
-export const DEFAULT_AREA_WIDTH = 'calc(50% - 3px)'
 
 export const BASE_STORE = {
   wantToSave: false,
@@ -39,12 +38,11 @@ export const BASE_STORE = {
   settingsOpened: false,
   fetching: false,
   rendering: false,
+  dividerPosition: 0,
   selectedSnippet: null,
   editableSnippet: null,
   savingDebounce: null,
   abortController: null,
-  flexBasisCode: DEFAULT_AREA_WIDTH,
-  flexBasisPreview: DEFAULT_AREA_WIDTH,
   id: '',
   name: '',
   previewImageData: null,

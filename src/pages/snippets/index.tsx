@@ -3,8 +3,9 @@ import { useClerk, useUser } from '@clerk/nextjs';
 import { Flex, Loader } from '@mantine/core';
 import Layout from '@/src/components/layout';
 import Snippets from '@/src/components/snippets';
-import { SIGNIN_LIST_OPTIONS } from '@/src/constants';
 import SnippetsSignin from '@/src/components/snippets/snippets-signin';
+import { SIGNIN_LIST_OPTIONS } from '@/src/constants';
+import { useStore } from '@/src/store';
 
 
 const SnippetsPage = () => {
@@ -16,6 +17,9 @@ const SnippetsPage = () => {
   useEffect(() => {
     if(isLoaded && !isSignedIn){
       openSignIn(SIGNIN_LIST_OPTIONS);
+    } else if(isLoaded && isSignedIn){
+      const listDivider = Math.round(window.innerWidth * 0.1);
+      useStore.setState({ dividerPosition: listDivider });
     }
   }, [isLoaded, isSignedIn]);
 

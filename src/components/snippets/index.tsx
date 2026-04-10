@@ -4,10 +4,10 @@ import { toast } from 'react-toastify';
 import { Loader, LoadingOverlay } from '@mantine/core';
 import DraggableDivider from '@/src/components/draggable-divider';
 import PreviewArea from '@/src/components/preview-area';
-import SnippetsArea from '@/src/components/snippets/snippets-area';
 import { getSnippets } from '@/src/services';
 import { useStore } from '@/src/store';
 import { T_Snippet, T_SnippetData } from '@/src/types';
+import SnippetsArea from './snippets-area';
 import classes from './snippets.module.css';
 
 
@@ -24,15 +24,13 @@ const Snippets = () => {
 
 
   const fetchSnippets = async () => {
-    const snippets = await getSnippets(()=>{
-        toast.error('Failed to fetch snippets');
-      });
+    const snippets = await getSnippets(()=> toast.error('Failed to fetch snippets') )
     setSnippets(snippets)
   }
 
   const editHandler = (snippet:T_Snippet) => {
     editSnippet(snippet);
-    goToPage(() => router.push(`/snippets/${snippet.id}`))
+    goToPage(`/snippets/${snippet.id}`, router.push)
   }
 
   const deleteHandler = (snippet:T_Snippet) => {
@@ -55,14 +53,13 @@ const Snippets = () => {
 
 
   useEffect(() => {
+    let content = null;
     try {
-      const content =
-        snippets.length > 0 && snippets[0].content ? JSON.parse(snippets[0].content) : null;
-      selectSnippet(content);
+      content = snippets.length > 0 && snippets[0].content ? JSON.parse(snippets[0].content) : null;
     } catch (error) {
       console.error('Error in SnippetRow useEffect:', error);
-      selectSnippet(null);
     }
+    selectSnippet(content);
   }, [snippets]);
 
   useEffect(() => {

@@ -25,6 +25,7 @@ const SaveButton = () => {
   const html = useStore((state) => state.html);
   const isSaved = useStore((state) => state.isSaved);
   const wantToSave = useStore((state) => state.wantToSave);
+  const goToPage = useStore((state) => state.goToPage);
 
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -60,7 +61,7 @@ const SaveButton = () => {
     if (userRes.ok && snippetRes.ok) {
       const snippetResponse = await snippetRes.json();
       useStore.setState({ isSaved: true, wantToSave: false });
-      router.push(`/snippets/${snippetResponse.id}`, undefined, { shallow: true });
+      goToPage(`/snippets/${snippetResponse.id}`, router.push);
     } else {
       const error = snippetRes.ok ? userRes : snippetRes;
       toast.error('Snippet saving failed!');

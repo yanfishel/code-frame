@@ -1,8 +1,8 @@
 import React, { memo, MouseEvent, useCallback, useEffect, useState } from 'react';
-import { EditIcon, Trash2Icon, ViewIcon } from 'lucide-react';
+import { EditIcon, EyeIcon, Trash2Icon } from 'lucide-react';
 import { ActionIcon, Badge, Button, Code, Flex, Popover, Table, Text } from '@mantine/core';
 import { useClickOutside } from '@mantine/hooks';
-import { LANGUAGES } from '@/src/constants';
+import { LANGUAGES, LANGUAGES_COLOR } from '@/src/constants';
 import { useStore } from '@/src/store';
 import { T_Snippet, T_SnippetData } from '@/src/types';
 import classes from "./snippets.module.css";
@@ -73,7 +73,7 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
   return (
     <Table.Tr
       bg={isSelected ? 'var(--mantine-color-blue-light)' : undefined}
-      onClick={() => (row ? selectSnippet(row, true) : null)}
+      onClick={() => (row ? selectSnippet(row) : null)}
       style={{ cursor: 'pointer' }}
     >
       {row ? (
@@ -88,7 +88,11 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
             <Popover width="target" withArrow offset={0} opened={opened}>
               <Popover.Target>
                 <Flex style={{ position: 'relative' }}>
-                  <Code p="xs" className={classes.rowCodePreview} color="var(--mantine-color-blue-light)">
+                  <Code
+                    p="xs"
+                    className={classes.rowCodePreview}
+                    color="var(--mantine-color-blue-light)"
+                  >
                     <Text size="xs" lineClamp={1}>
                       {row.code}
                     </Text>
@@ -100,11 +104,11 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
                     onMouseEnter={() => setOpened(true)}
                     className={classes.previewCodeButton}
                   >
-                    <ViewIcon size={14} />
+                    <EyeIcon size={14} />
                   </ActionIcon>
                 </Flex>
               </Popover.Target>
-              <Popover.Dropdown className={classes.previewCodePopover} >
+              <Popover.Dropdown className={classes.previewCodePopover}>
                 <Code block c="blue.0" color="dark">
                   <Text size="xs">{row.code}</Text>
                 </Code>
@@ -112,7 +116,9 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
             </Popover>
           </Table.Td>
           <Table.Td align="center" style={{ textAlign: 'center' }}>
-            <Badge p="sm">{LANGUAGES[row.codeSettings.lang as keyof typeof LANGUAGES]}</Badge>
+            <Badge p="sm" color={LANGUAGES_COLOR[row.codeSettings.lang as keyof typeof LANGUAGES_COLOR]}>
+              {LANGUAGES[row.codeSettings.lang as keyof typeof LANGUAGES]}
+            </Badge>
           </Table.Td>
           <Table.Td align="right">{new Date(snippet.createdAt).toLocaleDateString()}</Table.Td>
           <Table.Td align="right">
