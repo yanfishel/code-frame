@@ -22,8 +22,8 @@
 }
 
 .backgroundTransparent {
-  background-color: transparent;
-  background-image: url('/images/transparent-bg.jpg');
+  /*background-color: transparent;
+  background-image: url('/images/transparent-bg.jpg');*/
 }
 
 .previewCanvas {
@@ -41,12 +41,14 @@
 
 .canvasTransparent {
   border: 1px solid var(--mantine-color-gray-4) !important;
+  background-color: transparent;
+  background-image: url('/images/transparent-bg.jpg');
 }
 
 .imageInfo {
   position: absolute;
-  top: 6px;
-  left: 6px;
+  bottom: 6px;
+  right: 6px;
   font-size: 11px;
   padding: 5px 15px;
   border-radius: 4px;

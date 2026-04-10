@@ -5,7 +5,7 @@ import { Loader, LoadingOverlay } from '@mantine/core';
 import DraggableDivider from '@/src/components/draggable-divider';
 import PreviewArea from '@/src/components/preview-area';
 import SnippetsArea from '@/src/components/snippets/snippets-area';
-import { BASE_STORE } from '@/src/constants';
+import { getSnippets } from '@/src/services';
 import { useStore } from '@/src/store';
 import { T_Snippet, T_SnippetData } from '@/src/types';
 import classes from './snippets.module.css';
@@ -17,31 +17,29 @@ const Snippets = () => {
 
   const fetching = useStore((state) => state.fetching);
   const selectSnippet = useStore((state) => state.selectSnippet);
-  const resetToStart = useStore((state) => state.resetToStart);
+  const editSnippet = useStore((state) => state.editSnippet);
+  const goToPage = useStore((state) => state.goToPage);
 
   const [snippets, setSnippets] = useState<T_SnippetData[]>([]);
 
+
   const fetchSnippets = async () => {
-    const response = await fetch('/api/snippets', { method: 'GET' });
-    if (response.ok) {
-      const snippets = await response.json();
-      setSnippets(snippets);
-    } else {
-      toast.error('Failed to fetch snippets');
-    }
-    useStore.setState({ ...BASE_STORE, fetching: false });
+    const snippets = await getSnippets(()=>{
+        toast.error('Failed to fetch snippets');
+      });
+    setSnippets(snippets)
   }
 
   const editHandler = (snippet:T_Snippet) => {
-    resetToStart()
-    router.push(`/snippets/${snippet.id}`)
+    editSnippet(snippet);
+    goToPage(() => router.push(`/snippets/${snippet.id}`))
   }
 
   const deleteHandler = (snippet:T_Snippet) => {
     useStore.setState({ fetching: true });
     fetch(`/api/snippets/${snippet.id}`, {
-      method: 'DELETE',
-    })
+        method: 'DELETE',
+      })
       .then(async () => {
         toast.success('Snippet deleted successfully!');
         await fetchSnippets();
@@ -57,20 +55,19 @@ const Snippets = () => {
 
 
   useEffect(() => {
-    useStore.setState({ fetching: true });
-    fetchSnippets()
-  }, []);
-
-
-  useEffect(() => {
     try {
-      const content = snippets.length > 0 && snippets[0].content ? JSON.parse(snippets[0].content) : null;
-      selectSnippet(content, true);
+      const content =
+        snippets.length > 0 && snippets[0].content ? JSON.parse(snippets[0].content) : null;
+      selectSnippet(content);
     } catch (error) {
       console.error('Error in SnippetRow useEffect:', error);
-      selectSnippet(null, true);
+      selectSnippet(null);
     }
   }, [snippets]);
+
+  useEffect(() => {
+    fetchSnippets()
+  }, []);
 
 
   return (

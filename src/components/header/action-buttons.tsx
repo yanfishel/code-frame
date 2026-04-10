@@ -6,8 +6,8 @@ import { HouseIcon, SquareChartGanttIcon } from 'lucide-react';
 import { Button } from '@mantine/core';
 import SaveButton from '@/src/components/header/save-button';
 import { SIGNUP_LIST_OPTIONS } from '@/src/constants';
-import { useStore } from '@/src/store';
 import classes from './header.module.css';
+import { useStore } from '@/src/store';
 
 
 const ActionButtons = () => {
@@ -17,22 +17,20 @@ const ActionButtons = () => {
   const { openSignUp } = useClerk();
   const { isSignedIn } = useUser();
 
-  const resetToStart = useStore((state) => state.resetToStart);
+  const goToPage = useStore((state) => state.goToPage);
 
 
   const onHomeClickHandler = () => {
-    resetToStart();
-    router.push('/');
+    goToPage(() => router.push('/'))
   };
 
   const onSnippetsClickHandler = useCallback(() => {
     if (isSignedIn) {
-      resetToStart();
-      router.push('/snippets');
+      goToPage(() => router.push('/snippets'))
     } else {
-      openSignUp(SIGNUP_LIST_OPTIONS);
+      openSignUp(SIGNUP_LIST_OPTIONS)
     }
-  }, [isSignedIn]);
+  }, [isSignedIn])
 
 
   return (

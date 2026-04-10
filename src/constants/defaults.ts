@@ -40,6 +40,7 @@ export const BASE_STORE = {
   fetching: false,
   rendering: false,
   selectedSnippet: null,
+  editableSnippet: null,
   savingDebounce: null,
   abortController: null,
   flexBasisCode: DEFAULT_AREA_WIDTH,
@@ -50,6 +51,7 @@ export const BASE_STORE = {
   inputColor: DEFAULT_THEME.fg,
   inputBackground: DEFAULT_THEME.bg,
   html: '',
+  code: '',
 };
 
 
@@ -57,7 +59,6 @@ export const DEFAULT_STORE = {
   ...BASE_STORE,
 
   canvas: null,
-  code: '', //DEFAULT_CODE
   user: null,
 
   codeSettings: {
@@ -91,8 +92,9 @@ export const DEFAULT_STORE = {
 export const DEFAULT_SNIPPET = {
   id: '',
   name: '',
-  selectedSnippet: null,
   html: '',
+  selectedSnippet: null,
+  editableSnippet: null,
   code: DEFAULT_CODE,
   codeSettings: DEFAULT_STORE.codeSettings,
   imageSettings: DEFAULT_STORE.imageSettings,

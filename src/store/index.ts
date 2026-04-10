@@ -2,7 +2,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { createWithEqualityFn } from 'zustand/traditional';
 import { BASE_STORE, DEFAULT_STORE, DEFAULT_THEME } from '@/src/constants';
 import { T_Store, T_Theme } from '@/src/types';
-import { mapStore, renderImage } from '@/src/util';
+import { isPlainObject, mapStore, renderImage } from '@/src/util';
 
 
 export const useStore = createWithEqualityFn<T_Store>()(
@@ -10,22 +10,46 @@ export const useStore = createWithEqualityFn<T_Store>()(
     (set, get) => ({
       ...(DEFAULT_STORE as T_Store),
 
-      selectSnippet: (snippet, render = false) => {
+      selectSnippet: (snippet) => {
         if (!snippet) {
-          set({ ...BASE_STORE, code: '' });
+          set({...BASE_STORE, fetching: false});
         } else {
           set({
-            id: snippet.id,
+            id: '',
             name: snippet.name,
             selectedSnippet: snippet,
+            editableSnippet: null,
             html: snippet.html,
-            code: snippet.code, // Trigger RenderImage
+            code: snippet.code,
             codeSettings: snippet.codeSettings,
             imageSettings: snippet.imageSettings,
+            inputColor: snippet.codeSettings.theme?.fg ?? '',
+            inputBackground: snippet.codeSettings.theme?.bg ?? '',
           });
         }
-        if (render) {
-          get().renderImage();
+        get().renderImage(true);
+      },
+
+      editSnippet: (snippet, silent = false) => {
+        if (!snippet) {
+          set({...BASE_STORE, fetching: false});
+        } else {
+          set({
+            isSaved: true,
+            id: snippet.id,
+            name: snippet.name,
+            selectedSnippet: null,
+            editableSnippet: snippet,
+            html: snippet.html,
+            code: snippet.code,
+            codeSettings: snippet.codeSettings,
+            imageSettings: snippet.imageSettings,
+            inputColor: snippet.codeSettings.theme?.fg ?? '',
+            inputBackground: snippet.codeSettings.theme?.bg ?? '',
+          });
+        }
+        if(!silent) {
+          get().renderImage(true);
         }
       },
 
@@ -37,8 +61,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       setSettings: (section, key, val) => {
-        const { codeSettings, imageSettings, renderImage } =
-          get();
+        const { codeSettings, imageSettings, renderImage } = get();
 
         if (section === 'code') {
           if (key === 'theme') {
@@ -66,26 +89,20 @@ export const useStore = createWithEqualityFn<T_Store>()(
             },
           });
         } else if (section === 'root') {
-          set({ [key]: val });
+          if (key === 'as-store-object' && isPlainObject(val)) {
+            set(val as Partial<T_Store>);
+          } else {
+            set({ [key]: val });
+          }
         }
 
         renderImage();
       },
 
-      setCanvas: (canvas) => {
-        set({ canvas });
-      },
+      renderImage: (isSaved = false) => {
+        const { canvas, html, code, imageSettings, codeSettings, editableSnippet, saveSnippet } = get();
 
-      setHtml: (html) => {
-        const { renderImage } = get();
-        set({ html, rendering: true });
-        renderImage();
-      },
-
-      renderImage: () => {
-        const { canvas, html, imageSettings, codeSettings, selectedSnippet, isSaved, saveSnippet } = get();
-
-        if (!canvas || !html) {
+        if (!canvas) {
           set({ rendering: false });
           return;
         }
@@ -93,13 +110,14 @@ export const useStore = createWithEqualityFn<T_Store>()(
         const previewImageData = renderImage({ canvas, html, imageSettings, codeSettings });
 
         set({
-          isSaved: false,
+          isSaved,
           fetching: false,
           rendering: false,
+          wantToSave: false,
           previewImageData,
         });
-        if (selectedSnippet && !isSaved) {
-          console.log(isSaved);
+
+        if (editableSnippet && !isSaved) {
           saveSnippet();
         }
       },
@@ -122,17 +140,19 @@ export const useStore = createWithEqualityFn<T_Store>()(
         get().renderImage();
       },
 
-      resetToStart: () => {
+      reset: () => {
         set({
           ...DEFAULT_STORE,
           rendering: true,
-          savingError: '',
         });
+        get().renderImage(true);
       },
 
       saveSnippet: async () => {
         const store = get();
-        if (!store.id || !store.user) {
+
+        if (!store.id || !store.user || !store.editableSnippet) {
+          set({ isSaved: true, saving: false, savingError: 'Snippet not found!' });
           return;
         }
         if (store.savingDebounce) {
@@ -153,26 +173,39 @@ export const useStore = createWithEqualityFn<T_Store>()(
               signal,
             });
             if (res.ok) {
-              set({ isSaved: true });
+              set({ isSaved: true, saving: false, abortController: null, savingDebounce: null });
             }
-          } catch (error:any) {
+          } catch (error: any) {
             if (error.name === 'AbortError') {
               return;
             }
-            set({  isSaved: false, savingError: 'Saving failed!' });
-          } finally {
-            set({ saving: false, abortController: null, savingDebounce: null });
+            set({
+              isSaved: false,
+              savingError: 'Saving failed!',
+              abortController: null,
+              savingDebounce: null,
+            });
           }
-
         }, 300);
         set({ savingDebounce, abortController });
-      }
+      },
+
+      goToPage: (fn) => {
+        set({ fetching: true });
+        fn();
+
+        /*if (!document.startViewTransition) {
+          fn();
+        } else {
+          document.startViewTransition(() => fn());
+        }*/
+      },
 
     }),
     {
       name: 'store-code-frame',
       storage: createJSONStorage(() => sessionStorage),
-      version: 2,
+      version: 1,
       partialize: (state) => ({
         ...state,
         ...{
@@ -185,6 +218,8 @@ export const useStore = createWithEqualityFn<T_Store>()(
           canvas: null,
           user: null,
           savingError: '',
+          selectedSnippet: null,
+          editableSnippet: null,
           previewImageData: DEFAULT_STORE.previewImageData,
           flexBasisCode: DEFAULT_STORE.flexBasisCode,
           flexBasisPreview: DEFAULT_STORE.flexBasisPreview,

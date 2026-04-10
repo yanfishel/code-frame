@@ -17,7 +17,7 @@ export default function HomePage() {
 
 
   useEffect(() => {
-    selectSnippet(DEFAULT_SNIPPET, true);
+    selectSnippet(DEFAULT_SNIPPET);
   }, []);
 
 

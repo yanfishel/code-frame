@@ -19,20 +19,23 @@ const SnippetPage = () => {
   const params = useParams();
 
   const fetching = useStore((state) => state.fetching);
-  const selectSnippet = useStore((state) => state.selectSnippet);
+  const editableSnippet = useStore((state) => state.editableSnippet);
+  const editSnippet = useStore((state) => state.editSnippet);
+  const renderImage = useStore((state) => state.renderImage);
+
 
   const { openSignIn } = useClerk();
   const { isLoaded, isSignedIn } = useUser();
 
 
   const fetchSnippet = async (snippetId: string) => {
+    useStore.setState({ fetching: true });
     const response = await fetch(`/api/snippets/${snippetId}`);
     if (response.ok) {
       const snippet = await response.json();
       try {
         const content = snippet.content ? JSON.parse(snippet.content) : null;
-        useStore.setState({ isSaved: true });
-        selectSnippet(content);
+        editSnippet(content);
       } catch (error) {
         toast.error('Failed to parse snippet data');
         useStore.setState({ ...BASE_STORE, fetching: false });
@@ -47,8 +50,11 @@ const SnippetPage = () => {
     if (isLoaded && !isSignedIn) {
       openSignIn(SIGNIN_LIST_OPTIONS);
     } else if (isLoaded && isSignedIn && params?.snippetId) {
-      useStore.setState({ fetching: true });
-      fetchSnippet(params.snippetId as string)
+      if (editableSnippet) {
+        renderImage(true);
+      } else {
+        fetchSnippet(params.snippetId as string);
+      }
     }
   }, [isLoaded, isSignedIn, params?.snippetId]);
 

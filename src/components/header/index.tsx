@@ -15,12 +15,12 @@ import classes from './header.module.css';
 const Header = () => {
 
   const router = useRouter()
-
-  const resetToStart = useStore((state) => state.resetToStart)
+  const goToPage = useStore((state) => state.goToPage)
 
   const onLogoClick = () => {
-    resetToStart();
-    router.push('/')
+    if (router.asPath !== '/') {
+      goToPage(() => router.push('/'));
+    }
   }
 
 
@@ -54,8 +54,8 @@ const Header = () => {
           </Flex>
 
           <Flex gap="md" align="center">
-            { router.asPath !== '/' && router.asPath !== '/snippets' &&
-            <SavingIndicator />
+            { (router.asPath !== '/' && router.asPath !== '/snippets') &&
+              <SavingIndicator />
             }
 
             <Flex align="center" gap="xs" className={classes.headerToolbar}>

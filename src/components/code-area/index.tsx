@@ -1,4 +1,4 @@
-import React, { CSSProperties, memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, memo, useEffect, useRef, useState } from 'react';
 import { SquareCodeIcon } from 'lucide-react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
@@ -68,36 +68,45 @@ const CodeArea = () => {
   const numbersRef = useRef<HTMLDivElement>(null)
   const htmlRef = useRef<HTMLDivElement>(null)
 
+  const fetching = useStore((state) => state.fetching)
   const code = useStore((state) => state.code)
+  const html = useStore((state) => state.html)
   const canvas = useStore((state) => state.canvas)
   const codeSettings = useStore((state) => state.codeSettings)
   const inputColor = useStore((state) => state.inputColor)
   const inputBackground = useStore((state) => state.inputBackground)
   const flexBasisCode = useStore((state) => state.flexBasisCode)
-  const setHtml = useStore((state) => state.setHtml)
+  const setSettings = useStore((state) => state.setSettings)
 
+  const [inputCode, setInputCode] = useState<string>(code)
+  const [inputHtml, setInputHtml] = useState<string>(html);
   const [offset, setOffset] = useState(0)
 
 
-  const updateHtml = useCallback(() => {
-    if (htmlRef.current) {
-      const html = htmlRef.current.querySelector('pre')?.innerHTML ?? '';
-      setHtml(html === '<br>' ? '' : html);
-    }
-  }, [htmlRef]);
-
 
   useEffect(() => {
-    if (canvas) {
-      updateHtml();
+    if( html !== inputHtml){
+      setSettings('root', 'html', inputHtml);
     }
-  }, [canvas, code, codeSettings.lang]);
+  }, [inputHtml, html]);
+
+  useEffect(() => {
+    if (canvas && htmlRef.current) {
+      const html = htmlRef.current.querySelector('pre')?.innerHTML ?? '';
+      setInputHtml(html === '<br>' ? '' : html);
+    }
+  }, [canvas, htmlRef, inputCode, codeSettings.lang]);
 
   useEffect(() => {
     if (numbersRef.current) {
       setOffset(numbersRef.current.offsetWidth);
     }
   }, [codeSettings.lineNumbers, codeSettings.showNumbers]);
+
+
+  useEffect(() => {
+    setInputCode(code);
+  }, [code]);
 
 
   return (
@@ -141,9 +150,12 @@ const CodeArea = () => {
             </div>
           )}
           <Editor
+            disabled={fetching}
+            value={inputCode}
             highlight={(code) => highlight(code, languages[codeSettings.lang])}
-            onValueChange={(code) => useStore.setState({ code })}
-            value={code}
+            onValueChange={(code) => {
+              useStore.setState({ code });
+            }}
           />
         </div>
       </div>

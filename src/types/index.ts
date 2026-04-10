@@ -7,7 +7,7 @@ export type T_Store = {
   abortController: AbortController | null;
   wantToSave: boolean;
   isSaved: boolean;
-  savingError: string
+  savingError: string;
   saving: boolean;
   rendering: boolean;
   fetching: boolean;
@@ -26,21 +26,31 @@ export type T_Store = {
   imageSettings: T_ImageSettings;
   previewImageData: T_ImageData | null;
   selectedSnippet: T_Snippet | null;
-  selectSnippet: (snippet: T_Snippet | null, render?: boolean) => void;
+  editableSnippet: T_Snippet | null;
+  selectSnippet: (snippet: T_Snippet | null) => void;
+  editSnippet: (snippet: T_Snippet | null, silent?: boolean) => void;
   setUser: (user: T_User | null) => void;
   setSettings: (
     section: string,
     key: string,
-    val: boolean | string | number | T_Theme | T_Cords | T_Background | T_Gradient | T_FrameStyle
+    val:
+      | boolean
+      | string
+      | number
+      | T_Theme
+      | T_Cords
+      | T_Background
+      | T_Gradient
+      | T_FrameStyle
+      | {}
   ) => void;
   setTheme: (theme: T_Theme) => void;
-  setCanvas: (canvas: HTMLCanvasElement) => void;
-  setHtml: (html: string) => void;
-  renderImage: () => void;
+  renderImage: (isSaved?: boolean) => void;
   resetCodeSettings: () => void;
   resetImageSettings: () => void;
-  resetToStart: () => void;
-  saveSnippet:() => Promise<void>;
+  reset: () => void;
+  saveSnippet: () => Promise<void>;
+  goToPage:(fn:()=>void) => void;
 };
 
 

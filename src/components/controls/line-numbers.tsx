@@ -12,21 +12,22 @@ const LineNumbers = () => {
   const codeSettings = useStore((state) => state.codeSettings);
   const setSettings = useStore((state) => state.setSettings);
 
-  const updateLineNumbers = useCallback(() => {
+  const updateLineNumbers = (code:string) => {
     const lineNumbers = new Array(code.split('\n').length)
       .fill('')
       .map((_, idx) => idx + +firstNumber)
       .join('\n');
     setSettings('code', 'lineNumbers', lineNumbers);
-  }, [code])
+  }
 
   useEffect(() => {
     if (codeSettings.showNumbers) {
-      updateLineNumbers();
+      updateLineNumbers(code);
     } else {
       setSettings('code', 'lineNumbers', '');
     }
-  }, [codeSettings.showNumbers, firstNumber]);
+  }, [code, codeSettings.showNumbers, firstNumber]);
+
 
 
   return (

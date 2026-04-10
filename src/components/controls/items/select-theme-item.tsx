@@ -11,7 +11,7 @@ interface SelectThemeItemProps extends Omit<T_Theme, 'transparent'> {
 }
 const SelectThemeItem = (itemTheme: SelectThemeItemProps) => {
 
-  const theme = useStore((state) => state.theme);
+  const codeSettings = useStore((state) => state.codeSettings);
 
 
   return (
@@ -25,7 +25,7 @@ const SelectThemeItem = (itemTheme: SelectThemeItemProps) => {
       className={clsx(
         classes.themeSwitcher,
         itemTheme.transparent && classes.themeSwitcherValue,
-        theme?.theme_name === itemTheme.theme_name &&
+        codeSettings.theme?.theme_name === itemTheme.theme_name &&
           !itemTheme.transparent &&
           classes.themeSwitcherActive
       )}

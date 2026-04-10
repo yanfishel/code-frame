@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { CheckIcon, TriangleAlertIcon } from 'lucide-react';
-import { Badge, Flex, Loader, Text, useMantineColorScheme } from '@mantine/core';
+import { Badge, Loader,  useMantineColorScheme } from '@mantine/core';
 import { useStore } from '@/src/store';
 
 
@@ -10,7 +10,7 @@ const SavingIndicator = () => {
 
   const isSaved = useStore(state => state.isSaved)
   const saving = useStore(state => state.saving)
-  const selectedSnippet = useStore(state => state.selectedSnippet)
+  const editableSnippet = useStore(state => state.editableSnippet)
 
   const color = useMemo(() => {
     return saving ? 'blue.7' : isSaved ? 'teal.8' : 'red';
@@ -29,7 +29,7 @@ const SavingIndicator = () => {
 
   return (
     <>
-      {selectedSnippet && (
+      {editableSnippet && (
         <Badge autoContrast size="sm" h={24} color={color} leftSection={icon}>
           {saving ? 'Saving...' : isSaved ? 'Saved' : 'Not saved'}
         </Badge>

@@ -60,7 +60,6 @@ const SaveButton = () => {
     if (userRes.ok && snippetRes.ok) {
       const snippetResponse = await snippetRes.json();
       useStore.setState({ isSaved: true, wantToSave: false });
-      toast.success('Snippet saved successfully!', { autoClose: 3000 });
       router.push(`/snippets/${snippetResponse.id}`, undefined, { shallow: true });
     } else {
       const error = snippetRes.ok ? userRes : snippetRes;
@@ -69,10 +68,11 @@ const SaveButton = () => {
     }
 
     setProcessing(false);
-  }, [user, code, html, name]);
+  }, [user, code, html]);
 
   const onSaveHandler = useCallback(() => {
     if (isSignedIn) {
+      useStore.setState({ name: '' });
       open();
     } else {
       useStore.setState({ wantToSave: true });

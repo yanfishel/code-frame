@@ -20,12 +20,15 @@ const PreviewArea = () => {
   const rendering = useStore((state) => state.rendering);
   const imageSettings = useStore((state) => state.imageSettings);
   const previewImageData = useStore((state) => state.previewImageData);
-  const setCanvas = useStore((state) => state.setCanvas);
 
 
   useEffect(() => {
     if (canvasRef.current) {
-      setCanvas( canvasRef.current );
+      useStore.setState({ canvas: canvasRef.current });
+    }
+
+    return () => {
+      useStore.setState({ canvas: null });
     }
   }, [canvasRef]);
 
