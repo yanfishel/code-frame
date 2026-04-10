@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { ActionIcon, MantineColorScheme, Menu, Tooltip, useMantineColorScheme } from '@mantine/core';
 import { THEME_MENU_ITEMS } from './theme-toggler-data';
 
@@ -9,6 +9,14 @@ const ThemeToggler = () => {
 
   const [scheme, setScheme] = useState<MantineColorScheme>('auto');
 
+
+  const toggleScheme = (scheme: MantineColorScheme) => {
+    if (!document.startViewTransition) {
+      setColorScheme(scheme);
+      return;
+    }
+    document.startViewTransition(() => setColorScheme(scheme));
+  }
 
   useEffect(() => setScheme(colorScheme), [colorScheme]);
 
@@ -36,7 +44,7 @@ const ThemeToggler = () => {
               <Menu.Item
                 key={item.value}
                 disabled={colorScheme === item.value}
-                onClick={() => setColorScheme(item.value as MantineColorScheme)}
+                onClick={() => toggleScheme(item.value as MantineColorScheme)}
                 leftSection={item.icon}
               >
                 {item.label}
@@ -45,7 +53,7 @@ const ThemeToggler = () => {
           })}
         </Menu.Dropdown>
       </Menu>
-  );
+  )
 }
 
-export default ThemeToggler;
+export default memo(ThemeToggler)
