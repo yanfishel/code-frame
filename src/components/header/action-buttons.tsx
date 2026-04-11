@@ -2,11 +2,11 @@ import React, { memo, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useClerk, useUser } from '@clerk/nextjs';
-import { HouseIcon, SquareChartGanttIcon } from 'lucide-react';
+import { PlusIcon, SquareChartGanttIcon } from 'lucide-react';
 import { Button } from '@mantine/core';
-import SaveButton from '@/src/components/header/save-button';
-import { SIGNUP_LIST_OPTIONS } from '@/src/constants';
+import { SIGNUP_LIST_OPTIONS, SNIPPETS_PATH } from '@/src/constants';
 import { useStore } from '@/src/store';
+import SaveButton from './save-button';
 import classes from './header.module.css';
 
 
@@ -26,41 +26,43 @@ const ActionButtons = () => {
 
   const onSnippetsClickHandler = useCallback(() => {
     if (isSignedIn) {
-      goToPage('/snippets', router.push);
+      if (router.asPath !== SNIPPETS_PATH) {
+        goToPage(SNIPPETS_PATH, router.push);
+      }
     } else {
       openSignUp(SIGNUP_LIST_OPTIONS)
     }
-  }, [isSignedIn])
+  }, [isSignedIn, router.asPath])
 
 
   return (
     <>
-      {pathname === '/' && <SaveButton />}
+      {pathname !== SNIPPETS_PATH && <SaveButton />}
 
-      {pathname !== '/' && (
+      {pathname === SNIPPETS_PATH && (
+        <Button
+          size="xs"
+          radius="sm"
+          onClick={onHomeClickHandler}
+          leftSection={<PlusIcon size={14} />}
+          className={classes.toolbarButton}
+        >
+          New snippet
+        </Button>
+      )}
+
+      {isSignedIn && (
         <Button
           size="xs"
           variant="default"
           radius="sm"
-          onClick={onHomeClickHandler}
-          leftSection={<HouseIcon size={14} />}
+          onClick={onSnippetsClickHandler}
+          leftSection={<SquareChartGanttIcon size={14} />}
           className={classes.toolbarButton}
         >
-          Main page
+          Your snippets
         </Button>
       )}
-
-      <Button
-        size="xs"
-        variant="default"
-        radius="sm"
-        disabled={pathname === '/snippets'}
-        onClick={onSnippetsClickHandler}
-        leftSection={<SquareChartGanttIcon size={14} />}
-        className={classes.toolbarButton}
-      >
-        Your snippets
-      </Button>
     </>
   );
 

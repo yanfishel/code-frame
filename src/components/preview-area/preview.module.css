@@ -45,10 +45,25 @@
   background-image: url('/images/transparent-bg.jpg');
 }
 
+.imageName {
+  position: absolute;
+  top: 6px;
+  left: var(--mantine-spacing-md);
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 7px 18px;
+  border-radius: 4px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .imageInfo {
   position: absolute;
   bottom: 6px;
-  right: 6px;
+  right: var(--mantine-spacing-md);
   font-size: 11px;
   padding: 5px 15px;
   border-radius: 4px;

@@ -10,6 +10,7 @@ import Layout from '@/src/components/layout';
 import PreviewArea from '@/src/components/preview-area';
 import SnippetsSignin from '@/src/components/snippets/snippets-signin';
 import { BASE_STORE, SIGNIN_LIST_OPTIONS } from '@/src/constants';
+import { getSnippet } from '@/src/services';
 import { useStore } from '@/src/store';
 import classes from '@/src/styles/main.module.css';
 
@@ -30,9 +31,11 @@ const SnippetPage = () => {
 
   const fetchSnippet = async (snippetId: string) => {
     useStore.setState({ fetching: true });
-    const response = await fetch(`/api/snippets/${snippetId}`);
-    if (response.ok) {
-      const snippet = await response.json();
+    const snippet = await getSnippet(snippetId, (err) => {
+      toast.error(err);
+      useStore.setState({ ...BASE_STORE, fetching: false });
+    });
+    if (snippet){
       try {
         const content = snippet.content ? JSON.parse(snippet.content) : null;
         editSnippet(content);
@@ -40,9 +43,6 @@ const SnippetPage = () => {
         toast.error('Failed to parse snippet data');
         useStore.setState({ ...BASE_STORE, fetching: false });
       }
-    } else {
-      toast.error('Failed to fetch snippets');
-      useStore.setState({ ...BASE_STORE, fetching: false });
     }
   }
 

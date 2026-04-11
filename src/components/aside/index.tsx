@@ -1,10 +1,11 @@
 import React from 'react';
 import clsx from 'clsx';
 import { Overlay, Paper } from '@mantine/core';
-import AsideHeader from '@/src/components/aside/aside-header';
 import { useStore } from '@/src/store';
+import AsideHeader from './aside-header';
 import CodeSettings from './code-settings';
 import ImageSettings from './image-settings';
+import SnippetSettings from './snippet-settings';
 import classes from './aside.module.css';
 
 
@@ -16,6 +17,7 @@ const Aside = () => {
     <>
       <Paper className={clsx(classes.asideControl, settingsOpened && classes.asideControl_opened)}>
         <AsideHeader />
+        <SnippetSettings />
         <CodeSettings />
         <ImageSettings />
       </Paper>

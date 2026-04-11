@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useClerk, useUser } from '@clerk/nextjs';
-import { HardDriveDownload } from 'lucide-react';
+import { CheckCheckIcon, ChevronDownIcon, PlusIcon, SaveAllIcon, SaveIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { v4 as uuid } from 'uuid';
-import { Box, Button, Flex, Modal, TextInput } from '@mantine/core';
+import { Box, Button, Divider, Flex, Menu, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import classes from '@/src/components/header/header.module.css';
 import { SIGNUP_OPTIONS } from '@/src/constants';
 import { useStore } from '@/src/store';
-import { mapStore } from '@/src/util';
+import classes from './header.module.css';
 
 
 const SaveButton = () => {
@@ -19,73 +17,94 @@ const SaveButton = () => {
 
   const router = useRouter();
 
-  const store = useStore((state) => state);
+  const id = useStore((state) => state.id);
+  const name = useStore((state) => state.name);
   const code = useStore((state) => state.code);
   const user = useStore((state) => state.user);
   const html = useStore((state) => state.html);
   const isSaved = useStore((state) => state.isSaved);
   const wantToSave = useStore((state) => state.wantToSave);
+  const editableSnippet = useStore((state) => state.editableSnippet);
+  const saveSnippet = useStore((state) => state.saveSnippet);
+  const updateSnippet = useStore((state) => state.updateSnippet);
   const goToPage = useStore((state) => state.goToPage);
 
   const [opened, { open, close }] = useDisclosure(false);
 
-  const name = useStore((state) => state.name);
   const [processing, setProcessing] = useState(false);
+  const [inputName, setInputName] = useState(name);
 
 
-  const onSave = useCallback(async () => {
+  const updateHandler = async () => {
     if (!user || !code || !html) {
       return;
     }
-
-    close();
-
     setProcessing(true);
-    const data = mapStore(store);
-
-    if (!data.id) {
-      data.id = uuid();
+    const snippet = await updateSnippet((err) =>
+      toast.error(`Snippet saving failed! ${err ? err : 'Unknown error'}`)
+    );
+    if (snippet) {
+      toast.success('Snippet saved successfully!', { autoClose:2000 })
     }
-
-    const [userRes, snippetRes] = await Promise.all([
-      fetch(`/api/users/${user.userId}`, {
-        method: 'POST',
-        body: JSON.stringify(user),
-      }),
-      fetch(`/api/snippets/${data.id}`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-      }),
-    ]);
-
-    if (userRes.ok && snippetRes.ok) {
-      const snippetResponse = await snippetRes.json();
-      useStore.setState({ isSaved: true, wantToSave: false });
-      goToPage(`/snippets/${snippetResponse.id}`, router.push);
-    } else {
-      const error = snippetRes.ok ? userRes : snippetRes;
-      toast.error('Snippet saving failed!');
-      console.error(error);
-    }
-
     setProcessing(false);
-  }, [user, code, html]);
+  }
 
-  const onSaveHandler = useCallback(() => {
+  const onSave = useCallback(async () => {
+    if (!user || !code || !html || !inputName) {
+      return;
+    }
+    close();
+    setProcessing(true);
+    useStore.setState({ name: inputName });
+    const snippet = await saveSnippet((err) =>
+      toast.error(`Snippet saving failed! ${err ? err : 'Unknown error'}`)
+    );
+    if (snippet) {
+      goToPage(`/snippets/${snippet.id}`, router.push);
+    }
+    setProcessing(false);
+  }, [user, code, html, inputName]);
+
+  const onSaveHandler = () => {
+    if (isSaved){
+      return
+    }
+    useStore.setState({ wantToSave: true, name: inputName });
     if (isSignedIn) {
-      useStore.setState({ name: '' });
-      open();
+      if (editableSnippet && id) {
+        updateHandler();
+      } else {
+        open();
+      }
     } else {
-      useStore.setState({ wantToSave: true });
       openSignUp(SIGNUP_OPTIONS);
     }
-  }, [isSignedIn]);
+  }
+
+  const onSaveAsHandler = () => {
+    useStore.setState({ wantToSave: true });
+    if (isSignedIn) {
+      useStore.setState({ name: inputName });
+      open();
+    } else {
+      openSignUp(SIGNUP_OPTIONS);
+    }
+  }
 
 
   const onCloseHandler = () => {
     useStore.setState({ wantToSave: false });
+    setInputName(name);
     close();
   };
+
+  const buttonIcon = useMemo(() =>
+      isSaved ? <CheckCheckIcon size={18} /> : <SaveIcon size={14} />,
+    [isSaved]);
+
+  const buttonLabel = useMemo(() =>
+      isSaved ? 'Saved' : router.asPath.includes('/snippets') ? 'Save' : 'Save snippet',
+    [isSaved, router.asPath]);
 
 
   useEffect(() => {
@@ -94,24 +113,61 @@ const SaveButton = () => {
     }
   }, [user, wantToSave]);
 
+  useEffect(() => {
+    setInputName(name)
+  }, [name])
+
 
   return (
     <>
-      <Button
-        size="xs"
-        variant="primary"
-        radius="sm"
-        disabled={isSaved || !code}
-        loading={processing}
-        leftSection={<HardDriveDownload size={14} />}
-        onClick={onSaveHandler}
-        className={classes.toolbarButton}
-      >
-        Save{' '}
-        <Box visibleFrom="xs" style={{ marginLeft: '6px' }}>
-          snippet
-        </Box>
-      </Button>
+      <Button.Group >
+        <Button
+          size="xs"
+          flex={1}
+          variant={isSaved ? 'outline' : 'filled'}
+          area-label={buttonLabel}
+          loading={processing}
+          leftSection={buttonIcon}
+          onClick={onSaveHandler}
+          className={classes.toolbarButton}
+        >
+          {buttonLabel}
+        </Button>
+
+        {/* -- SAVE AS DROPDOWN  */}
+        {router.asPath !== '/' && (
+          <Menu
+            id="preview-download-menu"
+            position="bottom-end"
+            trigger="hover"
+            shadow="md"
+            transitionProps={{ transition: 'pop-top-right' }}
+          >
+            <Menu.Target>
+              <Button
+                area-label="Save As Menu"
+                title="Save As menu"
+                size="xs"
+                variant={isSaved ? 'outline' : 'filled'}
+                className={classes.toolbarButton}
+                styles={{ root: { paddingInline: '5px', borderLeft: 0 } }}
+              >
+                <ChevronDownIcon size={14} />
+              </Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item leftSection={<PlusIcon size={16} />} onClick={()=>goToPage('/', router.push)}>
+                New snippet
+              </Menu.Item>
+              <Divider />
+              <Menu.Item leftSection={<SaveAllIcon size={16} />} onClick={onSaveAsHandler}>
+                Save snippet as ...
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        )}
+      </Button.Group>
 
       <Modal
         opened={opened}
@@ -124,10 +180,10 @@ const SaveButton = () => {
           <TextInput
             data-autofocus
             label="Snippet name"
-            value={name}
+            value={inputName}
             placeholder="Snippet name"
             mt="md"
-            onChange={(e) => useStore.setState({ name: e.target.value })}
+            onChange={(e) => setInputName(e.target.value)}
           />
         </Box>
         <Flex justify="flex-end" gap="md" mt="md">
@@ -143,4 +199,4 @@ const SaveButton = () => {
   );
 };
 
-export default SaveButton;
+export default memo(SaveButton)

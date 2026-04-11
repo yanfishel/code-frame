@@ -20,6 +20,7 @@ const PreviewArea = () => {
   const dividerPosition = useStore((state) => state.dividerPosition);
   const imageSettings = useStore((state) => state.imageSettings);
   const previewImageData = useStore((state) => state.previewImageData);
+  const selectedSnippet = useStore((state) => state.selectedSnippet);
 
 
   const areaWidth = useMemo(() => `calc(50% - ${dividerPosition}px - 3px)`, [dividerPosition]);
@@ -74,6 +75,10 @@ const PreviewArea = () => {
           )}
           style={!code ? { opacity: 0 } : {}}
         />
+
+        {selectedSnippet && selectedSnippet.name && (
+          <Box className={classes.imageName}>{selectedSnippet.name}</Box>
+        )}
 
         {previewImageData && (
           <Box className={classes.imageInfo}>

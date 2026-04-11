@@ -40,25 +40,23 @@ const UserMenu = () => {
       </Tooltip>
     </div>
   ) : (
-    <Menu shadow="md" position="bottom-end" transitionProps={{ transition: 'pop-top-right' }}>
+    <Menu shadow="md" position="bottom-end" trigger="hover" transitionProps={{ transition: 'pop-top-right' }}>
       <Menu.Target>
-        <Tooltip label="User menu" withArrow position="bottom">
-          <ActionIcon
-            size={30}
-            radius="sm"
+        <ActionIcon
+          size={30}
+          radius="sm"
+          variant="default"
+          aria-label="User menu"
+          style={{ padding: 0, boxShadow: 'var(--mantine-shadow-xs)' }}
+        >
+          <Avatar
+            src={user?.imageUrl ?? ''}
             variant="default"
-            aria-label="User menu"
-            style={{ padding: 0, boxShadow: 'var(--mantine-shadow-xs)' }}
-          >
-            <Avatar
-              src={user?.imageUrl ?? ''}
-              variant="default"
-              alt={user?.fullName ?? 'User'}
-              radius="sm"
-              size={30}
-            />
-          </ActionIcon>
-        </Tooltip>
+            alt={user?.fullName ?? 'User'}
+            radius="sm"
+            size={30}
+          />
+        </ActionIcon>
       </Menu.Target>
 
       <Menu.Dropdown>

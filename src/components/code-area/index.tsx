@@ -78,7 +78,7 @@ const CodeArea = () => {
   const dividerPosition = useStore((state) => state.dividerPosition)
   const setSettings = useStore((state) => state.setSettings)
 
-  const [inputCode, setInputCode] = useState<string>(code)
+  //const [inputCode, setInputCode] = useState<string>(code)
   const [inputHtml, setInputHtml] = useState<string>(html);
   const [offset, setOffset] = useState(0)
 
@@ -117,7 +117,7 @@ const CodeArea = () => {
       const html = htmlRef.current.querySelector('pre')?.innerHTML ?? '';
       setInputHtml(html === '<br>' ? '' : html);
     }
-  }, [canvas, htmlRef, inputCode, codeSettings.lang]);
+  }, [canvas, htmlRef, code, codeSettings.lang]);
 
   useEffect(() => {
     if (numbersRef.current) {
@@ -125,10 +125,6 @@ const CodeArea = () => {
     }
   }, [codeSettings.lineNumbers, codeSettings.showNumbers]);
 
-
-  useEffect(() => {
-    setInputCode(code);
-  }, [code]);
 
 
   return (
@@ -173,7 +169,7 @@ const CodeArea = () => {
           )}
           <Editor
             disabled={fetching}
-            value={inputCode}
+            value={code}
             highlight={highlightHandler}
             onValueChange={onChangeHandler}
           />

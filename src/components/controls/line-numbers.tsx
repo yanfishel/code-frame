@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Box, Flex, NumberInput, Switch } from '@mantine/core';
 import { ROUNDED_SWITCH_STYLES } from '@/src/constants';
 import { useStore } from '@/src/store';
@@ -27,7 +27,6 @@ const LineNumbers = () => {
       setSettings('code', 'lineNumbers', '');
     }
   }, [code, codeSettings.showNumbers, firstNumber]);
-
 
 
   return (

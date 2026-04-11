@@ -1,6 +1,8 @@
+import { v4 as uuid } from 'uuid';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { createWithEqualityFn } from 'zustand/traditional';
 import { BASE_STORE, DEFAULT_STORE, DEFAULT_THEME } from '@/src/constants';
+import { createSnippet, saveSnippet } from '@/src/services';
 import { T_Store, T_Theme } from '@/src/types';
 import { isPlainObject, mapStore, renderImage } from '@/src/util';
 
@@ -12,7 +14,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
 
       selectSnippet: (snippet) => {
         if (!snippet) {
-          set({...BASE_STORE, fetching: false});
+          set({ ...BASE_STORE, fetching: false });
         } else {
           set({
             id: '',
@@ -32,7 +34,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
 
       editSnippet: (snippet, silent = false) => {
         if (!snippet) {
-          set({...BASE_STORE, fetching: false});
+          set({ ...BASE_STORE, fetching: false });
         } else {
           set({
             isSaved: true,
@@ -48,7 +50,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
             inputBackground: snippet.codeSettings.theme?.bg ?? '',
           });
         }
-        if(!silent) {
+        if (!silent) {
           get().renderImage(true);
         }
       },
@@ -100,7 +102,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       renderImage: (isSaved = false) => {
-        const { canvas, html, imageSettings, codeSettings, editableSnippet, saveSnippet } = get();
+        const { canvas, html, imageSettings, codeSettings } = get();
 
         if (!canvas) {
           set({ rendering: false });
@@ -113,13 +115,8 @@ export const useStore = createWithEqualityFn<T_Store>()(
           isSaved,
           fetching: false,
           rendering: false,
-          wantToSave: false,
           previewImageData,
         });
-
-        if (editableSnippet && !isSaved) {
-          saveSnippet();
-        }
       },
 
       resetCodeSettings: () => {
@@ -148,7 +145,46 @@ export const useStore = createWithEqualityFn<T_Store>()(
         get().renderImage(true);
       },
 
-      saveSnippet: async () => {
+      saveSnippet: async (errCallback) => {
+        const store = get();
+        const { user } = store;
+        if (!user) {
+          set({ isSaved: true, saving: false, savingError: 'User not found!' });
+          return;
+        }
+        set({ saving: true, savingError: '' });
+        const data = mapStore(store);
+
+        data.id = uuid();
+        const snippet = await createSnippet(user, data, errCallback ? errCallback : undefined);
+        if (!snippet) {
+          set({ saving: false, isSaved: false, savingError: 'Failed to create snippet' });
+          return;
+        }
+        set({ id: snippet.id, isSaved: true, saving: false, wantToSave: false });
+        return snippet;
+      },
+
+      updateSnippet: async (errCallback) => {
+        const store = get();
+
+        if (!store.id || !store.user || !store.editableSnippet) {
+          set({ isSaved: true, saving: false, savingError: 'Snippet not found!' });
+          return;
+        }
+        set({ saving: true, savingError: '' });
+        const data = mapStore(store);
+
+        const snippet = await saveSnippet(data, errCallback ? errCallback : undefined);
+        if (!snippet) {
+          set({ saving: false, isSaved: false, savingError: 'Failed to Update snippet' });
+          return;
+        }
+        set({ id: snippet.id, isSaved: true, saving: false, wantToSave: false });
+        return snippet;
+      },
+
+      saveOnChange: async () => {
         const store = get();
 
         if (!store.id || !store.user || !store.editableSnippet) {
@@ -173,7 +209,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
               signal,
             });
             if (res.ok) {
-              set({ isSaved: true, saving: false, abortController: null, savingDebounce: null });
+              set({ isSaved: true, saving: false, wantToSave: false, abortController: null, savingDebounce: null });
             }
           } catch (error: any) {
             if (error.name === 'AbortError') {
@@ -181,7 +217,7 @@ export const useStore = createWithEqualityFn<T_Store>()(
             }
             set({
               isSaved: false,
-              savingError: 'Saving failed!',
+              savingError: `Saving failed! ${error.message ?? 'Unknown error'}`,
               abortController: null,
               savingDebounce: null,
             });
@@ -200,7 +236,6 @@ export const useStore = createWithEqualityFn<T_Store>()(
           document.startViewTransition(() => fn());
         }*/
       },
-
     }),
     {
       name: 'store-code-frame',

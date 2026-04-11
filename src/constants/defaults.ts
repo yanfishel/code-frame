@@ -3,6 +3,8 @@ import { DEFAULT_SHADOW_COLOR, GRADIENTS, SOLID_COLORS } from './colors';
 import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from './enums';
 
 
+export const SNIPPETS_PATH = '/snippets';
+
 export const DEFAULT_THEME = THEMES[0]
 
 export const DEFAULT_WATERMARK = `codeframe.pro`

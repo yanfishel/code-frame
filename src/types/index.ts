@@ -48,8 +48,10 @@ export type T_Store = {
   resetCodeSettings: () => void;
   resetImageSettings: () => void;
   reset: () => void;
-  saveSnippet: () => Promise<void>;
-  goToPage: (target:string, route: (...args: any[]) => void) => void;
+  saveSnippet: (errCallback?: (err: string) => void) => Promise<T_SnippetData | undefined>;
+  updateSnippet: (errCallback?: (err: string) => void) => Promise<T_SnippetData | undefined>;
+  saveOnChange: () => Promise<void>;
+  goToPage: (target: string, route: (...args: any[]) => void) => void;
 };
 
 
