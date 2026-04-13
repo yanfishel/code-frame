@@ -12,12 +12,13 @@ import classes from './aside.module.css';
 const Aside = () => {
 
   const settingsOpened = useStore((state) => state.settingsOpened);
+  const editableSnippet = useStore((state) => state.editableSnippet);
 
   return (
     <>
       <Paper className={clsx(classes.asideControl, settingsOpened && classes.asideControl_opened)}>
         <AsideHeader />
-        <SnippetSettings />
+        {editableSnippet && <SnippetSettings /> }
         <CodeSettings />
         <ImageSettings />
       </Paper>

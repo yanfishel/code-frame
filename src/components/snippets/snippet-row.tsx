@@ -80,7 +80,7 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
         <>
           <Table.Td align="right">{rowNum}</Table.Td>
           <Table.Td>
-            <Text size="sm" lineClamp={2}>
+            <Text size="sm" fw={isSelected?'bold':'normal'} lineClamp={2}>
               {row.name}
             </Text>
           </Table.Td>

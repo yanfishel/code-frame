@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { useClerk, useUser } from '@clerk/nextjs';
 import { toast } from 'react-toastify';
@@ -9,10 +9,11 @@ import DraggableDivider from '@/src/components/draggable-divider';
 import Layout from '@/src/components/layout';
 import PreviewArea from '@/src/components/preview-area';
 import SnippetsSignin from '@/src/components/snippets/snippets-signin';
-import { BASE_STORE, SIGNIN_LIST_OPTIONS } from '@/src/constants';
+import { BASE_STORE, SNIPPETS_PATH } from '@/src/constants';
 import { getSnippet } from '@/src/services';
 import { useStore } from '@/src/store';
 import classes from '@/src/styles/main.module.css';
+import { signInOptions } from '@/src/util';
 
 
 const SnippetPage = () => {
@@ -24,9 +25,10 @@ const SnippetPage = () => {
   const editSnippet = useStore((state) => state.editSnippet);
   const renderImage = useStore((state) => state.renderImage);
 
-
   const { openSignIn } = useClerk();
   const { isLoaded, isSignedIn } = useUser();
+
+  const SignInOptions = useMemo(() => signInOptions(SNIPPETS_PATH, '/'), []);
 
 
   const fetchSnippet = async (snippetId: string) => {
@@ -48,7 +50,7 @@ const SnippetPage = () => {
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      openSignIn(SIGNIN_LIST_OPTIONS);
+      openSignIn(SignInOptions);
     } else if (isLoaded && isSignedIn && params?.snippetId) {
       if (editableSnippet) {
         renderImage(true);

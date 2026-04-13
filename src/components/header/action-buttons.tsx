@@ -1,11 +1,12 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useClerk, useUser } from '@clerk/nextjs';
 import { PlusIcon, SquareChartGanttIcon } from 'lucide-react';
 import { Button } from '@mantine/core';
-import { SIGNUP_LIST_OPTIONS, SNIPPETS_PATH } from '@/src/constants';
+import { SNIPPETS_PATH } from '@/src/constants';
 import { useStore } from '@/src/store';
+import { signUpOptions } from '@/src/util';
 import SaveButton from './save-button';
 import classes from './header.module.css';
 
@@ -19,6 +20,8 @@ const ActionButtons = () => {
 
   const goToPage = useStore((state) => state.goToPage);
 
+  const SignUpOptions = useMemo(() => signUpOptions(SNIPPETS_PATH, SNIPPETS_PATH), []);
+
 
   const onHomeClickHandler = () => {
     goToPage('/', router.push)
@@ -30,7 +33,7 @@ const ActionButtons = () => {
         goToPage(SNIPPETS_PATH, router.push);
       }
     } else {
-      openSignUp(SIGNUP_LIST_OPTIONS)
+      openSignUp(SignUpOptions);
     }
   }, [isSignedIn, router.asPath])
 

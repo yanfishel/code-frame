@@ -227,7 +227,9 @@ export const useStore = createWithEqualityFn<T_Store>()(
       },
 
       goToPage: (target, route) => {
-        set({ fetching: true });
+        if (target==='/') {
+          set({ editableSnippet: null, selectedSnippet: null });
+        }
         route(target);
 
         /*if (!document.startViewTransition) {
@@ -253,8 +255,8 @@ export const useStore = createWithEqualityFn<T_Store>()(
           canvas: null,
           user: null,
           savingError: '',
-          selectedSnippet: null,
-          editableSnippet: null,
+          //selectedSnippet: null,
+          //editableSnippet: null,
           previewImageData: DEFAULT_STORE.previewImageData,
         },
       }),

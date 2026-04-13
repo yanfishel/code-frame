@@ -5,8 +5,8 @@ import { CheckCheckIcon, ChevronDownIcon, PlusIcon, SaveAllIcon, SaveIcon } from
 import { toast } from 'react-toastify';
 import { Box, Button, Divider, Flex, Menu, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { SIGNUP_OPTIONS } from '@/src/constants';
 import { useStore } from '@/src/store';
+import { signUpOptions } from '@/src/util';
 import classes from './header.module.css';
 
 
@@ -33,6 +33,8 @@ const SaveButton = () => {
 
   const [processing, setProcessing] = useState(false);
   const [inputName, setInputName] = useState(name);
+
+  const SignUpOptions = useMemo(()=>signUpOptions('/', '/'), [])
 
 
   const updateHandler = async () => {
@@ -77,7 +79,7 @@ const SaveButton = () => {
         open();
       }
     } else {
-      openSignUp(SIGNUP_OPTIONS);
+      openSignUp(SignUpOptions);
     }
   }
 
@@ -87,7 +89,7 @@ const SaveButton = () => {
       useStore.setState({ name: inputName });
       open();
     } else {
-      openSignUp(SIGNUP_OPTIONS);
+      openSignUp(SignUpOptions);
     }
   }
 

@@ -4,6 +4,7 @@ import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from './enums';
 
 
 export const SNIPPETS_PATH = '/snippets';
+export const SNIPPETS_PAGE_LIMIT = 15;
 
 export const DEFAULT_THEME = THEMES[0]
 

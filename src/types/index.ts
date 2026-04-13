@@ -171,3 +171,17 @@ export type T_RequestBodyWithAuth<T> = {
     user: User & T_User
     params?: Promise<T>
 }
+
+export type T_PageQueryProps = {
+  page: number;
+  limit: number;
+  backward?: boolean;
+  cursor?: string;
+};
+
+export type T_PageRespProps = {
+  page: number;
+  limit: number;
+  total: number;
+  cursor?: string;
+}

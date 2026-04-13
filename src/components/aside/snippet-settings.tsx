@@ -13,7 +13,7 @@ const SnippetSettings = () => {
   const [error, setError] = useState('');
 
 
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = (_: ChangeEvent<HTMLInputElement>) => {
     if(!inputName) {
       setError('Name is required!')
       return;

@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { SettingsIcon } from 'lucide-react';
 import { ActionIcon, Box, Container, Flex, Group } from '@mantine/core';
 import ThemeToggler from '@/src/components/theme-toggler';
-import { SNIPPETS_PATH } from '@/src/constants';
 import { useStore } from '@/src/store';
 import ActionButtons from './action-buttons';
 import HeaderLogo from './header-logo';
@@ -16,12 +15,13 @@ const Header = () => {
   const router = useRouter()
 
   useEffect(() => {
-    let dividerPosition = 0;
-    if (router.asPath === SNIPPETS_PATH) {
+    /*let dividerPosition = 0;
+    if (router.pathname === SNIPPETS_PATH) {
       dividerPosition = Math.round(window.innerWidth * 0.1);
-    }
-    useStore.setState({ dividerPosition });
-  }, [router.asPath]);
+      return
+    }*/
+    useStore.setState({ dividerPosition:0 });
+  }, [router.pathname]);
 
 
   return (

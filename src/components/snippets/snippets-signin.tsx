@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useClerk } from '@clerk/nextjs';
 import { UserIcon } from 'lucide-react';
 import { Button, Flex, Text } from '@mantine/core';
 import PreviewPlaceholder from '@/src/components/preview-placeholder';
-import { SIGNIN_LIST_OPTIONS } from '@/src/constants';
+import { SNIPPETS_PATH } from '@/src/constants';
+import { signInOptions } from '@/src/util';
 
 
 const SnippetsSignin = () => {
 
   const { openSignIn } = useClerk();
+
+  const SignInOptions = useMemo(() => signInOptions(SNIPPETS_PATH, '/'), []);
 
 
   return (
@@ -16,10 +19,7 @@ const SnippetsSignin = () => {
       <PreviewPlaceholder />
       <Flex direction="column" align="center" gap={10} style={{ position: 'relative', zIndex: 2 }}>
         <Text>Sign in to view your snippets</Text>
-        <Button
-          leftSection={<UserIcon size={16} />}
-          onClick={() => openSignIn(SIGNIN_LIST_OPTIONS)}
-        >
+        <Button leftSection={<UserIcon size={16} />} onClick={() => openSignIn(SignInOptions)}>
           Sign In
         </Button>
       </Flex>
