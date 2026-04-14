@@ -27,7 +27,7 @@ const Header = () => {
   return (
     <Box className={classes.header}>
       <Container fluid className={classes.mainSection}>
-        <Group justify="space-between">
+        <Group justify="space-between" wrap="nowrap">
           <Flex align="center">
             <HeaderLogo />
           </Flex>

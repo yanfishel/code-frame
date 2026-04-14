@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { CheckIcon, ChevronDownIcon, DownloadIcon, FilesIcon, FileTextIcon, ImageIcon } from 'lucide-react';
-import { Button, CopyButton, Flex, Menu, Tooltip, useMantineTheme } from '@mantine/core';
-
+import { Box, Button, CopyButton, Flex, Menu, Tooltip, useMantineTheme } from '@mantine/core';
 import { useStore } from '@/src/store';
 import { canvasToGif, canvasToJPG, downloadFile } from '@/src/util';
 
@@ -45,7 +44,8 @@ const PreviewToolbar = () => {
               position="top"
               transitionProps={{ transition: 'skew-down' }}
             >
-              <Button area-label="Copy Base64 (PNG) to Clipboard"
+              <Button
+                area-label="Copy Base64 (PNG) to Clipboard"
                 disabled={previewImageData === null || !previewImageData.base64}
                 onClick={copy}
                 variant="default"
@@ -65,24 +65,28 @@ const PreviewToolbar = () => {
         </CopyButton>
 
         <Button.Group variant="default">
-          <Button area-label="Download PNG"
+          <Button
+            area-label="Download PNG"
             disabled={previewImageData === null || !previewImageData.blob}
             size="xs"
             leftSection={<DownloadIcon size={14} />}
-            onClick={() => onDownloadClickHandler('png') }
+            onClick={() => onDownloadClickHandler('png')}
           >
-            Download PNG
+            <Box visibleFrom="xs" mr="0.5em">Download</Box> PNG
           </Button>
 
           {/* -- MENU DOWNLOAD - */}
-          <Menu id="preview-download-menu"
+          <Menu
+            id="preview-download-menu"
             position="bottom-end"
             trigger="hover"
             shadow="md"
             transitionProps={{ transition: 'pop-top-right' }}
           >
             <Menu.Target>
-              <Button area-label="Download Menu" title="Download menu"
+              <Button
+                area-label="Download Menu"
+                title="Download menu"
                 disabled={previewImageData === null || !previewImageData.blob}
                 size="xs"
                 styles={{ root: { paddingInline: '5px', borderLeft: 0 } }}

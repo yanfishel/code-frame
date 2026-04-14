@@ -88,7 +88,7 @@ const SnippetRow = ({ rowNum, snippet, editHandler, deleteHandler }: SnippetRowP
             <Popover width="target" withArrow offset={0} opened={opened}>
               <Popover.Target>
                 <Flex style={{ position: 'relative' }}>
-                  <Code
+                  <Code miw={100}
                     p="xs"
                     className={classes.rowCodePreview}
                     color="var(--mantine-color-blue-light)"

@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useClerk, useUser } from '@clerk/nextjs';
 import { PlusIcon, SquareChartGanttIcon } from 'lucide-react';
-import { Button } from '@mantine/core';
+import { ActionIcon, Box, Button } from '@mantine/core';
 import { SNIPPETS_PATH } from '@/src/constants';
 import { useStore } from '@/src/store';
 import { signUpOptions } from '@/src/util';
@@ -50,21 +50,37 @@ const ActionButtons = () => {
           leftSection={<PlusIcon size={14} />}
           className={classes.toolbarButton}
         >
-          New snippet
+          New{' '}
+          <Box visibleFrom="xs" ml="0.5em">
+            snippet
+          </Box>
         </Button>
       )}
 
       {isSignedIn && (
-        <Button
-          size="xs"
-          variant="default"
-          radius="sm"
-          onClick={onSnippetsClickHandler}
-          leftSection={<SquareChartGanttIcon size={14} />}
-          className={classes.toolbarButton}
-        >
-          Your snippets
-        </Button>
+        <>
+          <Button
+            size="xs"
+            variant="default"
+            radius="sm"
+            visibleFrom="sm"
+            onClick={onSnippetsClickHandler}
+            leftSection={<SquareChartGanttIcon size={14} />}
+            className={classes.toolbarButton}
+          >
+            Your snippets
+          </Button>
+          <ActionIcon
+            hiddenFrom="sm"
+            variant="default"
+            radius="sm"
+            size={30}
+            onClick={onSnippetsClickHandler}
+            className={classes.toolbarButton}
+          >
+            <SquareChartGanttIcon size={14} />
+          </ActionIcon>
+        </>
       )}
     </>
   );

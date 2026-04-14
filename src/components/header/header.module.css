@@ -10,6 +10,9 @@
 
 .logoContainer {
   width: calc(300px - var(--mantine-spacing-md));
+  @media (max-width: $mantine-breakpoint-md) {
+    width: auto;
+  }
 }
 
 .logoText {
@@ -23,11 +26,13 @@
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
+
 .headerSnippetName {
   .editNameButton {
     margin-top: 4px;
     opacity: 0.35;
   }
+
   &:hover {
     .editNameButton { opacity: 1; }
   }

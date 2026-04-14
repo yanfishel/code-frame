@@ -79,6 +79,7 @@ const SaveButton = () => {
         open();
       }
     } else {
+      console.log(SignUpOptions);
       openSignUp(SignUpOptions);
     }
   }
@@ -104,9 +105,22 @@ const SaveButton = () => {
       isSaved ? <CheckCheckIcon size={18} /> : <SaveIcon size={14} />,
     [isSaved]);
 
-  const buttonLabel = useMemo(() =>
-      isSaved ? 'Saved' : router.asPath.includes('/snippets') ? 'Save' : 'Save snippet',
-    [isSaved, router.asPath]);
+  const buttonLabel = useMemo(
+    () =>
+      isSaved ? (
+        'Saved'
+      ) : router.asPath.includes('/snippets') ? (
+        'Save'
+      ) : (
+        <>
+          Save
+          <Box visibleFrom="xs" ml="0.5em">
+            Snippet
+          </Box>
+        </>
+      ),
+    [isSaved, router.asPath]
+  );
 
 
   useEffect(() => {
@@ -192,7 +206,7 @@ const SaveButton = () => {
           <Button size="xs" variant="default" onClick={onCloseHandler}>
             Cancel
           </Button>
-          <Button disabled={name.trim() === ''} size="xs" onClick={onSave}>
+          <Button disabled={inputName.trim() === ''} size="xs" onClick={onSave}>
             Save
           </Button>
         </Flex>

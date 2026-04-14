@@ -54,6 +54,7 @@ const SnippetsArea = ({
       ref={ref}
       flex={1}
       direction="column"
+      className={classes.snippetsArea}
       style={{ width: areaWidth, minWidth: areaWidth, maxWidth: areaWidth }}
     >
       <AreaHeader>
@@ -65,7 +66,7 @@ const SnippetsArea = ({
         </Flex>
       </AreaHeader>
 
-      <div className={classes.snippetsArea}>
+      <div className={classes.snippetsContent}>
         {snippets.length > 0 && (
           <Table.ScrollContainer minWidth={300} maxHeight={height - 64}>
             <Table striped highlightOnHover stickyHeader>
@@ -108,7 +109,11 @@ const SnippetsArea = ({
               </Table.Tbody>
               <Table.Tfoot>
                 <Table.Tr
-                  style={{ borderTop: '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))', borderBottom: 0 }}
+                  style={{
+                    borderTop:
+                      '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))',
+                    borderBottom: 0,
+                  }}
                 >
                   <Table.Td colSpan={10} align="center" py="sm" bd={0}>
                     <Group justify="flex-end">
