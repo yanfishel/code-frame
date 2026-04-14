@@ -11,11 +11,25 @@
     max-width: 100% !important;
     flex-basis: 100% !important;
   }
+
+  &.previewAreaSnippet {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+  }
 }
 
 .canvasWrapper {
   flex: 1;
   position: relative;
+
+  &.previewCanvasWrapper {
+    @media (max-width: $mantine-breakpoint-md) {
+      min-height: calc(100dvh - 226px);
+    }
+  }
+
   @media (max-width: $mantine-breakpoint-md) {
     min-height: 350px;
   }

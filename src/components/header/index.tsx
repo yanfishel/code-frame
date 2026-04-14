@@ -1,5 +1,6 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import { useRouter } from 'next/router';
+import { useUser } from '@clerk/nextjs';
 import { SettingsIcon } from 'lucide-react';
 import { ActionIcon, Box, Container, Flex, Group } from '@mantine/core';
 import ThemeToggler from '@/src/components/theme-toggler';
@@ -12,16 +13,8 @@ import classes from './header.module.css';
 
 const Header = () => {
 
-  const router = useRouter()
-
-  useEffect(() => {
-    /*let dividerPosition = 0;
-    if (router.pathname === SNIPPETS_PATH) {
-      dividerPosition = Math.round(window.innerWidth * 0.1);
-      return
-    }*/
-    useStore.setState({ dividerPosition:0 });
-  }, [router.pathname]);
+  const router = useRouter();
+  const { isLoaded } = useUser();
 
 
   return (
@@ -32,10 +25,9 @@ const Header = () => {
             <HeaderLogo />
           </Flex>
 
-          <Flex gap="md" align="center">
-
+          {isLoaded &&
             <Flex align="center" gap="xs" className={classes.headerToolbar}>
-              <ActionButtons />
+              {router.pathname !== '/[id]' && <ActionButtons />}
 
               <ThemeToggler />
 
@@ -53,7 +45,7 @@ const Header = () => {
                 </ActionIcon>
               </Box>
             </Flex>
-          </Flex>
+          }
         </Group>
       </Container>
     </Box>

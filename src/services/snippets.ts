@@ -27,6 +27,22 @@ export const getSnippets = async (
   }
 };
 
+export const getSnippetById = async (
+  id: string,
+  errCallback: (err: any) => void
+): Promise<T_SnippetData | undefined> => {
+  try {
+    const response = await fetch(`/api/${id}`, { method: 'GET' });
+    if (response.ok) {
+      return await response.json();
+    }
+    errCallback('Failed to Get snippet');
+  } catch (error: any) {
+    console.error(error);
+    errCallback(error?.message || 'Failed to Get snippet');
+  }
+};
+
 export const getSnippet = async (
   id: string,
   errCallback: (err: any) => void

@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { Box } from '@mantine/core';
@@ -9,6 +10,7 @@ import classes from './draggable.module.css';
 const DraggableDivider = () => {
 
   const nodeRef = useRef(null);
+  const router = useRouter();
   const dividerPosition = useStore((state) => state.dividerPosition)
 
 
@@ -28,6 +30,10 @@ const DraggableDivider = () => {
     setBounds({ left:-(range-240), right:range-360, top:0, bottom:0 });
   }
 
+
+  useEffect(() => {
+    useStore.setState({ dividerPosition: 0 });
+  }, [router.pathname]);
 
   useEffect(() => {
     updateBounds()

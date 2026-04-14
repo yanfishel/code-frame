@@ -17,9 +17,6 @@ async function getSnippet(_: NextRequest, { user, params }:T_HandlerBody) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    await prisma.$disconnect();
-    process.exit(1);
-
     return new Response(null, { status: 500 });
   } finally {
     await prisma.$disconnect();
@@ -81,7 +78,6 @@ export async function deleteSnippet(_: NextRequest, { user, params }: T_HandlerB
     }
     return new NextResponse(JSON.stringify({ error: 'Bad Request' }), { status: 400 });
   } catch (error) {
-    await prisma.$disconnect();
     return new NextResponse(null, { status: 500 });
   } finally {
     await prisma.$disconnect();

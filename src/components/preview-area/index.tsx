@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useMemo, useRef } from 'react';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { ImageIcon } from 'lucide-react';
 import { Box, Flex, Loader, LoadingOverlay, Text } from '@mantine/core';
@@ -14,6 +15,7 @@ import classes from './preview.module.css';
 const PreviewArea = () => {
 
   const canvasRef = useRef(null);
+  const router = useRouter();
 
   const code = useStore((state) => state.code);
   const rendering = useStore((state) => state.rendering);
@@ -39,7 +41,10 @@ const PreviewArea = () => {
 
   return (
     <div
-      className={classes.previewArea}
+      className={clsx([
+        classes.previewArea,
+        router.pathname === '/[id]' && classes.previewAreaSnippet,
+      ])}
       style={{
         width: areaWidth,
         minWidth: areaWidth,
@@ -60,7 +65,9 @@ const PreviewArea = () => {
       <Box
         className={clsx(
           classes.canvasWrapper,
-          imageSettings.backgroundType === E_BACKGROUND_TYPE.NONE && classes.backgroundTransparent
+          router.pathname === '/[id]' && classes.previewCanvasWrapper,
+          imageSettings.backgroundType === E_BACKGROUND_TYPE.NONE &&
+            classes.backgroundTransparent
         )}
       >
         <LoadingOverlay visible={rendering} loaderProps={{ children: <Loader size={30} /> }} />
