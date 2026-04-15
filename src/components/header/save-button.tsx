@@ -5,6 +5,7 @@ import { CheckCheckIcon, ChevronDownIcon, PlusIcon, SaveAllIcon, SaveIcon } from
 import { toast } from 'react-toastify';
 import { Box, Button, Divider, Flex, Menu, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { BASE_STORE } from '@/src/constants';
 import { useStore } from '@/src/store';
 import { signUpOptions } from '@/src/util';
 import classes from './header.module.css';
@@ -24,6 +25,7 @@ const SaveButton = () => {
   const html = useStore((state) => state.html);
   const isSaved = useStore((state) => state.isSaved);
   const wantToSave = useStore((state) => state.wantToSave);
+  const editSnippet = useStore((state) => state.editSnippet);
   const editableSnippet = useStore((state) => state.editableSnippet);
   const saveSnippet = useStore((state) => state.saveSnippet);
   const updateSnippet = useStore((state) => state.updateSnippet);
@@ -46,7 +48,14 @@ const SaveButton = () => {
       toast.error(`Snippet saving failed! ${err ? err : 'Unknown error'}`)
     );
     if (snippet) {
-      toast.success('Snippet saved successfully!', { autoClose:2000 })
+      try {
+        const content = snippet.content ? JSON.parse(snippet.content) : null;
+        editSnippet(content);
+        toast.success('Snippet saved successfully!', { autoClose: 2000 });
+      } catch (error) {
+        toast.error('Failed to parse snippet data');
+        useStore.setState({ ...BASE_STORE, fetching: false });
+      }
     }
     setProcessing(false);
   }
@@ -68,8 +77,8 @@ const SaveButton = () => {
   }, [user, code, html, inputName]);
 
   const onSaveHandler = () => {
-    if (isSaved){
-      return
+    if (isSaved) {
+      return;
     }
     useStore.setState({ wantToSave: true, name: inputName });
     if (isSignedIn) {
@@ -79,10 +88,9 @@ const SaveButton = () => {
         open();
       }
     } else {
-      console.log(SignUpOptions);
       openSignUp(SignUpOptions);
     }
-  }
+  };
 
   const onSaveAsHandler = () => {
     useStore.setState({ wantToSave: true });
@@ -127,7 +135,7 @@ const SaveButton = () => {
     if (user && wantToSave) {
       open();
     }
-  }, [user, wantToSave]);
+  }, [user]);
 
   useEffect(() => {
     setInputName(name)

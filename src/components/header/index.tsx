@@ -14,7 +14,7 @@ import classes from './header.module.css';
 const Header = () => {
 
   const router = useRouter();
-  const { isLoaded } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
 
 
   return (
@@ -25,9 +25,14 @@ const Header = () => {
             <HeaderLogo />
           </Flex>
 
-          {isLoaded &&
+          {isLoaded && (
             <Flex align="center" gap="xs" className={classes.headerToolbar}>
-              {router.pathname !== '/[id]' && <ActionButtons />}
+              { isSignedIn
+                ? <ActionButtons />
+                : router.pathname !== '/[id]'
+                  ? <ActionButtons />
+                  : null
+              }
 
               <ThemeToggler />
 
@@ -45,7 +50,7 @@ const Header = () => {
                 </ActionIcon>
               </Box>
             </Flex>
-          }
+          )}
         </Group>
       </Container>
     </Box>

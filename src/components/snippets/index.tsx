@@ -32,9 +32,14 @@ const Snippets = () => {
   });
 
 
-  const fetchSnippets = async (page:number) => {
+  const fetchSnippets = async (page:number, reset?:boolean) => {
+
     const backward = page < pagination.page;
-    const cursor = backward ? (snippets && snippets.length ? snippets[0].id : undefined) : pagination.cursor;
+    const cursor = reset ? undefined : backward
+      ? snippets && snippets.length
+        ? snippets[0].id
+        : undefined
+      : pagination.cursor;
     const paging = { ...pagination, page, backward, cursor };
     const snippetsResponse = await getSnippets(paging, () => toast.error('Failed to fetch snippets'));
     setSnippets(snippetsResponse?.data ?? []);
@@ -42,24 +47,25 @@ const Snippets = () => {
       setPagination(snippetsResponse.pagination);
     }
     useStore.setState({ fetching: false });
-  };
+  }
 
   const editHandler = (snippet:T_Snippet) => {
+    useStore.setState({ fetching: true });
     editSnippet(snippet);
     goToPage(`/snippets/${snippet.id}`, router.push)
   }
 
-  const deleteHandler = async (snippet:T_Snippet) => {
+  const deleteHandler = async (snippet: T_Snippet) => {
     useStore.setState({ fetching: true });
     const deleted = await deleteSnippet(snippet, () => toast.error('Failed to delete snippet'));
     if (deleted) {
       const isLast = snippets.length === 1 && pagination.page > 1;
-      toast.success('Snippet deleted successfully!');
       if (isLast) {
         goToPage(`${pathname}?page=${pagination.page - 1}`, router.push);
         return;
       }
-      await fetchSnippets(pagination.page);
+      toast.success('Snippet deleted successfully!', { autoClose: 2000 });
+      await fetchSnippets(pagination.page, true);
     }
     useStore.setState({ fetching: false });
   }

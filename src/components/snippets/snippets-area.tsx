@@ -83,17 +83,17 @@ const SnippetsArea = ({
                       Code
                     </Text>
                   </Table.Th>
-                  <Table.Th w={130} style={{ textAlign: 'center' }}>
-                    <Text size="xs" fw={500}>
+                  <Table.Th w={130}>
+                    <Text size="xs" fw={500} ta="center">
                       Language
                     </Text>
                   </Table.Th>
-                  <Table.Th w={110} align="right" style={{ textAlign: 'right' }}>
-                    <Text size="xs" fw={500}>
+                  <Table.Th w={110}>
+                    <Text size="xs" fw={500} ta="right">
                       Date
                     </Text>
                   </Table.Th>
-                  <Table.Th w={130} align="right" style={{ textAlign: 'right' }} />
+                  <Table.Th w={130} />
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -108,13 +108,7 @@ const SnippetsArea = ({
                 ))}
               </Table.Tbody>
               <Table.Tfoot>
-                <Table.Tr
-                  style={{
-                    borderTop:
-                      '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))',
-                    borderBottom: 0,
-                  }}
-                >
+                <Table.Tr className={classes.paginationRow}>
                   <Table.Td colSpan={10} align="center" py="sm" bd={0}>
                     <Group justify="flex-end">
                       <Text size="sm">{message}</Text>

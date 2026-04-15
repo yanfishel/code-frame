@@ -115,22 +115,18 @@ export const saveSnippet = async (
 export const deleteSnippet = async (
   snippet: T_Snippet,
   errCallback?: (err: string) => void
-): Promise<T_SnippetData | undefined> => {
+): Promise<boolean | undefined> => {
   try {
     const response = await fetch(`/api/snippets/${snippet.id}`, {
       method: 'DELETE',
     });
-    if (!response.ok) {
-      if (errCallback) {
-        errCallback('Failed to Delete snippet');
-      }
-    } else {
-      return await response.json();
-    }
+    return response.status === 204;
+
   } catch (error: any) {
     console.error(error);
     if (errCallback) {
       errCallback(error?.message || 'Failed to Delete snippet');
     }
+    return false;
   }
 };

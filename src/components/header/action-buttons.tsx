@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useClerk, useUser } from '@clerk/nextjs';
 import { PlusIcon, SquareChartGanttIcon } from 'lucide-react';
@@ -13,7 +12,6 @@ import classes from './header.module.css';
 
 const ActionButtons = () => {
 
-  const pathname = usePathname();
   const router = useRouter();
   const { openSignUp } = useClerk();
   const { isSignedIn } = useUser();
@@ -29,33 +27,33 @@ const ActionButtons = () => {
 
   const onSnippetsClickHandler = useCallback(() => {
     if (isSignedIn) {
-      if (router.asPath !== SNIPPETS_PATH) {
+      if (router.pathname !== SNIPPETS_PATH) {
         goToPage(SNIPPETS_PATH, router.push);
       }
     } else {
       openSignUp(SignUpOptions);
     }
-  }, [isSignedIn, router.asPath])
+  }, [isSignedIn, router.pathname]);
 
 
   return (
     <>
-      {pathname !== SNIPPETS_PATH && <SaveButton />}
+      {router.pathname !== SNIPPETS_PATH && router.pathname !== '/[id]' && <SaveButton />}
 
-      {pathname === SNIPPETS_PATH && (
-        <Button
-          size="xs"
-          radius="sm"
-          onClick={onHomeClickHandler}
-          leftSection={<PlusIcon size={14} />}
-          className={classes.toolbarButton}
-        >
-          New{' '}
-          <Box visibleFrom="xs" ml="0.5em">
-            snippet
-          </Box>
-        </Button>
-      )}
+      { (router.pathname === SNIPPETS_PATH || router.pathname === '/[id]') && (
+          <Button
+            size="xs"
+            radius="sm"
+            onClick={onHomeClickHandler}
+            leftSection={<PlusIcon size={14} />}
+            className={classes.toolbarButton}
+          >
+            New{' '}
+            <Box visibleFrom="xs" ml="0.5em">
+              snippet
+            </Box>
+          </Button>
+        )}
 
       {isSignedIn && (
         <>

@@ -1,29 +1,19 @@
-import React, { ChangeEvent, memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Settings2Icon } from 'lucide-react';
 import { Flex, TextInput } from '@mantine/core';
-import CollapsePanel from '@/src/components/aside/collapse-panel';
 import { useStore } from '@/src/store';
+import CollapsePanel from './collapse-panel';
 
 
 const SnippetSettings = () => {
 
   const name = useStore((state) => state.name);
-  const setSettings = useStore((state) => state.setSettings);
-  const [inputName, setInputName] = useState('');
   const [error, setError] = useState('');
 
 
-  const onChangeHandler = (_: ChangeEvent<HTMLInputElement>) => {
-    if(!inputName) {
-      setError('Name is required!')
-      return;
-    }
-    setSettings('root', 'name', inputName);
-  }
-
   useEffect(() => {
-    setInputName(name);
-  }, [name])
+    setError(!name ? 'Name is required!' : '');
+  }, [name]);
 
 
   return (
@@ -36,18 +26,16 @@ const SnippetSettings = () => {
         <TextInput
           size="xs"
           label="Name"
-          value={inputName}
+          value={name}
           error={error}
           placeholder="Name"
-          onBlur={onChangeHandler}
           onChange={(e) => {
-            setError('');
-            setInputName(e.target.value);
+            useStore.setState({ name: e.target.value, isSaved: false });
           }}
         />
       </Flex>
     </CollapsePanel>
-  )
+  );
 }
 
 export default memo(SnippetSettings)

@@ -18,11 +18,13 @@ const PreviewArea = () => {
   const router = useRouter();
 
   const code = useStore((state) => state.code);
+  const name = useStore((state) => state.name);
   const rendering = useStore((state) => state.rendering);
   const dividerPosition = useStore((state) => state.dividerPosition);
   const imageSettings = useStore((state) => state.imageSettings);
   const previewImageData = useStore((state) => state.previewImageData);
   const selectedSnippet = useStore((state) => state.selectedSnippet);
+  const editableSnippet = useStore((state) => state.editableSnippet);
 
 
   const areaWidth = useMemo(() => `calc(50% - ${dividerPosition}px - 3px)`, [dividerPosition]);
@@ -53,11 +55,24 @@ const PreviewArea = () => {
       }}
     >
       <AreaHeader>
-        <Flex align="center" gap="xs">
-          <ImageIcon size={14} />
-          <Text size="md" lh={1.2}>
-            Image
-          </Text>
+        <Flex
+          flex={1}
+          align="center"
+          gap="xs"
+          style={{ width: 'calc(100% - 270px)', maxWidth: 'calc(100% - 270px)' }}
+        >
+          <ImageIcon size={14} style={{ minWidth: 14 }} />
+          <Box
+            style={{
+              width: `calc(100% - 20px)`,
+              maxWidth: `calc(100% - 20px)`,
+              flex: 1,
+            }}
+          >
+            <Text size="md" lh={1.2} truncate="end">
+              {(selectedSnippet || editableSnippet) && name ? name : 'Image'}
+            </Text>
+          </Box>
         </Flex>
 
         <PreviewToolbar />
@@ -66,8 +81,7 @@ const PreviewArea = () => {
         className={clsx(
           classes.canvasWrapper,
           router.pathname === '/[id]' && classes.previewCanvasWrapper,
-          imageSettings.backgroundType === E_BACKGROUND_TYPE.NONE &&
-            classes.backgroundTransparent
+          imageSettings.backgroundType === E_BACKGROUND_TYPE.NONE && classes.backgroundTransparent
         )}
       >
         <LoadingOverlay visible={rendering} loaderProps={{ children: <Loader size={30} /> }} />
@@ -82,10 +96,6 @@ const PreviewArea = () => {
           )}
           style={!code ? { opacity: 0 } : {}}
         />
-
-        {selectedSnippet && selectedSnippet.name && (
-          <Box className={classes.imageName}>{selectedSnippet.name}</Box>
-        )}
 
         {previewImageData && (
           <Box className={classes.imageInfo}>

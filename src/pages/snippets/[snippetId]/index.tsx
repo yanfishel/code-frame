@@ -23,7 +23,6 @@ const SnippetPage = () => {
   const fetching = useStore((state) => state.fetching);
   const editableSnippet = useStore((state) => state.editableSnippet);
   const editSnippet = useStore((state) => state.editSnippet);
-  const renderImage = useStore((state) => state.renderImage);
 
   const { openSignIn } = useClerk();
   const { isLoaded, isSignedIn } = useUser();
@@ -52,8 +51,8 @@ const SnippetPage = () => {
     if (isLoaded && !isSignedIn) {
       openSignIn(SignInOptions);
     } else if (isLoaded && isSignedIn && params?.snippetId) {
-      if (editableSnippet) {
-        renderImage(true);
+      if (editableSnippet && editableSnippet.id === params.snippetId) {
+        editSnippet(editableSnippet)
       } else {
         fetchSnippet(params.snippetId as string);
       }
