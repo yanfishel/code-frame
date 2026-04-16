@@ -3,6 +3,7 @@ import { useParams } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { Loader, LoadingOverlay } from '@mantine/core';
 import Layout from '@/src/components/layout';
+import NotFound from '@/src/components/not-found';
 import PreviewArea from '@/src/components/preview-area';
 import { BASE_STORE } from '@/src/constants';
 import { getSnippetById } from '@/src/services';
@@ -15,6 +16,7 @@ const SnippetPage = () => {
   const params = useParams();
 
   const fetching = useStore((state) => state.fetching)
+  const selectedSnippet = useStore((state) => state.selectedSnippet)
   const selectSnippet = useStore((state) => state.selectSnippet)
 
 
@@ -51,7 +53,8 @@ const SnippetPage = () => {
     <Layout>
       <LoadingOverlay visible={fetching} loaderProps={{ children: <Loader size={30} /> }} />
       <main role="main" className={classes.mainViewArea}>
-        <PreviewArea />
+        {!fetching && !selectedSnippet && <NotFound />}
+        {!fetching && !!selectedSnippet && <PreviewArea />}
       </main>
     </Layout>
   );

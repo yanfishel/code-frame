@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { CheckIcon, ChevronDownIcon, DownloadIcon, FilesIcon, FileTextIcon, ImageIcon, ShareIcon } from 'lucide-react';
+import { CheckIcon, ChevronDownIcon, DownloadIcon, FilesIcon, FileTextIcon, ImageIcon } from 'lucide-react';
 import { ActionIcon, Box, Button, CopyButton, Flex, Menu, Tooltip, useMantineTheme } from '@mantine/core';
+import ShareButton from '@/src/components/share-button';
 import { useStore } from '@/src/store';
 import { canvasToGif, canvasToJPG, downloadFile } from '@/src/util';
 
@@ -11,7 +12,6 @@ const PreviewToolbar = () => {
   const router = useRouter();
   const theme = useMantineTheme();
 
-  const id = useStore((state) => state.id)
   const name = useStore((state) => state.name)
   const canvas = useStore((state) => state.canvas)
   const selectedSnippet = useStore((state) => state.selectedSnippet)
@@ -20,18 +20,6 @@ const PreviewToolbar = () => {
 
   const [selectedMode, setSelectedMode] = useState(false);
 
-
-  const onShareClickHandler = useCallback(() => {
-    if (!selectedSnippet && !editableSnippet) {
-      return;
-    }
-    const data = {
-      title: name,
-      text: 'Check out this awesome snippet!',
-      url: `${window.location.origin}/${ selectedSnippet ? selectedSnippet.id : editableSnippet ? editableSnippet.id : id}`,
-    };
-    navigator.share(data);
-  }, [selectedSnippet, editableSnippet, name]);
 
   const onDownloadClickHandler = useCallback(
     (format: string) => {
@@ -66,25 +54,9 @@ const PreviewToolbar = () => {
   return (
     <>
       <Flex gap="5px" align="center">
-        {selectedMode && (
-          <Tooltip
-            label="Share Image"
-            withArrow
-            position="top"
-            transitionProps={{ transition: 'skew-down' }}
-          >
-            <Button
-              variant="default"
-              size="xs"
-              leftSection={<ShareIcon size={14} />}
-              onClick={onShareClickHandler}
-            >
-              Share
-            </Button>
-          </Tooltip>
-        )}
+        {selectedMode && <ShareButton id={selectedSnippet ? selectedSnippet.id : editableSnippet ? editableSnippet.id : undefined} name={name} />}
 
-        {router.pathname !== '/[id]' &&
+        {router.pathname !== '/[id]' && (
           <CopyButton value={previewImageData?.base64 ?? ''}>
             {({ copied, copy }) => (
               <Tooltip
@@ -127,7 +99,7 @@ const PreviewToolbar = () => {
               </Tooltip>
             )}
           </CopyButton>
-        }
+        )}
 
         <Button.Group variant="default">
           <Button

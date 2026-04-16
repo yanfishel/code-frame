@@ -101,4 +101,4 @@ export const DEFAULT_SNIPPET = {
   imageSettings: DEFAULT_STORE.imageSettings,
   inputColor: DEFAULT_THEME.fg,
   inputBackground: DEFAULT_THEME.bg,
-};
+}
