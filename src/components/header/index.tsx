@@ -1,9 +1,12 @@
+'use client';
+
 import React, { memo } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useUser } from '@clerk/nextjs';
 import { SettingsIcon } from 'lucide-react';
 import { ActionIcon, Box, Container, Flex, Group } from '@mantine/core';
-import ThemeToggler from '@/src/components/theme-toggler';
+//import ThemeToggler from '@/src/components/theme-toggler';
 import { useStore } from '@/src/store';
 import ActionButtons from './action-buttons';
 import HeaderLogo from './header-logo';
@@ -11,11 +14,17 @@ import UserMenu from './user-menu';
 import classes from './header.module.css';
 
 
+const ThemeToggler = dynamic(() => import('@/src/components/theme-toggler'), { ssr: false });
+
+
 const Header = () => {
 
   const router = useRouter();
   const { isLoaded, isSignedIn } = useUser();
 
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Box className={classes.header}>

@@ -7,8 +7,6 @@ import classes from './footer.module.css';
 
 const Footer = () => {
 
-  const theme = useMantineTheme();
-
 
   return (
     <Container fluid className={classes.footer}>
@@ -25,7 +23,7 @@ const Footer = () => {
         <span style={{ opacity: 0.65 }}>
           Code Frame &copy; {new Date().getFullYear()}. Made with
         </span>
-        <span style={{ color: theme.colors.red[8], fontSize: '1.2rem', opacity: 0.75 }}>♥</span>
+        <span style={{ color: "red", fontSize: '1.2rem', opacity: 0.75 }}>♥</span>
         <span style={{ opacity: 0.65 }}>for the web</span>
       </Flex>
 

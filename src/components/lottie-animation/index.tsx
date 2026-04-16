@@ -1,5 +1,7 @@
-import React, { createRef, useEffect, useRef } from "react"
-import lottie, { AnimationItem } from "lottie-web"
+'use client';
+
+import React, { createRef, useEffect, useRef } from "react";
+import lottie, { AnimationItem } from "lottie-web";
 
 
 interface LottieAnimationProps {

@@ -1,3 +1,4 @@
+'use client';
 import React, { memo, useEffect, useState } from 'react';
 import { ActionIcon, MantineColorScheme, Menu, Tooltip, useMantineColorScheme } from '@mantine/core';
 import { THEME_MENU_ITEMS } from './theme-toggler-data';

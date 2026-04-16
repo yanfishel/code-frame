@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { HomeIcon } from 'lucide-react';
 import { Button, Flex } from '@mantine/core';
 import animationData from '@/src/animations/development.json';

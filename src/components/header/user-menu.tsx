@@ -1,3 +1,5 @@
+'use client';
+
 import React, { memo, useEffect } from 'react';
 import { useAuth, useClerk, useUser } from '@clerk/nextjs';
 import { LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react';
