@@ -1,47 +1,16 @@
-import { FONTS, THEMES } from '@/src/constants/code';
-import { DEFAULT_SHADOW_COLOR, GRADIENTS, SOLID_COLORS } from '@/src/constants/colors';
+import { FONTS, THEMES } from './code';
+import { DEFAULT_SHADOW_COLOR, GRADIENTS, SOLID_COLORS } from './colors';
+import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from './enums';
 
 
-export const DEFAULT_THEME = THEMES.find((theme) => theme.theme_name === 'One Dark') ?? null;
+export const SNIPPETS_PATH = '/snippets';
+export const SNIPPETS_PAGE_LIMIT = 15;
 
-export const DEFAULT_WATERMARK = `codeframe.pro`;
+export const DEFAULT_THEME = THEMES[0]
 
-export const DEFAULT_STORE = {
-  canvas: null,
-  lang: 'typescript',
-  code: '',
-  html: '',
-  theme: THEMES.find((theme) => theme.theme_name === 'One Dark') ?? null,
-  showNumbers: false,
-  lineNumbers: '',
-  fontSize: '13',
-  lineHeight: '1.4',
-  fontFamily: Object.keys(FONTS)[0],
-  inputColor: DEFAULT_THEME?.fg ?? '',
-  inputBackground: DEFAULT_THEME?.bg ?? '',
+export const DEFAULT_WATERMARK = `codeframe.pro`
 
-  flexBasisCode: 'calc(50% - 3px)',
-  flexBasisPreview: 'calc(50% - 3px)',
-
-  settingsOpened: false,
-
-  frameStyle: 'macos',
-  innerPadding: 20,
-  outerPadding: 40,
-  cornerRadius: 8,
-  showShadow: true,
-  shadowBlur: 10,
-  shadowColor: DEFAULT_SHADOW_COLOR,
-  shadowOffset: { x: 0, y: 0 },
-  shadowOpacity: 65,
-  backgroundType: 'solid',
-  backgroundSolid: SOLID_COLORS[0][0],
-  gradient: GRADIENTS[0],
-  windowOpacity: 100,
-  watermark: DEFAULT_WATERMARK,
-  previewImageData: null,
-};
-
+export const DEFAULT_LANG = 'typescript'
 
 export const DEFAULT_CODE = `// Get a value of an interface property
 
@@ -62,4 +31,74 @@ function getValue(value: keyof MyInterface) {
 }
 
 getValue('id'); // => 1
-getValue('count'); // => undefined`;
+getValue('count'); // => undefined`
+
+
+export const BASE_STORE = {
+  wantToSave: false,
+  isSaved: true,
+  saving: false,
+  settingsOpened: false,
+  fetching: false,
+  rendering: false,
+  dividerPosition: 0,
+  selectedSnippet: null,
+  editableSnippet: null,
+  savingDebounce: null,
+  abortController: null,
+  id: '',
+  name: '',
+  previewImageData: null,
+  inputColor: DEFAULT_THEME.fg,
+  inputBackground: DEFAULT_THEME.bg,
+  html: '',
+  code: '',
+};
+
+
+export const DEFAULT_STORE = {
+  ...BASE_STORE,
+
+  canvas: null,
+  user: null,
+
+  codeSettings: {
+    lang: DEFAULT_LANG,
+    theme: THEMES[0],
+    showNumbers: false,
+    lineNumbers: '',
+    fontSize: '13',
+    lineHeight: '1.4',
+    fontFamily: Object.keys(FONTS)[0],
+  },
+  imageSettings: {
+    frameStyle: E_FRAME_STYLE.MACOS,
+    innerPadding: 20,
+    outerPadding: 40,
+    cornerRadius: 8,
+    showShadow: true,
+    shadowBlur: 10,
+    shadowColor: DEFAULT_SHADOW_COLOR,
+    shadowOffset: { x: 0, y: 0 },
+    shadowOpacity: 65,
+    backgroundType: E_BACKGROUND_TYPE.SOLID,
+    backgroundSolid: SOLID_COLORS[0][0],
+    gradient: GRADIENTS[0],
+    windowOpacity: 100,
+    showWatermark: true,
+    watermark: DEFAULT_WATERMARK,
+  },
+}
+
+export const DEFAULT_SNIPPET = {
+  id: '',
+  name: '',
+  html: '',
+  selectedSnippet: null,
+  editableSnippet: null,
+  code: DEFAULT_CODE,
+  codeSettings: DEFAULT_STORE.codeSettings,
+  imageSettings: DEFAULT_STORE.imageSettings,
+  inputColor: DEFAULT_THEME.fg,
+  inputBackground: DEFAULT_THEME.bg,
+}

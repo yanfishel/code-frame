@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
-import { Box, Divider, FloatingIndicator, Space, Tabs, Text } from '@mantine/core';
+import React, { memo, useState } from 'react';
+import { FloatingIndicator, Space, Tabs, Text } from '@mantine/core';
 import ColorSolidPanel from '@/src/components/controls/tab-panels/color-solid-panel';
 import GradientPanel from '@/src/components/controls/tab-panels/gradient-panel';
+import TransparentPanel from '@/src/components/controls/tab-panels/transparent-panel';
 import { useStore } from '@/src/store';
 import classes from './controls.module.css';
-import TransparentPanel from '@/src/components/controls/tab-panels/transparent-panel';
+import { E_BACKGROUND_TYPE } from '@/src/constants';
 
 
 const ControlBackground = () => {
 
-  const backgroundType = useStore((state) => state.backgroundType)
+  const imageSettings = useStore((state) => state.imageSettings);
+  const setSettings = useStore((state) => state.setSettings);
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
   const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({})
@@ -28,8 +30,8 @@ const ControlBackground = () => {
       </Text>
       <Tabs
         variant="none"
-        value={backgroundType}
-        onChange={(type) => useStore.setState({ backgroundType: type ?? ('none' as any) })}
+        value={imageSettings.backgroundType}
+        onChange={(type) => setSettings('image', 'backgroundType', type ?? E_BACKGROUND_TYPE.NONE)}
       >
         <Tabs.List ref={setRootRef} className={classes.list}>
           <Tabs.Tab value="solid" ref={setControlRef('solid')} className={classes.tab}>
@@ -43,7 +45,7 @@ const ControlBackground = () => {
           </Tabs.Tab>
 
           <FloatingIndicator
-            target={backgroundType ? controlsRefs[backgroundType] : null}
+            target={imageSettings.backgroundType ? controlsRefs[imageSettings.backgroundType] : null}
             parent={rootRef}
             className={classes.indicator}
           />
@@ -64,4 +66,4 @@ const ControlBackground = () => {
   );
 }
 
-export default ControlBackground;
+export default memo(ControlBackground);

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { Box } from '@mantine/core';
@@ -9,6 +10,9 @@ import classes from './draggable.module.css';
 const DraggableDivider = () => {
 
   const nodeRef = useRef(null);
+  const router = useRouter();
+  const dividerPosition = useStore((state) => state.dividerPosition)
+
 
   const [bounds, setBounds] = useState<{
     left: number;
@@ -18,16 +22,18 @@ const DraggableDivider = () => {
   }>({ left:0, right:0, top:0, bottom:0 });
 
   const onDragHandler = (_: DraggableEvent, data: DraggableData) => {
-    useStore.setState({
-      flexBasisCode: `calc(50% + ${data.x}px - 3px)`,
-      flexBasisPreview: `calc(50% - ${data.x}px - 3px)`,
-    });
+    useStore.setState({ dividerPosition: data.x });
   }
 
   const updateBounds = () => {
     const range = (window.innerWidth - 300) / 2;
     setBounds({ left:-(range-240), right:range-360, top:0, bottom:0 });
   }
+
+
+  useEffect(() => {
+    useStore.setState({ dividerPosition: 0 });
+  }, [router.pathname]);
 
   useEffect(() => {
     updateBounds()
@@ -45,8 +51,8 @@ const DraggableDivider = () => {
         nodeRef={nodeRef}
         axis="x"
         handle=".handle"
-        defaultPosition={{ x: 0, y: 0 }}
-        position={undefined}
+        defaultPosition={{ x: dividerPosition, y: 0 }}
+        position={{ x: dividerPosition, y: 0 }}
         scale={1}
         onStart={onDragHandler}
         onDrag={onDragHandler}
@@ -63,4 +69,4 @@ const DraggableDivider = () => {
   );
 };
 
-export default DraggableDivider;
+export default memo(DraggableDivider)

@@ -1,10 +1,74 @@
+import type { User } from '@clerk/nextjs/server';
+import { E_BACKGROUND_TYPE, E_FRAME_STYLE } from '@/src/constants';
+
 
 export type T_Store = {
+  savingDebounce: ReturnType<typeof setTimeout> | null;
+  abortController: AbortController | null;
+  wantToSave: boolean;
+  isSaved: boolean;
+  savingError: string;
+  saving: boolean;
+  rendering: boolean;
+  fetching: boolean;
+  dividerPosition: number;
+  settingsOpened: boolean;
+  id: string;
+  name: string;
+  user: T_User | null;
   canvas: HTMLCanvasElement | null;
   code: string;
   html: string;
+  inputColor: string;
+  inputBackground: string;
+  codeSettings: T_CodeSettings;
+  imageSettings: T_ImageSettings;
+  previewImageData: T_ImageData | null;
+  selectedSnippet: T_Snippet | null;
+  editableSnippet: T_Snippet | null;
+  selectSnippet: (snippet: T_Snippet | null) => void;
+  editSnippet: (snippet: T_Snippet | null, silent?: boolean) => void;
+  setUser: (user: T_User | null) => void;
+  setSettings: (
+    section: string,
+    key: string,
+    val:
+      | boolean
+      | string
+      | number
+      | T_Theme
+      | T_Cords
+      | T_Background
+      | T_Gradient
+      | T_FrameStyle
+      | {}
+  ) => void;
+  setTheme: (theme: T_Theme) => void;
+  renderImage: (isSaved?: boolean) => void;
+  resetCodeSettings: () => void;
+  resetImageSettings: () => void;
+  reset: () => void;
+  saveSnippet: (errCallback?: (err: string) => void) => Promise<T_SnippetData | undefined>;
+  updateSnippet: (errCallback?: (err: string) => void) => Promise<T_SnippetData | undefined>;
+  saveOnChange: () => Promise<void>;
+  goToPage: (target: string, route: (...args: any[]) => void) => void;
+};
 
-  settingsOpened: boolean;
+
+export type T_StoreData = {
+  id: string;
+  name: string;
+  code: string;
+  html: string;
+  user: T_User | null;
+  codeSettings: T_CodeSettings;
+  imageSettings: T_ImageSettings;
+  inputBackground: string;
+  inputColor: string;
+};
+
+
+export type T_CodeSettings = {
   lang: string;
   theme: T_Theme | null;
   showNumbers: boolean;
@@ -12,47 +76,38 @@ export type T_Store = {
   fontSize: string;
   fontFamily: string;
   lineHeight: string;
-  inputColor: string;
-  inputBackground: string;
-  flexBasisCode: string;
-  flexBasisPreview: string;
-  selectTheme: (theme: T_Theme) => void;
+};
 
-  frameStyle: string;
+export type T_ImageSettings = {
+  frameStyle: T_FrameStyle;
   innerPadding: number;
   outerPadding: number;
   cornerRadius: number;
   showShadow: boolean;
   shadowBlur: number;
   shadowColor: string;
-  shadowOffset: { x: number; y: number };
+  shadowOffset: T_Cords;
   shadowOpacity: number;
-  backgroundType: 'none' | 'solid' | 'gradient';
+  backgroundType: T_Background;
   backgroundSolid: string;
-  gradient: (string | number)[];
+  gradient: T_Gradient;
   windowOpacity: number;
+  showWatermark: boolean;
   watermark: string;
-
-  previewImageData: { blob: Blob; base64: string; width: number; height: number } | null;
-
-  parseTokens: () => T_Token[];
-  buildLines: () => [T_Token[]];
-  renderBackground: (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
-  renderGradientBlur: (
-    direction: string,
-    gradientBlur: number,
-    startPercent: number,
-    steps: number
-  ) => void;
-  renderShadow: (ctx: CanvasRenderingContext2D, corners: T_Corner[]) => void;
-  renderCode: () => HTMLCanvasElement | null;
-  renderImage: (canvas: HTMLCanvasElement) => void;
-  renderWatermark: (ctx: CanvasRenderingContext2D, canvasW: number, canvasH: number) => void;
 };
+
+
+export type T_Background = `${E_BACKGROUND_TYPE}`;
+
+export type T_FrameStyle = `${E_FRAME_STYLE}`;
+
+export type T_Gradient = (string | number)[];
 
 export type T_Token = { text: string; color: string };
 
-export type T_Corner = { x: number; y: number }
+export type T_Cords = { x: number; y: number }
+
+export type T_ImageData = { blob: Blob; base64: string; width: number; height: number }
 
 export type T_Theme = {
   theme_name: string;
@@ -84,3 +139,49 @@ export type T_Theme = {
   symbol: string;
   link: string;
 };
+
+export type T_SnippetData = {
+  id:string;
+  name: string
+  userId: string
+  content?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type T_Snippet = {
+  id:string;
+  name: string
+  code: string
+  html: string
+  inputColor: string
+  inputBackground: string
+  codeSettings: T_CodeSettings
+  imageSettings: T_ImageSettings
+}
+
+export type T_User = {
+  userId: string;
+  name: string;
+  email: string;
+  imageUrl: string;
+}
+
+export type T_RequestBodyWithAuth<T> = {
+    user: User & T_User
+    params?: Promise<T>
+}
+
+export type T_PageQueryProps = {
+  page: number;
+  limit: number;
+  backward?: boolean;
+  cursor?: string;
+};
+
+export type T_PageRespProps = {
+  page: number;
+  limit: number;
+  total: number;
+  cursor?: string;
+}

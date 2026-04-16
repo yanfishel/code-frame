@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "analyze": "ANALYZE=true next build",
+    "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",
     "export": "next build && next export",
     "typecheck": "tsc --noEmit",
@@ -29,17 +29,25 @@
     "prettier:write": "prettier --write \"**/*.{ts,tsx}\""
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.0.8",
     "@mantine/core": "8.3.17",
     "@mantine/hooks": "8.3.17",
     "@next/bundle-analyzer": "^16.0.0",
+    "@prisma/adapter-mariadb": "^7.6.0",
+    "@prisma/client": "^7.6.0",
+    "dotenv": "^17.4.0",
+    "lottie-web": "^5.13.0",
     "lucide-react": "^1.7.0",
-    "next": "16.1.7",
+    "next": "16.2.3",
+    "prisma": "^7.6.0",
     "prismjs": "^1.30.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-draggable": "^4.5.0",
     "react-simple-code-editor": "^0.14.1",
+    "react-toastify": "^11.0.5",
     "use-sync-external-store": "^1.6.0",
+    "uuid": "^13.0.0",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
@@ -48,7 +56,7 @@
     "@eslint/js": "^9.37.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@types/eslint-plugin-jsx-a11y": "^6",
-    "@types/node": "^25.0.0",
+    "@types/node": "^25.5.2",
     "@types/prismjs": "^1.26.6",
     "@types/react": "19.2.14",
     "@types/react-dom": "^19.2.1",
@@ -65,7 +73,8 @@
     "prettier": "^3.6.2",
     "stylelint": "^17.0.0",
     "stylelint-config-standard-scss": "^17.0.0",
-    "typescript": "5.9.3",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
     "typescript-eslint": "^8.46.0"
   },
   "packageManager": "yarn@4.13.0"

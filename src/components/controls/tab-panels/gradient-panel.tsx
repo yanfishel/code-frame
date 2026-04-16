@@ -6,24 +6,19 @@ import { useStore } from '@/src/store';
 
 const GradientPanel = () => {
 
-  const gradient = useStore((state) => state.gradient)
+  const imageSettings = useStore((state) => state.imageSettings);
+  const setSettings = useStore((state) => state.setSettings);
 
-  const [color1, setColor1] = useState<string>(`${gradient[0]}`);
-  const [color2, setColor2] = useState<string>(`${gradient[1]}`);
-  const [angle, setAngle] = useState<number>(Number(gradient[2]));
+  const [color1, setColor1] = useState<string>(`${imageSettings.gradient[0]}`);
+  const [color2, setColor2] = useState<string>(`${imageSettings.gradient[1]}`);
+  const [angle, setAngle] = useState<number>(Number(imageSettings.gradient[2]));
 
-
-  useEffect(() => {
-    setAngle(Number(gradient[2]));
-  }, [gradient[0], gradient[1]]);
 
   useEffect(() => {
-    setColor1(`${gradient[0]}`);
-  }, [gradient[1], gradient[2]]);
-
-  useEffect(() => {
-    setColor2(`${gradient[1]}`);
-  }, [gradient[0], gradient[2]]);
+    setColor1(`${imageSettings.gradient[0]}`);
+    setColor2(`${imageSettings.gradient[1]}`);
+    setAngle(Number(imageSettings.gradient[2]));
+  }, [imageSettings.gradient]);
 
 
   return (
@@ -36,7 +31,7 @@ const GradientPanel = () => {
               key={idx}
               size="22px"
               color={grad[0].toString()}
-              onClick={() => useStore.setState({ gradient: grad })}
+              onClick={() => setSettings('image', 'gradient', grad)}
               styles={{
                 ...COLOR_SWATCH_STYLES,
                 colorOverlay: {
@@ -45,14 +40,16 @@ const GradientPanel = () => {
                 },
               }}
             >
-              {gradient[0] === grad[0] && gradient[1] === grad[1] && gradient[2] === grad[2] && (
-                <CheckIcon
-                  size={10}
-                  style={{
-                    color: 'rgba(255, 255, 255, 0.85)',
-                  }}
-                />
-              )}
+              {imageSettings.gradient[0] === grad[0] &&
+                imageSettings.gradient[1] === grad[1] &&
+                imageSettings.gradient[2] === grad[2] && (
+                  <CheckIcon
+                    size={10}
+                    style={{
+                      color: 'rgba(255, 255, 255, 0.85)',
+                    }}
+                  />
+                )}
             </ColorSwatch>
           ))}
         </Flex>
@@ -66,9 +63,7 @@ const GradientPanel = () => {
               value={color1}
               onChange={(value) => setColor1(value)}
               onChangeEnd={(value) =>
-                useStore.setState(({ gradient }) => ({
-                  gradient: [value, gradient[1], gradient[2]],
-                }))
+                setSettings('image', 'gradient', [value, imageSettings.gradient[1], imageSettings.gradient[2]])
               }
               styles={COLOR_INPUT_STYLES as any}
             />
@@ -79,9 +74,7 @@ const GradientPanel = () => {
               value={color2}
               onChange={(value) => setColor2(value)}
               onChangeEnd={(value) =>
-                useStore.setState(({ gradient }) => ({
-                  gradient: [gradient[0], value, gradient[2]],
-                }))
+                setSettings('image', 'gradient', [imageSettings.gradient[0], value, imageSettings.gradient[2]])
               }
               styles={COLOR_INPUT_STYLES as any}
             />
@@ -98,9 +91,7 @@ const GradientPanel = () => {
               value={angle}
               onChange={(value) => setAngle(value)}
               onChangeEnd={(value) =>
-                useStore.setState(({ gradient }) => ({
-                  gradient: [gradient[0], gradient[1], value],
-                }))
+                setSettings('image', 'gradient', [imageSettings.gradient[0], imageSettings.gradient[1], value])
               }
               styles={ANGLE_STYLES}
             />

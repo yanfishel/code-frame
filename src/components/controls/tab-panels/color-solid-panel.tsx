@@ -7,12 +7,13 @@ import { isDark } from '@/src/util';
 
 const ColorSolidPanel = () => {
 
-  const backgroundSolid = useStore((state) => state.backgroundSolid)
+  const imageSettings = useStore((state) => state.imageSettings);
+  const setSettings = useStore((state) => state.setSettings);
 
 
   return (
     <>
-      <Flex align="flex-start" justify="space-between" gap="md" >
+      <Flex align="flex-start" justify="space-between" gap="md">
         <Flex flex={1} direction="column" gap="3px">
           {SOLID_COLORS.map((row, idx) => {
             return (
@@ -23,10 +24,10 @@ const ColorSolidPanel = () => {
                     area-label={`Color swatch ${color}`}
                     size="22px"
                     color={color}
-                    onClick={() => useStore.setState({ backgroundSolid: color })}
+                    onClick={() => setSettings('image', 'backgroundSolid', color)}
                     styles={COLOR_SWATCH_STYLES}
                   >
-                    {backgroundSolid === color && (
+                    {imageSettings.backgroundSolid === color && (
                       <CheckIcon
                         size={10}
                         style={{
@@ -48,8 +49,8 @@ const ColorSolidPanel = () => {
             size="xs"
             label="Color"
             placeholder="Background color"
-            value={backgroundSolid}
-            onChange={(value) => useStore.setState({ backgroundSolid: value })}
+            value={imageSettings.backgroundSolid}
+            onChange={(value) => setSettings('image', 'backgroundSolid', value )}
             styles={COLOR_INPUT_STYLES as any}
           />
         </Box>

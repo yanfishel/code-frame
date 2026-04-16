@@ -16,3 +16,24 @@
     min-width: 100%;
   }
 }
+
+
+.mainViewArea {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  overflow: auto;
+
+  & > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+
+}

@@ -1,15 +1,62 @@
 .header {
-  padding-top: 6px;
+  padding-top: 8px;
+  min-height: 57px;
   background-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
   border-bottom: 1px solid light-dark(var(--mantine-color-gray-4), transparent);
 }
 
 .mainSection {
-  padding-bottom: 6px;
+  padding-bottom: 8px;
+}
+
+.logoContainer {
+  width: calc(300px - var(--mantine-spacing-md));
+  @media (max-width: $mantine-breakpoint-md) {
+    width: auto;
+  }
 }
 
 .logoText {
   font-weight: 900;
   letter-spacing: -0.5px;
   filter: drop-shadow(1px 1px 1px light-dark(rgba(255, 255, 255, 0.95), rgba(0, 0, 0, 0.95)));
+}
+
+.logoSubText {
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.headerSnippetName {
+  .editNameButton {
+    margin-top: 4px;
+    opacity: 0.35;
+  }
+
+  &:hover {
+    .editNameButton { opacity: 1; }
+  }
+}
+
+
+.headerToolbar {
+  height: 40px;
+  padding-inline: 5px;
+  border-radius: var(--mantine-radius-sm);
+  background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-7));
+}
+
+.toolbarButton {
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+.saveModalContent {
+  background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6));
+  margin-left: -15px;
+  margin-right: -15px;
+  margin-top: -15px;
+  padding: var(--mantine-spacing-xs);
+  padding-inline: var(--mantine-spacing-lg);
+  padding-bottom: var(--mantine-spacing-lg);
 }

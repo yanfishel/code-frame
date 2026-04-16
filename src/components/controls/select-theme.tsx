@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ChevronsUpDown } from 'lucide-react';
 import { Box, Flex, Menu, Text } from '@mantine/core';
 import { THEMES } from '@/src/constants';
@@ -10,9 +10,8 @@ import classes from './controls.module.css';
 
 const SelectTheme = () => {
 
-  const selectedTheme = useStore((state) => state.theme)
-  const selectTheme = useStore((state) => state.selectTheme);
-
+  const codeSettings = useStore((state) => state.codeSettings);
+  const setSettings = useStore((state) => state.setSettings);
 
   return (
     <Box>
@@ -28,7 +27,7 @@ const SelectTheme = () => {
               gap="sm"
               className={classes.themeSwitcherInput}
             >
-              <SelectThemeItem transparent {...(selectedTheme as T_Theme)} />
+              <SelectThemeItem transparent {...(codeSettings.theme as T_Theme)} />
               <Box style={{ opacity: 0.35 }}>
                 <ChevronsUpDown size={12} />
               </Box>
@@ -36,12 +35,12 @@ const SelectTheme = () => {
           </Menu.Target>
           <Menu.Dropdown styles={{ dropdown: { maxHeight: '260px', overflowY: 'auto' } }}>
             {THEMES.map((theme) => {
-              const isSelected = selectedTheme?.theme_name === theme.theme_name;
+              const isSelected = codeSettings.theme?.theme_name === theme.theme_name;
               return (
                 <Menu.Item
                   key={theme.theme_name}
                   disabled={isSelected}
-                  onClick={() => selectTheme(theme)}
+                  onClick={() => setSettings('code', 'theme', theme)}
                 >
                   <SelectThemeItem {...theme} />
                 </Menu.Item>
@@ -54,4 +53,4 @@ const SelectTheme = () => {
   );
 }
 
-export default SelectTheme;
+export default memo(SelectTheme);

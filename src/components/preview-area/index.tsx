@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { ImageIcon } from 'lucide-react';
-import { Box, Flex, Text } from '@mantine/core';
+import { Box, Flex, Loader, LoadingOverlay, Text } from '@mantine/core';
 import AreaHeader from '@/src/components/area-header';
 import PreviewToolbar from '@/src/components/preview-area/preview-toolbar';
 import PreviewPlaceholder from '@/src/components/preview-placeholder';
+import { E_BACKGROUND_TYPE } from '@/src/constants';
 import { useStore } from '@/src/store';
 import { formatFileSize } from '@/src/util';
 import classes from './preview.module.css';
@@ -12,106 +14,85 @@ import classes from './preview.module.css';
 
 const PreviewArea = () => {
 
-  const canvasRef = useRef(null)
+  const canvasRef = useRef(null);
+  const router = useRouter();
 
-  const flexBasisPreview = useStore((state) => state.flexBasisPreview)
-  const theme = useStore((state) => state.theme)
-  const lang = useStore((state) => state.lang)
   const code = useStore((state) => state.code);
-  const showNumbers = useStore((state) => state.showNumbers)
-  const lineNumbers = useStore((state) => state.lineNumbers)
-  const fontSize = useStore((state) => state.fontSize)
-  const fontFamily = useStore((state) => state.fontFamily)
-  const lineHeight = useStore((state) => state.lineHeight)
-  const frameStyle = useStore((state) => state.frameStyle)
-  const innerPadding = useStore((state) => state.innerPadding)
-  const outerPadding = useStore((state) => state.outerPadding)
-  const cornerRadius = useStore((state) => state.cornerRadius)
-  const showShadow = useStore((state) => state.showShadow)
-  const shadowBlur = useStore((state) => state.shadowBlur)
-  const shadowColor = useStore((state) => state.shadowColor)
-  const shadowOffset = useStore((state) => state.shadowOffset)
-  const shadowOpacity = useStore((state) => state.shadowOpacity)
-  const backgroundType = useStore((state) => state.backgroundType)
-  const backgroundSolid = useStore((state) => state.backgroundSolid)
-  const gradient = useStore((state) => state.gradient)
-  const windowOpacity = useStore((state) => state.windowOpacity)
-  const watermark = useStore((state) => state.watermark);
-  const previewImageData = useStore((state) => state.previewImageData)
-
-  const renderImage = useStore((state) => state.renderImage)
+  const name = useStore((state) => state.name);
+  const rendering = useStore((state) => state.rendering);
+  const dividerPosition = useStore((state) => state.dividerPosition);
+  const imageSettings = useStore((state) => state.imageSettings);
+  const previewImageData = useStore((state) => state.previewImageData);
+  const selectedSnippet = useStore((state) => state.selectedSnippet);
+  const editableSnippet = useStore((state) => state.editableSnippet);
 
 
-  const renderHandler = useCallback(()=>{
-    if(canvasRef.current) {
-      renderImage(canvasRef.current);
-    }
-  }, [canvasRef])
+  const areaWidth = useMemo(() => `calc(50% - ${dividerPosition}px - 3px)`, [dividerPosition]);
+
 
   useEffect(() => {
-    renderHandler();
-  }, [
-    code,
-    theme,
-    lang,
-    showNumbers,
-    lineHeight,
-    lineNumbers,
-    fontSize,
-    fontFamily,
-    frameStyle,
-    innerPadding,
-    outerPadding,
-    cornerRadius,
-    showShadow,
-    shadowBlur,
-    shadowColor,
-    shadowOffset,
-    shadowOpacity,
-    backgroundType,
-    backgroundSolid,
-    gradient,
-    windowOpacity,
-    watermark,
-  ]);
+    if (canvasRef.current) {
+      useStore.setState({ canvas: canvasRef.current });
+    }
 
-  useLayoutEffect(() => {
-    renderHandler();
-  }, [])
+    return () => {
+      useStore.setState({ canvas: null });
+    }
+  }, [canvasRef]);
 
 
   return (
     <div
-      className={classes.previewArea}
+      className={clsx([
+        classes.previewArea,
+        router.pathname === '/[id]' && classes.previewAreaSnippet,
+      ])}
       style={{
-        width: flexBasisPreview,
-        minWidth: flexBasisPreview,
-        maxWidth: flexBasisPreview,
-        flexBasis: flexBasisPreview,
+        width: areaWidth,
+        minWidth: areaWidth,
+        maxWidth: areaWidth,
+        flexBasis: areaWidth,
       }}
     >
       <AreaHeader>
-        <Flex align="center" gap="xs">
-          <ImageIcon size={14} />
-          <Text size="md" lh={1.2}>Image</Text>
+        <Flex
+          flex={1}
+          align="center"
+          gap="xs"
+          style={{ width: 'calc(100% - 270px)', maxWidth: 'calc(100% - 270px)' }}
+        >
+          <ImageIcon size={14} style={{ minWidth: 14 }} />
+          <Box
+            style={{
+              width: `calc(100% - 20px)`,
+              maxWidth: `calc(100% - 20px)`,
+              flex: 1,
+            }}
+          >
+            <Text size="md" lh={1.2} truncate="end">
+              {(selectedSnippet || editableSnippet) && name ? name : 'Image'}
+            </Text>
+          </Box>
         </Flex>
 
         <PreviewToolbar />
-
       </AreaHeader>
       <Box
         className={clsx(
           classes.canvasWrapper,
-          backgroundType === 'none' && classes.backgroundTransparent
+          router.pathname === '/[id]' && classes.previewCanvasWrapper,
+          imageSettings.backgroundType === E_BACKGROUND_TYPE.NONE && classes.backgroundTransparent
         )}
       >
+        <LoadingOverlay visible={rendering} loaderProps={{ children: <Loader size={30} /> }} />
+
         {!code && <PreviewPlaceholder />}
 
         <canvas
           ref={canvasRef}
           className={clsx(
             classes.previewCanvas,
-            backgroundType === 'none' && classes.canvasTransparent
+            imageSettings.backgroundType === E_BACKGROUND_TYPE.NONE && classes.canvasTransparent
           )}
           style={!code ? { opacity: 0 } : {}}
         />
@@ -119,9 +100,7 @@ const PreviewArea = () => {
         {previewImageData && (
           <Box className={classes.imageInfo}>
             <span>{`${previewImageData.width}px ✕ ${previewImageData.height}px`}</span>
-            {previewImageData.blob && (
-              <span>{formatFileSize(previewImageData.blob.size)}</span>
-            )}
+            {previewImageData.blob && <span>{formatFileSize(previewImageData.blob.size)}</span>}
           </Box>
         )}
       </Box>
@@ -129,4 +108,4 @@ const PreviewArea = () => {
   );
 };
 
-export default PreviewArea;
+export default memo(PreviewArea)

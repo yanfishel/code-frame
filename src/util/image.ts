@@ -2,12 +2,12 @@ import { FORMAT_MIME } from '@/src/constants';
 import { formatDateToMonthShort } from '@/src/util/format';
 
 
-export const canvasToGif = (canvas:HTMLCanvasElement) => {
+export const canvasToGif = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext('2d');
-  if(!ctx) {
+  if (!ctx) {
     throw new Error(
       'canvasToGif: canvas must have a 2d context (e.g. canvas.getContext("2d") !== null)'
-    )
+    );
   }
   const w = canvas.width,
     h = canvas.height,
@@ -74,7 +74,7 @@ export const canvasToGif = (canvas:HTMLCanvasElement) => {
   const lzwOut = [];
   let lBuf = 0,
     lBits = 0;
-  const wb = (code:number, n:number) => {
+  const wb = (code: number, n: number) => {
     lBuf |= code << lBits;
     lBits += n;
     while (lBits >= 8) {
@@ -152,9 +152,9 @@ export const canvasToGif = (canvas:HTMLCanvasElement) => {
   out.push(0, 0x3b);
 
   return new Blob([new Uint8Array(out)], { type: 'image/gif' });
-}
+};
 
-export const base64ToBlob = (base64:string, contentType:string = '') => {
+export const base64ToBlob = (base64: string, contentType: string = '') => {
   // Remove the data URI prefix and get the raw base64 string
   const base64String = base64.split(',')[1] || base64;
 
@@ -174,22 +174,22 @@ export const base64ToBlob = (base64:string, contentType:string = '') => {
     byteArrays[sliceIndex] = new Uint8Array(bytes);
   }
   return new Blob(byteArrays, { type: contentType });
-}
+};
 
-export const canvasToPng = (canvas:HTMLCanvasElement) => {
+export const canvasToPng = (canvas: HTMLCanvasElement) => {
   const base64 = canvas.toDataURL(FORMAT_MIME.png);
   return { blob: base64ToBlob(base64, FORMAT_MIME.png), base64 };
-}
+};
 
-export const canvasToJPG = (canvas:HTMLCanvasElement) => {
+export const canvasToJPG = (canvas: HTMLCanvasElement) => {
   const tmp = document.createElement('canvas');
   tmp.width = canvas.width;
   tmp.height = canvas.height;
   const c = tmp.getContext('2d');
-  if(!c) {
+  if (!c) {
     throw new Error(
       'canvasToJPG: canvas must have a 2d context (e.g. canvas.getContext("2d") !== null)'
-    )
+    );
   }
   c.fillStyle = '#ffffff';
   c.fillRect(0, 0, tmp.width, tmp.height);
@@ -197,14 +197,31 @@ export const canvasToJPG = (canvas:HTMLCanvasElement) => {
   const base64 = tmp.toDataURL(FORMAT_MIME.jpg, 0.95);
 
   return { blob: base64ToBlob(base64, FORMAT_MIME.jpg), base64 };
-}
+};
 
-export const downloadFile = (data: Blob | string, ext: string = 'png', isData:boolean = false) => {
+export const downloadFile = (
+  data: Blob | string,
+  name: string,
+  ext: string = 'png',
+  isData: boolean = false
+) => {
   const date = formatDateToMonthShort(new Date());
-  const stamp = date.replace(/[^a-zA-Z0-9]/g, '_')
+  const stamp = date.replace(/[^a-zA-Z0-9]/g, '_');
+  const fileName = name ? sanitizeFilename(name) : `cf-${stamp}`;
   const a = document.createElement('a');
-  a.href = isData ? data as string : URL.createObjectURL(data as Blob);
-  a.download = `code-${stamp}.${ext}`;
+  a.href = isData ? (data as string) : URL.createObjectURL(data as Blob);
+  a.download = `${fileName}.${ext}`;
   a.click();
   URL.revokeObjectURL(a.href);
+};
+
+export const sanitizeFilename = (name: string) => {
+  return (
+    name
+      // eslint-disable-next-line no-control-regex
+      .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_') // Remove Windows & Unix illegal chars
+      .replace(/^\.+/, '') // Remove leading dots (hidden files)
+      .replace(/[. ]+$/, '') // Remove trailing dots/spaces
+      .substring(0, 255) // Truncate to max filename length
+  )
 }

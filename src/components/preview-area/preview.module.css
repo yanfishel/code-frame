@@ -11,19 +11,33 @@
     max-width: 100% !important;
     flex-basis: 100% !important;
   }
+
+  &.previewAreaSnippet {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+  }
 }
 
 .canvasWrapper {
   flex: 1;
   position: relative;
+
+  &.previewCanvasWrapper {
+    @media (max-width: $mantine-breakpoint-md) {
+      min-height: calc(100dvh - 226px);
+    }
+  }
+
   @media (max-width: $mantine-breakpoint-md) {
     min-height: 350px;
   }
 }
 
 .backgroundTransparent {
-  background-color: transparent;
-  background-image: url('/images/transparent-bg.jpg');
+  /*background-color: transparent;
+  background-image: url('/images/transparent-bg.jpg');*/
 }
 
 .previewCanvas {
@@ -41,12 +55,29 @@
 
 .canvasTransparent {
   border: 1px solid var(--mantine-color-gray-4) !important;
+  background-color: transparent;
+  background-image: url('/images/transparent-bg.jpg');
+}
+
+.imageName {
+  position: absolute;
+  top: 6px;
+  left: var(--mantine-spacing-md);
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 7px 18px;
+  border-radius: 4px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .imageInfo {
   position: absolute;
-  top: 6px;
-  left: 6px;
+  bottom: 6px;
+  right: var(--mantine-spacing-md);
   font-size: 11px;
   padding: 5px 15px;
   border-radius: 4px;

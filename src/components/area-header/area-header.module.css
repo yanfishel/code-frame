@@ -1,5 +1,7 @@
 
 .areaHeader {
+  width: 100%;
+  max-width: 100%;
   height: 46px;
   min-height: 46px;
   position: relative;
@@ -11,5 +13,5 @@
   gap: var(--mantine-spacing-sm);
   box-shadow: var(--mantine-shadow-sm) !important;
   border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6));
-  z-index: 1;
+  z-index: 5;
 }

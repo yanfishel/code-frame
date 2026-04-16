@@ -3,3 +3,5 @@ export * from './image'
 export * from './styles';
 export * from './defaults';
 export * from './colors'
+export * from './links'
+export * from './enums'

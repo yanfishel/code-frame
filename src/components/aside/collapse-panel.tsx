@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import { Collapse, Flex, Text, useMantineTheme } from '@mantine/core';
+import { Collapse, Flex, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './aside.module.css';
 import clsx from 'clsx';

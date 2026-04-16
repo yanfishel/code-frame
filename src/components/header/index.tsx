@@ -1,62 +1,60 @@
-import React from 'react';
-import dynamic from 'next/dynamic';
+import React, { memo } from 'react';
+import { useRouter } from 'next/router';
+import { useUser } from '@clerk/nextjs';
 import { SettingsIcon } from 'lucide-react';
-import { ActionIcon, Box, Container, Flex, Group, Text } from '@mantine/core';
-import { LogoIcon } from '@/src/assets/icons';
-import SaveButton from '@/src/components/header/save-button';
+import { ActionIcon, Box, Container, Flex, Group } from '@mantine/core';
+import ThemeToggler from '@/src/components/theme-toggler';
 import { useStore } from '@/src/store';
+import ActionButtons from './action-buttons';
+import HeaderLogo from './header-logo';
+import UserMenu from './user-menu';
 import classes from './header.module.css';
-
-
-const ThemeToggler = dynamic(() => import('@/src/components/theme-toggler'), { ssr: false });
 
 
 const Header = () => {
 
+  const router = useRouter();
+  const { isLoaded, isSignedIn } = useUser();
+
+
   return (
     <Box className={classes.header}>
       <Container fluid className={classes.mainSection}>
-        <Group justify="space-between">
-          <Flex gap="xs" align="center">
-            <LogoIcon size={36} />
-            <Flex direction="column" gap="1px" visibleFrom="xs">
-              <Text
-                size="xl"
-                lh="1.1"
-                variant="gradient"
-                component="span"
-                gradient={{ from: '#7d4fc6', to: '#228be6', deg: 32 }}
-                className={classes.logoText}
-              >
-                CODE FRAME
-              </Text>
-              <Text size="10px" c="dimmed" style={{ lineHeight: '1.1',textTransform: 'uppercase', letterSpacing: '1.5px' }}>
-                Code snippet image
-              </Text>
-            </Flex>
+        <Group justify="space-between" wrap="nowrap">
+          <Flex align="center">
+            <HeaderLogo />
           </Flex>
 
-          <Group>
-            <SaveButton />
+          {isLoaded && (
+            <Flex align="center" gap="xs" className={classes.headerToolbar}>
+              { isSignedIn
+                ? <ActionButtons />
+                : router.pathname !== '/[id]'
+                  ? <ActionButtons />
+                  : null
+              }
 
-            <ThemeToggler />
+              <ThemeToggler />
 
-            <Box hiddenFrom="md">
-              <ActionIcon
-                size="lg"
-                variant="default"
-                aria-label="Settings"
-                onClick={() => useStore.setState({ settingsOpened: true })}
-                style={{ width: '36px', height: '36px' }}
-              >
-                <SettingsIcon size={18} />
-              </ActionIcon>
-            </Box>
-          </Group>
+              <UserMenu />
+
+              <Box hiddenFrom="md">
+                <ActionIcon
+                  size="lg"
+                  variant="default"
+                  aria-label="Settings"
+                  onClick={() => useStore.setState({ settingsOpened: true })}
+                  style={{ width: '36px', height: '36px' }}
+                >
+                  <SettingsIcon size={18} />
+                </ActionIcon>
+              </Box>
+            </Flex>
+          )}
         </Group>
       </Container>
     </Box>
   );
 };
 
-export default Header;
+export default memo(Header)

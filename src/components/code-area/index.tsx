@@ -1,8 +1,10 @@
-import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, memo, useEffect, useMemo, useRef, useState } from 'react';
 import { SquareCodeIcon } from 'lucide-react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
 import { Flex, Text } from '@mantine/core';
+
+
 
 import 'prismjs/components/prism-basic';
 import 'prismjs/components/prism-clike';
@@ -52,8 +54,10 @@ import 'prismjs/components/prism-vim';
 import 'prismjs/components/prism-xml-doc';
 import 'prismjs/components/prism-yaml';
 
+
+
 import AreaHeader from '@/src/components/area-header';
-import { CODE_PLACEHOLDER, DEFAULT_CODE } from '@/src/constants';
+import { CODE_PLACEHOLDER } from '@/src/constants';
 import { useStore } from '@/src/store';
 import CodeToolbar from './code-toolbar';
 import classes from './codearea.module.css';
@@ -62,40 +66,65 @@ import classes from './codearea.module.css';
 const CodeArea = () => {
 
   const numbersRef = useRef<HTMLDivElement>(null)
-
   const htmlRef = useRef<HTMLDivElement>(null)
 
-  const theme = useStore((state) => state.theme)
+  const fetching = useStore((state) => state.fetching)
   const code = useStore((state) => state.code)
-  const lang = useStore((state) => state.lang)
-  const lineNumbers = useStore((state) => state.lineNumbers)
-  const showNumbers = useStore((state) => state.showNumbers)
-  const fontSize = useStore((state) => state.fontSize)
-  const lineHeight = useStore((state) => state.lineHeight)
-  const fontFamily = useStore((state) => state.fontFamily)
+  const html = useStore((state) => state.html)
+  const canvas = useStore((state) => state.canvas)
+  const codeSettings = useStore((state) => state.codeSettings)
   const inputColor = useStore((state) => state.inputColor)
   const inputBackground = useStore((state) => state.inputBackground)
-  const flexBasisCode = useStore((state) => state.flexBasisCode)
+  const dividerPosition = useStore((state) => state.dividerPosition)
+  const setSettings = useStore((state) => state.setSettings)
 
+  //const [inputCode, setInputCode] = useState<string>(code)
+  const [inputHtml, setInputHtml] = useState<string>(html);
   const [offset, setOffset] = useState(0)
 
+
+  const areaWidth = useMemo(() => {
+    return `calc(50% + ${dividerPosition}px - 3px)`;
+  }, [dividerPosition]);
+
+
+  const highlightHandler = (code: string) => {
+    if (!languages[codeSettings.lang]){
+      console.error('Language not present:', codeSettings.lang);
+      return highlight(code, languages.text);
+    }
+    try {
+      return highlight(code, languages[codeSettings.lang]);
+    } catch (error) {
+      console.error('Error highlighting code:', error);
+      return highlight(code, 'plaintext');
+    }
+  }
+
+  const onChangeHandler = (code:string) => {
+    useStore.setState({ code });
+  };
+
+
   useEffect(() => {
-    if (htmlRef.current) {
+    if( html !== inputHtml){
+      setSettings('root', 'html', inputHtml);
+    }
+  }, [inputHtml, html]);
+
+  useEffect(() => {
+    if (canvas && htmlRef.current) {
       const html = htmlRef.current.querySelector('pre')?.innerHTML ?? '';
-      useStore.setState({ html });
+      setInputHtml(html === '<br>' ? '' : html);
     }
-  }, [code, htmlRef]);
+  }, [canvas, htmlRef, code, codeSettings.lang]);
 
   useEffect(() => {
-    if(numbersRef.current) {
-      setOffset(numbersRef.current.offsetWidth)
+    if (numbersRef.current) {
+      setOffset(numbersRef.current.offsetWidth);
     }
-  }, [lineNumbers, showNumbers]);
+  }, [codeSettings.lineNumbers, codeSettings.showNumbers]);
 
-
-  useEffect(() => {
-    useStore.setState({ code: DEFAULT_CODE });
-  }, []);
 
 
   return (
@@ -103,15 +132,15 @@ const CodeArea = () => {
       className={classes.codeArea}
       style={
         {
-          width: flexBasisCode,
-          minWidth: flexBasisCode,
-          maxWidth: flexBasisCode,
-          flexBasis: flexBasisCode,
-          '--theme-font': `var(--font-${fontFamily})`,
+          width: areaWidth,
+          minWidth: areaWidth,
+          maxWidth: areaWidth,
+          flexBasis: areaWidth,
+          '--theme-font': `var(--font-${codeSettings.fontFamily})`,
           '--theme-color': inputColor,
           '--theme-background-color': inputBackground,
-          '--theme-font-size': `${fontSize}px`,
-          '--theme-line-height': `${lineHeight}`,
+          '--theme-font-size': `${codeSettings.fontSize}px`,
+          '--theme-line-height': `${codeSettings.lineHeight}`,
         } as React.CSSProperties
       }
     >
@@ -131,17 +160,18 @@ const CodeArea = () => {
           ref={htmlRef}
           id="code-input"
           style={{ '--line-numbers-offset': offset } as CSSProperties}
-          className={theme?.class_name}
+          className={codeSettings.theme?.class_name}
         >
-          {showNumbers && !!code && (
+          {codeSettings.showNumbers && !!code && (
             <div ref={numbersRef} className="line-numbers">
-              {lineNumbers}
+              {codeSettings.lineNumbers}
             </div>
           )}
           <Editor
-            highlight={(code) => highlight(code, languages[lang])}
-            onValueChange={(code) => useStore.setState({ code })}
+            disabled={fetching}
             value={code}
+            highlight={highlightHandler}
+            onValueChange={onChangeHandler}
           />
         </div>
       </div>
@@ -149,4 +179,4 @@ const CodeArea = () => {
   );
 }
 
-export default CodeArea;
+export default memo(CodeArea)

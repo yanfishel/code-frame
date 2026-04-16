@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ChevronsUpDown } from 'lucide-react';
 import { Box, Divider, Flex, Menu, Space, Text } from '@mantine/core';
 import ControlWindowOpacity from '@/src/components/controls/control-window-opacity';
 import SelectFrameGnome from '@/src/components/controls/frames/select-frame-gnome';
 import SelectFrameNone from '@/src/components/controls/frames/select-frame-none';
 import SelectFrameWindows from '@/src/components/controls/frames/select-frame-windows';
+import { E_FRAME_STYLE } from '@/src/constants';
 import { useStore } from '@/src/store';
 import SelectFrameMacos from './frames/select-frame-macos';
 import classes from './controls.module.css';
@@ -12,7 +13,9 @@ import classes from './controls.module.css';
 
 const SelectFrameStyle = () => {
 
-  const frameStyle = useStore((state) => state.frameStyle);
+  const imageSettings = useStore((state) => state.imageSettings);
+  const setSettings = useStore((state) => state.setSettings);
+
 
   return (
     <>
@@ -30,25 +33,24 @@ const SelectFrameStyle = () => {
               className={classes.themeSwitcherInput}
               style={{ paddingInlineStart: 'var(--mantine-spacing-sm)' }}
             >
-              {frameStyle === 'none' && <SelectFrameNone />}
-              {frameStyle === 'macos' && <SelectFrameMacos />}
-              {frameStyle === 'windows' && <SelectFrameWindows />}
-              {frameStyle === 'gnome' && <SelectFrameGnome />}
-
+              {imageSettings.frameStyle === E_FRAME_STYLE.NONE && <SelectFrameNone />}
+              {imageSettings.frameStyle === E_FRAME_STYLE.MACOS && <SelectFrameMacos />}
+              {imageSettings.frameStyle === E_FRAME_STYLE.WINDOWS && <SelectFrameWindows />}
+              {imageSettings.frameStyle === E_FRAME_STYLE.GNOME && <SelectFrameGnome />}
               <ChevronsUpDown size={12} style={{ opacity: 0.35 }} />
             </Flex>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item onClick={() => useStore.setState({ frameStyle: 'none' })}>
+            <Menu.Item onClick={() => setSettings('image', 'frameStyle', E_FRAME_STYLE.NONE)}>
               <SelectFrameNone />
             </Menu.Item>
-            <Menu.Item onClick={() => useStore.setState({ frameStyle: 'macos' })}>
+            <Menu.Item onClick={() => setSettings('image', 'frameStyle', E_FRAME_STYLE.MACOS)}>
               <SelectFrameMacos />
             </Menu.Item>
-            <Menu.Item onClick={() => useStore.setState({ frameStyle: 'windows' })}>
+            <Menu.Item onClick={() => setSettings('image', 'frameStyle', E_FRAME_STYLE.WINDOWS)}>
               <SelectFrameWindows />
             </Menu.Item>
-            <Menu.Item onClick={() => useStore.setState({ frameStyle: 'gnome' })}>
+            <Menu.Item onClick={() => setSettings('image', 'frameStyle', E_FRAME_STYLE.GNOME)}>
               <SelectFrameGnome />
             </Menu.Item>
           </Menu.Dropdown>
@@ -62,4 +64,4 @@ const SelectFrameStyle = () => {
   );
 };
 
-export default SelectFrameStyle;
+export default memo(SelectFrameStyle);

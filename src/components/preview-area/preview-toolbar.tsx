@@ -1,88 +1,134 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { CheckIcon, ChevronDownIcon, DownloadIcon, FilesIcon, FileTextIcon, ImageIcon } from 'lucide-react';
-import { Button, CopyButton, Flex, Menu, Tooltip, useMantineTheme } from '@mantine/core';
-
+import { ActionIcon, Box, Button, CopyButton, Flex, Menu, Tooltip, useMantineTheme } from '@mantine/core';
+import ShareButton from '@/src/components/share-button';
 import { useStore } from '@/src/store';
 import { canvasToGif, canvasToJPG, downloadFile } from '@/src/util';
 
 
 const PreviewToolbar = () => {
 
+  const router = useRouter();
   const theme = useMantineTheme();
 
+  const name = useStore((state) => state.name)
   const canvas = useStore((state) => state.canvas)
+  const selectedSnippet = useStore((state) => state.selectedSnippet)
+  const editableSnippet = useStore((state) => state.editableSnippet)
   const previewImageData = useStore((state) => state.previewImageData)
 
+  const [selectedMode, setSelectedMode] = useState(false);
 
-  const onDownloadClickHandler = useCallback((format: string) => {
+
+  const onDownloadClickHandler = useCallback(
+    (format: string) => {
       if (!previewImageData || !canvas) {
         return;
       }
       if (format === 'png') {
-        downloadFile(previewImageData.blob);
+        downloadFile(previewImageData.blob, name);
       } else if (format === 'jpg') {
         const imageData = canvasToJPG(canvas);
-        downloadFile(imageData.blob, 'jpg');
-      } else if(format === 'gif') {
-        const blob = canvasToGif(canvas)
-        downloadFile(blob, 'gif');
-      } else if(format === 'txt') {
-        const data = `data:text/plain;charset=utf-8,${  encodeURIComponent(previewImageData.base64)}`;
-        downloadFile(data, 'txt', true);
+        downloadFile(imageData.blob, name, 'jpg');
+      } else if (format === 'gif') {
+        const blob = canvasToGif(canvas);
+        downloadFile(blob, name, 'gif');
+      } else if (format === 'txt') {
+        const data = `data:text/plain;charset=utf-8,${encodeURIComponent(previewImageData.base64)}`;
+        downloadFile(data, name, 'txt', true);
       }
     },
-    [previewImageData, canvas]);
+    [previewImageData, canvas, name]
+  )
+
+
+  useEffect(() => {
+    if (router.isReady){
+      const previewMode = router.pathname === '/[id]'
+      setSelectedMode((!!selectedSnippet || !!editableSnippet) && !previewMode);
+    }
+  }, [selectedSnippet, editableSnippet, router]);
 
 
   return (
     <>
       <Flex gap="5px" align="center">
-        <CopyButton value={previewImageData?.base64 ?? ''}>
-          {({ copied, copy }) => (
-            <Tooltip
-              label={copied ? 'Copied!' : 'Copy Base64 (PNG) to Clipboard'}
-              withArrow
-              position="top"
-              transitionProps={{ transition: 'skew-down' }}
-            >
-              <Button area-label="Copy Base64 (PNG) to Clipboard"
-                disabled={previewImageData === null || !previewImageData.base64}
-                onClick={copy}
-                variant="default"
-                size="xs"
-                leftSection={
-                  copied ? (
-                    <CheckIcon size={14} color={theme.colors.green[6]} />
-                  ) : (
-                    <FilesIcon size={14} />
-                  )
-                }
+        {selectedMode && <ShareButton id={selectedSnippet ? selectedSnippet.id : editableSnippet ? editableSnippet.id : undefined} name={name} />}
+
+        {router.pathname !== '/[id]' && (
+          <CopyButton value={previewImageData?.base64 ?? ''}>
+            {({ copied, copy }) => (
+              <Tooltip
+                label={copied ? 'Copied!' : 'Copy Base64 (PNG) to Clipboard'}
+                withArrow
+                position="top"
+                transitionProps={{ transition: 'skew-down' }}
               >
-                Base64
-              </Button>
-            </Tooltip>
-          )}
-        </CopyButton>
+                {selectedMode ? (
+                  <ActionIcon
+                    disabled={previewImageData === null || !previewImageData.base64}
+                    onClick={copy}
+                    variant="default"
+                    size={30}
+                  >
+                    {copied ? (
+                      <CheckIcon size={14} color={theme.colors.green[6]} />
+                    ) : (
+                      <FilesIcon size={14} />
+                    )}
+                  </ActionIcon>
+                ) : (
+                  <Button
+                    area-label="Copy Base64 (PNG) to Clipboard"
+                    disabled={previewImageData === null || !previewImageData.base64}
+                    onClick={copy}
+                    variant="default"
+                    size="xs"
+                    leftSection={
+                      copied ? (
+                        <CheckIcon size={14} color={theme.colors.green[6]} />
+                      ) : (
+                        <FilesIcon size={14} />
+                      )
+                    }
+                  >
+                    Base64
+                  </Button>
+                )}
+              </Tooltip>
+            )}
+          </CopyButton>
+        )}
 
         <Button.Group variant="default">
-          <Button area-label="Download PNG"
+          <Button
+            area-label="Download PNG"
             disabled={previewImageData === null || !previewImageData.blob}
             size="xs"
             leftSection={<DownloadIcon size={14} />}
-            onClick={() => onDownloadClickHandler('png') }
+            onClick={() => onDownloadClickHandler('png')}
           >
-            Download PNG
+            {!selectedMode && (
+              <Box visibleFrom="xs" mr="0.5em">
+                Download
+              </Box>
+            )}
+            PNG
           </Button>
 
           {/* -- MENU DOWNLOAD - */}
-          <Menu id="preview-download-menu"
+          <Menu
+            id="preview-download-menu"
             position="bottom-end"
             trigger="hover"
             shadow="md"
             transitionProps={{ transition: 'pop-top-right' }}
           >
             <Menu.Target>
-              <Button area-label="Download Menu" title="Download menu"
+              <Button
+                area-label="Download Menu"
+                title="Download menu"
                 disabled={previewImageData === null || !previewImageData.blob}
                 size="xs"
                 styles={{ root: { paddingInline: '5px', borderLeft: 0 } }}
