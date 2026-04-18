@@ -46,7 +46,7 @@ const PreviewToolbar = () => {
   useEffect(() => {
     if (router.isReady){
       const previewMode = router.pathname === '/[id]'
-      setSelectedMode((!!selectedSnippet || !!editableSnippet) && !previewMode);
+      setSelectedMode( ((!!selectedSnippet && !!selectedSnippet.id) || !!editableSnippet) && !previewMode);
     }
   }, [selectedSnippet, editableSnippet, router]);
 
